@@ -1,0 +1,15 @@
+services:
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    ports:
+      - "8090:8090"
+    volumes:
+      - pb_data:/pb/pb_data
+      - ./pb_migrations:/pb/pb_migrations
+      - ./pb_hooks:/pb/pb_hooks
+    env_file:
+      - .env
+    restart: unless-stopped
+
+volumes:
+  pb_data:

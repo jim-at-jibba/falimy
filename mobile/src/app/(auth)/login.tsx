@@ -1,20 +1,34 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
-import { TextInput, View } from "react-native";
+import { FormProvider, useForm } from "react-hook-form";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native-unistyles";
+import { z } from "zod";
 import { getPocketBase } from "../../api/pocketbase";
 import { Button } from "../../components/Button";
 import { DefaultText } from "../../components/DefaultText";
+import { FormError } from "../../components/Form/FormError";
+import { FormInputText } from "../../components/Form/FormInputText";
 import Title from "../../components/Title";
 
+const schema = z.object({
+  email: z.string().min(1, "Email is required.").email("Enter a valid email address."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
+});
+
+type Schema = z.infer<typeof schema>;
+
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    setError("");
+  const methods = useForm<Schema>({
+    resolver: zodResolver(schema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const onSubmit = async (data: Schema) => {
     setLoading(true);
 
     try {
@@ -24,10 +38,12 @@ export default function Login() {
         return;
       }
 
-      await pb.collection("users").authWithPassword(email.trim(), password);
+      await pb.collection("users").authWithPassword(data.email.trim(), data.password);
       router.replace("/(tabs)");
     } catch {
-      setError("Login failed. Check your email and password.");
+      methods.setError("root", {
+        message: "Login failed. Check your email and password.",
+      });
     } finally {
       setLoading(false);
     }
@@ -35,50 +51,37 @@ export default function Login() {
 
   return (
     <SafeAreaView>
-      <View>
+      <View style={styles.container}>
         <Title text="Log In" />
         <DefaultText text="Use your family account credentials." />
 
-        <TextInput
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="email-address"
-          placeholder="Email"
-          style={{
-            borderWidth: 1,
-            borderColor: "#d7e1ea",
-            borderRadius: 12,
-            paddingHorizontal: 12,
-            paddingVertical: 10,
-            fontSize: 16,
-            marginBottom: 12,
-          }}
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          placeholder="Password"
-          secureTextEntry
-          style={{
-            borderWidth: 1,
-            borderColor: "#d7e1ea",
-            borderRadius: 12,
-            paddingHorizontal: 12,
-            paddingVertical: 10,
-            fontSize: 16,
-            marginBottom: 12,
-          }}
-          value={password}
-          onChangeText={setPassword}
-        />
+        <FormProvider {...methods}>
+          <FormInputText<Schema>
+            name="email"
+            placeholder="Email"
+            autoCapitalize="none"
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            returnKeyType="next"
+          />
 
-        {error ? <DefaultText text={error} /> : null}
+          <FormInputText<Schema>
+            name="password"
+            placeholder="Password"
+            secureTextEntry
+            textContentType="password"
+            onSubmitEditing={methods.handleSubmit(onSubmit)}
+          />
 
-        <Button
-          label={loading ? "Signing In..." : "Sign In"}
-          onPress={handleLogin}
-          disabled={loading}
-        />
+          <FormError message={methods.formState.errors.root?.message} />
+
+          <Button
+            label={loading ? "Signing In..." : "Sign In"}
+            onPress={methods.handleSubmit(onSubmit)}
+            disabled={loading}
+          />
+        </FormProvider>
+
         <Button
           label="Need to join a family?"
           onPress={() => router.push("/(auth)/join-family")}
@@ -88,3 +91,9 @@ export default function Login() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    padding: theme.spacing[4],
+  },
+}));

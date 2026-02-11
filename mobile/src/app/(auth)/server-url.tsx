@@ -1,34 +1,45 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, TextInput, View } from "react-native";
+import { FormProvider, useForm } from "react-hook-form";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native-unistyles";
+import { z } from "zod";
 import { resetPocketBase, validateServerUrl } from "../../api/pocketbase";
 import { Button } from "../../components/Button";
 import { DefaultText } from "../../components/DefaultText";
+import { FormError } from "../../components/Form/FormError";
+import { FormInputText } from "../../components/Form/FormInputText";
 import Title from "../../components/Title";
 import { setServerUrl } from "../../utils/config";
 
+const schema = z.object({
+  serverUrl: z.string().min(1, "Enter your PocketBase server URL."),
+});
+
+type Schema = z.infer<typeof schema>;
+
 export default function ServerUrl() {
-  const [serverUrl, setServerUrlState] = useState("");
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSave = async () => {
-    if (!serverUrl.trim()) {
-      setError("Enter your PocketBase server URL.");
-      return;
-    }
+  const methods = useForm<Schema>({
+    resolver: zodResolver(schema),
+    defaultValues: { serverUrl: "" },
+  });
 
-    setError("");
+  const onSubmit = async (data: Schema) => {
     setLoading(true);
 
     try {
-      const normalized = await validateServerUrl(serverUrl);
+      const normalized = await validateServerUrl(data.serverUrl);
       await setServerUrl(normalized);
       resetPocketBase();
       router.replace("/(auth)");
     } catch {
-      setError("Could not reach that server. Check the URL and try again.");
+      methods.setError("root", {
+        message: "Could not reach that server. Check the URL and try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -36,34 +47,39 @@ export default function ServerUrl() {
 
   return (
     <SafeAreaView>
-      <View>
+      <View style={styles.container}>
         <Title text="Connect to PocketBase" />
         <DefaultText text="Enter the URL where your family hosts PocketBase." />
 
-        <TextInput
-          value={serverUrl}
-          onChangeText={setServerUrlState}
-          placeholder="https://family.example.com"
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="url"
-          style={{
-            borderWidth: 1,
-            borderColor: "#d7e1ea",
-            borderRadius: 12,
-            paddingHorizontal: 12,
-            paddingVertical: 10,
-            fontSize: 16,
-            marginBottom: 10,
-          }}
-        />
+        <FormProvider {...methods}>
+          <FormInputText<Schema>
+            name="serverUrl"
+            placeholder="https://family.example.com"
+            autoCapitalize="none"
+            keyboardType="url"
+            onSubmitEditing={methods.handleSubmit(onSubmit)}
+          />
 
-        {error ? <DefaultText text={error} /> : null}
+          <FormError message={methods.formState.errors.root?.message} />
 
-        <Button label="Save and Continue" onPress={handleSave} disabled={loading} />
+          <Button
+            label={loading ? "Saving..." : "Save and Continue"}
+            onPress={methods.handleSubmit(onSubmit)}
+            disabled={loading}
+          />
 
-        {loading ? <ActivityIndicator /> : null}
+          {loading ? <ActivityIndicator style={styles.loader} /> : null}
+        </FormProvider>
       </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    padding: theme.spacing[4],
+  },
+  loader: {
+    marginTop: theme.spacing[3],
+  },
+}));

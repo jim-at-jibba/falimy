@@ -51,7 +51,7 @@ migrate(
     users.fields.add(
       new RelationField({
         name: "family_id",
-        collectionId: "families",
+        collectionId: families.id,
         maxSelect: 1,
       }),
     );
@@ -100,7 +100,7 @@ migrate(
           type: "relation",
           required: true,
           maxSelect: 1,
-          collectionId: "families",
+          collectionId: families.id,
         },
         {
           name: "assigned_to",
@@ -139,7 +139,7 @@ migrate(
           type: "relation",
           required: true,
           maxSelect: 1,
-          collectionId: "shopping_lists",
+          collectionId: shoppingLists.id,
           cascadeDelete: true,
         },
         { name: "name", type: "text", required: true },
@@ -202,7 +202,7 @@ migrate(
           type: "relation",
           required: true,
           maxSelect: 1,
-          collectionId: "families",
+          collectionId: families.id,
         },
         { name: "name", type: "text", required: true },
         { name: "lat", type: "number" },

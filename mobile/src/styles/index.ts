@@ -1,0 +1,147 @@
+import { breakpoints } from "@/styles/breakpoints";
+import { nf } from "./utils";
+import { UnistylesRuntime, StyleSheet } from "react-native-unistyles";
+
+// Add any custom base style
+const base = {
+  // USAGE: padding: theme.margins.lg
+  margins: {
+    xs: 2,
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
+    superLarge: 20,
+    tvLike: 24,
+  },
+  fontSizes: {
+    // fontSize: theme.fontSizes.lg
+    xxs: nf(10),
+    xs: nf(12),
+    sm: nf(14),
+    md: nf(16),
+    lg: nf(18),
+    xl: nf(24),
+    xxl: nf(32),
+  },
+  spacing: {
+    // USAGE: padding: theme.spacing(1),
+    1: 4,
+    2: 8,
+    3: 12,
+    4: 16,
+    5: 20,
+    6: 24,
+    7: 56,
+    8: 64,
+  },
+  fontFamily: {
+    bold: "Inter_700Bold",
+    semiBold: "Inter_600SemiBold",
+    medium: "Inter_500Medium",
+    regular: "Inter_400Regular",
+    body: "Inter_400Regular",
+  },
+} as const;
+
+export const lightTheme = {
+  colors: {
+    primary: "#2BCCBD",
+    accentLight: "#9FE8E1",
+    backgroundAccent: "#CFF3EF",
+    background: "#fff",
+    black: "#2C2C2C",
+    greyDark: "#4C4C4C",
+    grey: "#B1B8BE",
+    greySoft: "#D2D9DE",
+    greyLight: "#EDF0F2",
+    greyBackground: "#F7F7F7",
+    white: "#FFFFFF",
+    error: "#FF0000",
+    errorBackground: "#FFC3C9",
+    success: "#20D942",
+    successBackground: "#BFF4C9",
+    warning: "#FFBC26",
+    warningBackground: "#FFEFC9",
+    info: "#66ADFF",
+    typography: "#000000",
+  },
+  margins: base.margins,
+  fontSizes: base.fontSizes,
+  spacing: base.spacing,
+  fontFamily: base.fontFamily,
+  gap: 8,
+  borderRadiusXs: 12,
+  borderRadiusSm: 16,
+  borderRadiusMd: 32,
+  borderRadiusLg: 50,
+  buttonHeight: 56,
+  listItemHeight: 80,
+  bigButtonHeight: 72,
+  inputHeight: 50,
+} as const;
+
+export const darkTheme = {
+  colors: {
+    typography: "#ffffff",
+    primary: "#2BCCBD",
+    accentLight: "#9FE8E1",
+    backgroundAccent: "#CFF3EF",
+    background: "#0D0D0D",
+    black: "#2C2C2C",
+    greyDark: "#4C4C4C",
+    grey: "#B1B8BE",
+    greySoft: "#D2D9DE",
+    greyLight: "#EDF0F2",
+    greyBackground: "#F7F7F7",
+    white: "#FFFFFF",
+    error: "#FF0000",
+    errorBackground: "#FFC3C9",
+    success: "#20D942",
+    successBackground: "#BFF4C9",
+    warning: "#FFBC26",
+    warningBackground: "#FFEFC9",
+    info: "#66ADFF",
+  },
+  fontFamily: base.fontFamily,
+  margins: base.margins,
+  fontSizes: base.fontSizes,
+  spacing: base.spacing,
+  gap: 8,
+  borderRadiusXs: 12,
+  borderRadiusSm: 16,
+  borderRadiusMd: 32,
+  borderRadiusLg: 50,
+  buttonHeight: 56,
+  listItemHeight: 80,
+  bigButtonHeight: 72,
+  inputHeight: 50,
+} as const;
+
+// If you’re using TypeScript, create types for your breakpoints and/or themes. This step is required to achieve perfect Intellisense support across all StyleSheets.
+type AppBreakpoints = typeof breakpoints;
+type AppThemes = {
+  light: typeof lightTheme;
+  dark: typeof darkTheme;
+};
+const appThemes: AppThemes = {
+  light: lightTheme,
+  dark: darkTheme,
+};
+declare module "react-native-unistyles" {
+  export interface UnistylesBreakpoints extends AppBreakpoints {}
+  export interface UnistylesThemes extends AppThemes {}
+}
+
+UnistylesRuntime.setRootViewBackgroundColor("black");
+
+// or with adaptive themes
+const settings = {
+  adaptiveThemes: true,
+};
+
+StyleSheet.configure({
+  themes: appThemes,
+  breakpoints,
+  settings,
+});

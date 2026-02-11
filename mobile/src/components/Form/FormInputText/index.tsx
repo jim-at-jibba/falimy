@@ -1,5 +1,5 @@
 import { Eye, EyeOff } from "lucide-react-native";
-import React, { type RefObject, useState } from "react";
+import { type RefObject, useState } from "react";
 import {
   type FieldValues,
   type UseControllerProps,
@@ -65,7 +65,7 @@ export const FormInputText = <TFieldValues extends FieldValues>(props: Props<TFi
   const { field, fieldState } = useController({ name });
 
   const errors = disableErrors ? undefined : formState?.errors[name];
-  const touched = fieldState.isTouched || formState.isSubmitted;
+  const _touched = fieldState.isTouched || formState.isSubmitted;
 
   return (
     <>

@@ -1,5 +1,4 @@
-import * as React from "react";
-import Svg, { G, Path, Defs, ClipPath, Rect, SvgProps } from "react-native-svg";
+import Svg, { ClipPath, Defs, G, Path, Rect, type SvgProps } from "react-native-svg";
 
 export default function StarFull(props: SvgProps) {
   return (

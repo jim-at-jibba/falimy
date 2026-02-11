@@ -1,5 +1,4 @@
 import { AlertCircle } from "lucide-react-native";
-import React from "react";
 import type { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
 import { View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
@@ -37,7 +36,7 @@ const styles = StyleSheet.create((theme) => ({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    borderColor: theme.colors.error + "50",
+    borderColor: `${theme.colors.error}50`,
   },
   text: {
     marginLeft: theme.spacing[2],

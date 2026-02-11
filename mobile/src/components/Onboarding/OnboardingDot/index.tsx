@@ -1,4 +1,3 @@
-import React from "react";
 import { useWindowDimensions } from "react-native";
 import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
 import { StyleSheet } from "react-native-unistyles";

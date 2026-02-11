@@ -1,5 +1,4 @@
-import * as React from "react";
-import Svg, { Circle, SvgProps } from "react-native-svg";
+import Svg, { Circle, type SvgProps } from "react-native-svg";
 
 export default function Circles(props: SvgProps) {
   return (

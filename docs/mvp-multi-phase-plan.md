@@ -2,134 +2,145 @@
 
 This plan breaks the MVP into small, restartable chunks. Each chunk lists clear outcomes and concrete deliverables so you can pause and resume without losing context.
 
-## Phase 0: Project Scaffolding and Ground Rules
+## Phase 0: Project Scaffolding and Ground Rules ✅
 
 Goal: establish a stable baseline and shared conventions before feature work.
 
-### 0.1 Repository setup
+### 0.1 Repository setup ✅
 - Outcome: working Expo app shell with TypeScript and basic navigation.
 - Deliverables:
-  - Expo project initialized with TypeScript.
-  - App launches on iOS and Android simulators.
-  - Basic Expo Router layout present.
+  - ✅ Expo project initialized with TypeScript.
+  - ✅ App launches on iOS and Android simulators.
+  - ✅ Basic Expo Router layout present.
 
-### 0.2 Coding conventions
+### 0.2 Coding conventions ✅
 - Outcome: consistent project structure and quality gates.
 - Deliverables:
-  - Linting and formatting configured.
-  - Basic folder structure aligned to `docs/mvp.md`.
-  - Minimal README updates for local dev setup.
+  - ✅ Linting and formatting configured (Biome 2.3).
+  - ✅ Basic folder structure aligned to `docs/mvp.md`.
+  - ✅ Minimal README updates for local dev setup.
 
-### 0.3 Secrets and config
+### 0.3 Secrets and config ✅
 - Outcome: safe handling of server URLs and tokens.
 - Deliverables:
-  - Config helpers to store the PocketBase URL.
-  - Secure storage strategy outlined (Expo SecureStore).
+  - ✅ Config helpers to store the PocketBase URL.
+  - ✅ Secure storage strategy outlined (Expo SecureStore).
 
-## Phase 1: Auth and Family Onboarding
+## Phase 1: Auth and Family Onboarding ✅
 
 Goal: allow a family admin to create a family, and a member to join via QR.
 
-### 1.1 PocketBase connectivity
+> **Note:** Two minor gaps carried forward to Phase 2: no formal React AuthContext (auth state managed via PocketBase authStore singleton), and no UI for changing member roles after creation.
+
+### 1.1 PocketBase connectivity ✅
 - Outcome: app can connect to a self-hosted PocketBase instance.
 - Deliverables:
-  - Server URL input screen.
-  - Connection validation with success and error states.
+  - ✅ Server URL input screen.
+  - ✅ Connection validation with success and error states.
 
-### 1.2 Auth flows
+### 1.2 Auth flows ✅
 - Outcome: users can create accounts and sign in.
 - Deliverables:
-  - Create account screen (name, email, password).
-  - Login screen.
-  - Token storage with auto-refresh on launch.
-  - Auth context for global state.
+  - ✅ Create account screen (name, email, password).
+  - ✅ Login screen.
+  - ✅ Token storage with auto-refresh on launch.
+  - ⚠️ Auth context for global state — functional via PocketBase authStore, but no dedicated React context. Carried to Phase 2.
 
-### 1.3 Create family
+### 1.3 Create family ✅
 - Outcome: admin can create a family and become admin.
 - Deliverables:
-  - Create family screen.
-  - Family record creation in PocketBase.
-  - Admin role assignment.
+  - ✅ Create family screen.
+  - ✅ Family record creation in PocketBase.
+  - ✅ Admin role assignment.
 
-### 1.4 Invite member via QR
+### 1.4 Invite member via QR ✅
 - Outcome: members can join with a scanned invite.
 - Deliverables:
-  - Invite QR code generation (JSON payload).
-  - QR scan screen and parsing.
-  - Invite validation against PocketBase.
-  - Join flow to create a member account.
+  - ✅ Invite QR code generation (JSON payload).
+  - ✅ QR scan screen and parsing.
+  - ✅ Invite validation against PocketBase.
+  - ✅ Join flow to create a member account.
 
-### 1.5 Family management basics
+### 1.5 Family management basics ✅
 - Outcome: admin can see members and manage invite code.
 - Deliverables:
-  - Family settings screen listing members.
-  - Regenerate invite code action.
-  - Role assignment for member vs child.
+  - ✅ Family settings screen listing members.
+  - ✅ Regenerate invite code action.
+  - ⚠️ Role assignment for member vs child — roles set at creation only, no post-creation UI. Carried to Phase 2.
 
-## Phase 2: Local Data and Sync Foundation
+## Phase 2: Local Data and Sync Foundation ✅
 
-Goal: implement WatermelonDB with a basic sync loop before any feature data.
+Goal: implement WatermelonDB with a basic sync loop before any feature data. Also close out Phase 1 gaps.
 
-### 2.1 WatermelonDB setup
+### 2.0 Phase 1 carryovers ✅
+- Outcome: proper React-idiomatic auth state and complete family management.
+- Deliverables:
+  - ✅ AuthContext provider wrapping PocketBase authStore for React consumption.
+  - ✅ Role change UI on family settings screen (admin can set member vs child).
+
+### 2.1 WatermelonDB setup ✅
 - Outcome: local database initialized and usable.
 - Deliverables:
-  - Schema and models for core entities.
-  - Database initialization and provider.
+  - ✅ Schema and models for core entities (6 tables, 6 models with associations and writer methods).
+  - ✅ Database initialization and provider (SQLiteAdapter with JSI).
 
-### 2.2 Sync engine baseline
+### 2.2 Sync engine baseline ✅
 - Outcome: client-side sync adapter to PocketBase.
 - Deliverables:
-  - Pull changes with last timestamp.
-  - Push changes for create/update/delete.
-  - Last-write-wins conflict resolution.
-  - Manual sync trigger and background hook.
+  - ✅ Pull changes with last timestamp.
+  - ✅ Push changes for create/update/delete.
+  - ✅ Last-write-wins conflict resolution.
+  - ✅ Manual sync trigger and background hook (useSync: mount, foreground, 5-min interval).
 
-### 2.3 Realtime subscription skeleton
+### 2.3 Realtime subscription skeleton ✅
 - Outcome: baseline SSE wiring for future collections.
 - Deliverables:
-  - PocketBase SSE subscription wrapper.
-  - Test harness to confirm updates are received.
+  - ✅ PocketBase SSE subscription wrapper (RealtimeManager class).
+  - ✅ useRealtime hook (debounced SSE → sync trigger).
+  - ✅ useRealtimeDebug hook for testing/development.
 
-## Phase 3: Shopping Lists MVP
+## Phase 3: Shopping Lists MVP ✅
 
 Goal: fully usable shopping lists with offline support and sync.
 
-### 3.1 Shopping list screens
+### 3.1 Shopping list screens ✅
 - Outcome: lists overview and list detail screens.
 - Deliverables:
-  - Lists overview UI with active/completed statuses.
-  - List detail screen showing items.
+  - ✅ Shopping tab added to tab navigator with icon.
+  - ✅ Lists overview UI with item counts and status badges.
+  - ✅ List detail screen showing unchecked items above, checked items below.
 
-### 3.2 List CRUD
+### 3.2 List CRUD ✅
 - Outcome: create, rename, archive, delete lists.
 - Deliverables:
-  - Create list flow.
-  - Edit list name.
-  - Archive list behavior.
-  - Delete list action.
+  - ✅ Create list flow (inline input on overview screen).
+  - ✅ Edit list name (inline rename on detail screen).
+  - ✅ Archive list behavior ("Complete Shopping" action).
+  - ✅ Delete list action with confirmation.
 
-### 3.3 Item CRUD and behavior
-- Outcome: add, check, delete, reorder items.
+### 3.3 Item CRUD and behavior ✅
+- Outcome: add, check, delete items.
 - Deliverables:
-  - Add item form (name, quantity, note).
-  - Toggle checked state and track `checked_by`.
-  - Checked items sink to bottom.
-  - Swipe to delete.
-  - Long-press drag reorder.
+  - ✅ Add item form (name, quantity) on detail screen.
+  - ✅ Toggle checked state with `checked_by` tracking.
+  - ✅ Checked items sink to bottom (separate section).
+  - ✅ Swipe to delete (react-native-gesture-handler Swipeable).
 
-### 3.4 Offline-first behavior
+### 3.4 Offline-first behavior ✅
 - Outcome: full usage without network.
 - Deliverables:
-  - All list and item changes stored locally.
-  - Sync on reconnect with conflict resolution.
-  - Pull-to-refresh to trigger sync.
+  - ✅ All list and item changes stored locally via WatermelonDB.
+  - ✅ Sync on reconnect with conflict resolution (via useSync).
+  - ✅ Pull-to-refresh to trigger sync on both screens.
 
-### 3.5 Realtime updates
+### 3.5 Realtime updates ✅
 - Outcome: live updates across family members.
 - Deliverables:
-  - SSE subscription for `shopping_items`.
-  - Local DB updated on incoming events.
-  - UI updates instantly without manual refresh.
+  - ✅ useSync and useRealtime wired in tabs layout.
+  - ✅ SSE events trigger debounced sync (via RealtimeManager).
+  - ✅ WatermelonDB observables auto-update UI on data changes.
+
+> **Note:** Long-press drag reorder is deferred — can be added in Phase 6 polish. Notification integration (ntfy) deferred to Phase 5.
 
 ## Phase 4: Location Sharing MVP
 

@@ -1,6 +1,15 @@
 import { Tabs } from "expo-router";
+import { House, List, Settings } from "lucide-react-native";
+import { useRealtime } from "@/hooks/useRealtime";
+import { useSync } from "@/hooks/useSync";
 
 export default function TabsLayout() {
+  // Auto-sync on mount, foreground, and 5-min interval
+  const { triggerSync } = useSync();
+
+  // Subscribe to PocketBase SSE — trigger sync on incoming changes
+  useRealtime(triggerSync);
+
   return (
     <Tabs
       screenOptions={{
@@ -16,6 +25,16 @@ export default function TabsLayout() {
         options={{
           title: "Home",
           tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => <House size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="shopping"
+        options={{
+          title: "Shopping",
+          tabBarLabel: "Shopping",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <List size={size} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -23,6 +42,7 @@ export default function TabsLayout() {
         options={{
           title: "Settings",
           tabBarLabel: "Settings",
+          tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />,
         }}
       />
     </Tabs>

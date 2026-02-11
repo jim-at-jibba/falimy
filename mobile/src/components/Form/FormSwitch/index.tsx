@@ -1,4 +1,3 @@
-import React from "react";
 import {
   type FieldValues,
   type UseControllerProps,

@@ -1,6 +1,6 @@
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
-import { router } from "expo-router";
 
 import { getPocketBase } from "../api/pocketbase";
 import { getServerUrl } from "../utils/config";

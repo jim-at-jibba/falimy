@@ -1,5 +1,4 @@
-import * as React from "react";
-import Svg, { Path, SvgProps } from "react-native-svg";
+import Svg, { Path, type SvgProps } from "react-native-svg";
 
 export default function Star(props: SvgProps) {
   return (

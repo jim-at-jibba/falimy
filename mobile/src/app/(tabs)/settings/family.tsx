@@ -4,7 +4,7 @@ import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getPocketBase } from "../../../api/pocketbase";
 import { Button } from "../../../components/Button";
-import { DefaultText } from "../../../components/DefaultText";
+import { Select, type SelectOption } from "../../../components/Select";
 import { SmallText } from "../../../components/SmallText";
 import Title from "../../../components/Title";
 import { getServerUrl } from "../../../utils/config";
@@ -23,12 +23,20 @@ type Member = {
   role: string;
 };
 
+const ROLE_OPTIONS: SelectOption[] = [
+  { label: "Admin", value: "admin" },
+  { label: "Member", value: "member" },
+  { label: "Child", value: "child" },
+];
+
 export default function FamilySettings() {
   const [family, setFamily] = useState<Family | null>(null);
   const [members, setMembers] = useState<Member[]>([]);
   const [serverUrl, setServerUrlState] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -42,7 +50,11 @@ export default function FamilySettings() {
           return;
         }
 
-        const familyId = (pb.authStore.model as { family_id?: string }).family_id;
+        const model = pb.authStore.model as { id: string; family_id?: string; role?: string };
+        setCurrentUserId(model.id);
+        setCurrentUserRole(model.role ?? null);
+
+        const familyId = model.family_id;
         if (!familyId) {
           setError("No family assigned to this account.");
           return;
@@ -89,6 +101,20 @@ export default function FamilySettings() {
       setError("Could not regenerate the invite code.");
     }
   };
+
+  const handleRoleChange = async (memberId: string, newRole: string) => {
+    try {
+      const pb = await getPocketBase();
+      if (!pb) return;
+
+      await pb.collection("users").update(memberId, { role: newRole });
+      setMembers((prev) => prev.map((m) => (m.id === memberId ? { ...m, role: newRole } : m)));
+    } catch {
+      setError("Could not update member role.");
+    }
+  };
+
+  const isAdmin = currentUserRole === "admin";
 
   if (loading) {
     return (
@@ -163,15 +189,26 @@ export default function FamilySettings() {
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  alignItems: "center",
                   paddingVertical: 8,
                   borderBottomWidth: 1,
                   borderBottomColor: "#eef2f6",
                 }}
               >
-                <Text style={{ fontSize: 15, color: "#0d3a5a" }}>
+                <Text style={{ fontSize: 15, color: "#0d3a5a", flex: 1 }}>
                   {member.name || member.email}
                 </Text>
-                <SmallText text={member.role} />
+                {isAdmin && member.id !== currentUserId ? (
+                  <View style={{ width: 120 }}>
+                    <Select
+                      options={ROLE_OPTIONS}
+                      value={member.role}
+                      onChange={(newRole) => handleRoleChange(member.id, newRole)}
+                    />
+                  </View>
+                ) : (
+                  <SmallText text={member.role} />
+                )}
               </View>
             ))
           )}

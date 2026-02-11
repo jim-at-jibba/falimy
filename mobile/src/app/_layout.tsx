@@ -1,9 +1,11 @@
-import { useEffect } from "react";
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import "../styles";
 import { Toaster } from "sonner-native";
+import { AuthProvider } from "../contexts/AuthContext";
+import { DatabaseProvider } from "../contexts/DatabaseContext";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -27,10 +29,12 @@ const InitialLayout = () => {
 
 export default function RootLayout() {
   return (
-    <>
-      <StatusBar style="dark" />
-      <InitialLayout />
-      <Toaster />
-    </>
+    <DatabaseProvider>
+      <AuthProvider>
+        <StatusBar style="dark" />
+        <InitialLayout />
+        <Toaster />
+      </AuthProvider>
+    </DatabaseProvider>
   );
 }

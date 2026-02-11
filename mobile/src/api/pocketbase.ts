@@ -1,5 +1,5 @@
-import PocketBase from "pocketbase";
 import * as SecureStore from "expo-secure-store";
+import PocketBase from "pocketbase";
 
 import { getServerUrl } from "../utils/config";
 

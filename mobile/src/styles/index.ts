@@ -1,6 +1,6 @@
+import { StyleSheet, UnistylesRuntime } from "react-native-unistyles";
 import { breakpoints } from "@/styles/breakpoints";
 import { nf } from "./utils";
-import { UnistylesRuntime, StyleSheet } from "react-native-unistyles";
 
 // Add any custom base style
 const base = {

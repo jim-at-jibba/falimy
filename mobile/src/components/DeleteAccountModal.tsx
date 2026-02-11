@@ -1,9 +1,6 @@
 import { AlertTriangle } from "lucide-react-native";
-import React from "react";
 import { Modal, Pressable, View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
-import ButtonContainer from "@/components/Button/ButtonContainer";
-import ButtonText from "@/components/Button/ButtonText";
 import { DefaultText } from "@/components/DefaultText";
 import Title from "./Title";
 

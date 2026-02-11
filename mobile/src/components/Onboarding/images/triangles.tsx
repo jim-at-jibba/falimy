@@ -1,5 +1,4 @@
-import * as React from "react";
-import Svg, { Path, Circle, SvgProps } from "react-native-svg";
+import Svg, { Circle, Path, type SvgProps } from "react-native-svg";
 
 export default function Triangles(props: SvgProps) {
   return (

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 
-import { getPocketBase } from "../src/api/pocketbase";
-import { getServerUrl } from "../src/utils/config";
+import { getPocketBase } from "../api/pocketbase";
+import { getServerUrl } from "../utils/config";
 
 export default function Index() {
   const [loading, setLoading] = useState(true);

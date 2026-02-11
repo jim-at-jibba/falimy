@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-
-import { Button } from "../../src/components/Button";
-import { getPocketBase, resetPocketBase, validateServerUrl } from "../../src/api/pocketbase";
-import { setServerUrl } from "../../src/utils/config";
+import { useEffect, useState } from "react";
+import { TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { getPocketBase, resetPocketBase, validateServerUrl } from "../../api/pocketbase";
+import { Button } from "../../components/Button";
+import { DefaultText } from "../../components/DefaultText";
+import Title from "../../components/Title";
+import { setServerUrl } from "../../utils/config";
 
 type JoinParams = {
   server?: string;
@@ -83,17 +84,25 @@ export default function JoinFamily() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Join Family</Text>
-        <Text style={styles.subtitle}>Use the invite from your family admin.</Text>
+    <SafeAreaView>
+      <View>
+        <Title text="Join Family" />
+        <DefaultText text="Use the invite from your family admin." />
 
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="url"
           placeholder="Server URL"
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 10,
+          }}
           value={server}
           onChangeText={setServer}
         />
@@ -101,7 +110,15 @@ export default function JoinFamily() {
           autoCapitalize="none"
           autoCorrect={false}
           placeholder="Invite code"
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 10,
+          }}
           value={inviteCode}
           onChangeText={setInviteCode}
         />
@@ -109,76 +126,78 @@ export default function JoinFamily() {
           autoCapitalize="none"
           autoCorrect={false}
           placeholder="Family ID"
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 10,
+          }}
           value={familyId}
           onChangeText={setFamilyId}
         />
-        <TextInput placeholder="Your name" style={styles.input} value={name} onChangeText={setName} />
+        <TextInput
+          placeholder="Your name"
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 10,
+          }}
+          value={name}
+          onChangeText={setName}
+        />
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="email-address"
           placeholder="Email"
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 10,
+          }}
           value={email}
           onChangeText={setEmail}
         />
         <TextInput
           placeholder="Password"
           secureTextEntry
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 10,
+          }}
           value={password}
           onChangeText={setPassword}
         />
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? <DefaultText text={error} /> : null}
 
-        <Button label={loading ? "Joining..." : "Join Family"} onPress={handleJoin} disabled={loading} />
-        <Button label="Scan QR Code" onPress={() => router.push("/(auth)/scan-qr")} variant="secondary" />
+        <Button
+          label={loading ? "Joining..." : "Join Family"}
+          onPress={handleJoin}
+          disabled={loading}
+        />
+        <Button
+          label="Scan QR Code"
+          onPress={() => router.push("/(auth)/scan-qr")}
+          variant="secondary"
+        />
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f6f8fb",
-    padding: 20,
-    justifyContent: "center",
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: "#0d3a5a",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#0d3a5a",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: "#3f566b",
-    marginBottom: 16,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#d7e1ea",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  error: {
-    color: "#b11d1d",
-    marginBottom: 10,
-  },
-});

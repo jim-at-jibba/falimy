@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-
-import { Button } from "../../../src/components/Button";
-import { getPocketBase } from "../../../src/api/pocketbase";
-import { generateInviteCode } from "../../../src/utils/invite";
-import { getServerUrl } from "../../../src/utils/config";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { getPocketBase } from "../../../api/pocketbase";
+import { Button } from "../../../components/Button";
+import { DefaultText } from "../../../components/DefaultText";
+import { SmallText } from "../../../components/SmallText";
+import Title from "../../../components/Title";
+import { getServerUrl } from "../../../utils/config";
+import { generateInviteCode } from "../../../utils/invite";
 
 type Family = {
   id: string;
@@ -90,42 +92,86 @@ export default function FamilySettings() {
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.loading}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f6f8fb",
+        }}
+      >
         <ActivityIndicator size="large" color="#0c8ce9" />
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Family</Text>
+    <SafeAreaView>
+      <ScrollView contentContainerStyle={{ padding: 20, gap: 16 }}>
+        <Title text="Family" />
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? <Text style={{ color: "#b11d1d" }}>{error}</Text> : null}
 
         {family ? (
-          <View style={styles.card}>
-            <Text style={styles.sectionTitle}>{family.name}</Text>
-            <Text style={styles.meta}>Invite code: {family.invite_code}</Text>
+          <View
+            style={{
+              backgroundColor: "#ffffff",
+              borderRadius: 16,
+              padding: 20,
+              shadowColor: "#0d3a5a",
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.08,
+              shadowRadius: 12,
+              elevation: 2,
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "700", color: "#0d3a5a", marginBottom: 6 }}>
+              {family.name}
+            </Text>
+            <SmallText text={`Invite code: ${family.invite_code}`} />
             {invitePayload ? (
-              <View style={styles.qrWrap}>
+              <View style={{ alignItems: "center", marginVertical: 16, gap: 8 }}>
                 <QRCode value={invitePayload} size={180} />
-                <Text style={styles.meta}>Scan to join the family.</Text>
+                <SmallText text="Scan to join the family." />
               </View>
             ) : null}
             <Button label="Regenerate Invite Code" onPress={handleRegenerate} variant="secondary" />
           </View>
         ) : null}
 
-        <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Members</Text>
+        <View
+          style={{
+            backgroundColor: "#ffffff",
+            borderRadius: 16,
+            padding: 20,
+            shadowColor: "#0d3a5a",
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.08,
+            shadowRadius: 12,
+            elevation: 2,
+          }}
+        >
+          <Text style={{ fontSize: 18, fontWeight: "700", color: "#0d3a5a", marginBottom: 6 }}>
+            Members
+          </Text>
           {members.length === 0 ? (
-            <Text style={styles.meta}>No members yet.</Text>
+            <SmallText text="No members yet." />
           ) : (
             members.map((member) => (
-              <View key={member.id} style={styles.memberRow}>
-                <Text style={styles.memberName}>{member.name || member.email}</Text>
-                <Text style={styles.memberRole}>{member.role}</Text>
+              <View
+                key={member.id}
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#eef2f6",
+                }}
+              >
+                <Text style={{ fontSize: 15, color: "#0d3a5a" }}>
+                  {member.name || member.email}
+                </Text>
+                <SmallText text={member.role} />
               </View>
             ))
           )}
@@ -134,68 +180,3 @@ export default function FamilySettings() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  loading: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f6f8fb",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#f6f8fb",
-  },
-  content: {
-    padding: 20,
-    gap: 16,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#0d3a5a",
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: "#0d3a5a",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#0d3a5a",
-    marginBottom: 6,
-  },
-  meta: {
-    fontSize: 14,
-    color: "#5b6c7c",
-  },
-  error: {
-    color: "#b11d1d",
-  },
-  qrWrap: {
-    alignItems: "center",
-    marginVertical: 16,
-    gap: 8,
-  },
-  memberRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eef2f6",
-  },
-  memberName: {
-    fontSize: 15,
-    color: "#0d3a5a",
-  },
-  memberRole: {
-    fontSize: 14,
-    color: "#6b7d8d",
-  },
-});

@@ -1,11 +1,12 @@
-import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-
-import { Button } from "../../src/components/Button";
-import { getPocketBase } from "../../src/api/pocketbase";
-import { generateInviteCode, generateTopicPrefix } from "../../src/utils/invite";
+import { useState } from "react";
+import { TextInput, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { getPocketBase } from "../../api/pocketbase";
+import { Button } from "../../components/Button";
+import { DefaultText } from "../../components/DefaultText";
+import Title from "../../components/Title";
+import { generateInviteCode, generateTopicPrefix } from "../../utils/invite";
 
 export default function CreateFamily() {
   const [familyName, setFamilyName] = useState("");
@@ -57,82 +58,80 @@ export default function CreateFamily() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.title}>Create a Family</Text>
-        <Text style={styles.subtitle}>This account will become the admin.</Text>
+    <SafeAreaView>
+      <View>
+        <Title text="Create a Family" />
+        <DefaultText text="This account will become the admin." />
 
         <TextInput
           placeholder="Family name"
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 12,
+          }}
           value={familyName}
           onChangeText={setFamilyName}
         />
-        <TextInput placeholder="Your name" style={styles.input} value={name} onChangeText={setName} />
+        <TextInput
+          placeholder="Your name"
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 12,
+          }}
+          value={name}
+          onChangeText={setName}
+        />
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="email-address"
           placeholder="Email"
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 12,
+          }}
           value={email}
           onChangeText={setEmail}
         />
         <TextInput
           placeholder="Password"
           secureTextEntry
-          style={styles.input}
+          style={{
+            borderWidth: 1,
+            borderColor: "#d7e1ea",
+            borderRadius: 12,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            fontSize: 16,
+            marginBottom: 12,
+          }}
           value={password}
           onChangeText={setPassword}
         />
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? <DefaultText text={error} /> : null}
 
-        <Button label={loading ? "Creating..." : "Create Family"} onPress={handleCreate} disabled={loading} />
+        <Button
+          label={loading ? "Creating..." : "Create Family"}
+          onPress={handleCreate}
+          disabled={loading}
+        />
       </View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f6f8fb",
-    padding: 20,
-    justifyContent: "center",
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    padding: 20,
-    shadowColor: "#0d3a5a",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 2,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#0d3a5a",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: "#3f566b",
-    marginBottom: 16,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#d7e1ea",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  error: {
-    color: "#b11d1d",
-    marginBottom: 10,
-  },
-});

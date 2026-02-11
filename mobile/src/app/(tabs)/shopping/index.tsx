@@ -70,7 +70,8 @@ export default function ShoppingListsScreen() {
       setShowNewInput(false);
     } catch (error) {
       console.warn("[ShoppingLists] Create error:", error);
-      Alert.alert("Error", "Failed to create shopping list.");
+      const message = error instanceof Error ? error.message : "Failed to create shopping list.";
+      Alert.alert("Error", message);
     }
   }, [newListName, createList]);
 

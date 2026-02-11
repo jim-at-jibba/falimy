@@ -1,9 +1,22 @@
 import { Tabs } from "expo-router";
 import { House, List, Settings } from "lucide-react-native";
+import { useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { useRealtime } from "@/hooks/useRealtime";
 import { useSync } from "@/hooks/useSync";
 
 export default function TabsLayout() {
+  const { refresh, user } = useAuth();
+
+  // Ensure auth context is up to date when we reach the tabs.
+  // The login/signup screens authenticate via the PocketBase singleton
+  // but may not have triggered a context refresh.
+  useEffect(() => {
+    if (!user) {
+      refresh();
+    }
+  }, [user, refresh]);
+
   // Auto-sync on mount, foreground, and 5-min interval
   const { triggerSync } = useSync();
 

@@ -75,9 +75,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   }, [pb]);
 
+  // Initial load
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // Listen for authStore changes (e.g. login/logout from other screens)
+  // so the context stays in sync without needing explicit refresh() calls.
+  useEffect(() => {
+    if (!pb) return;
+
+    const unsubscribe = pb.authStore.onChange(() => {
+      setUser(extractUser(pb));
+    });
+
+    return () => unsubscribe();
+  }, [pb, extractUser]);
 
   const value = useMemo(
     () => ({

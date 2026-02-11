@@ -61,13 +61,17 @@ export const useShoppingLists = (
   }, [database, user?.family_id, stableFilter]);
 
   const createList = async (name: string): Promise<ShoppingList> => {
+    if (!user?.family_id) {
+      throw new Error("Cannot create list: no family_id. Please log in and join a family first.");
+    }
+
     const collection = database.get<ShoppingList>("shopping_lists");
 
     const newList = await database.write(async () => {
       return collection.create((list) => {
         list.name = name;
-        list.familyId = user?.family_id ?? "";
-        list.createdById = user?.id ?? null;
+        list.familyId = user.family_id as string;
+        list.createdById = user.id;
         list.status = "active";
         list.sortOrder = 0;
       });

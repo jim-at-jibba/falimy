@@ -55,6 +55,7 @@ export default function TabsLayout() {
         options={{
           title: "Settings",
           tabBarLabel: "Settings",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => <Settings size={size} color={color} />,
         }}
       />

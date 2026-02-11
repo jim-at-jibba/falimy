@@ -17,16 +17,20 @@ export const useRealtime = (onEvent: () => void): void => {
   const managerRef = useRef<RealtimeManager | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Debounced event handler — avoids triggering sync for every single SSE event
-  // when a batch of changes arrives at once.
+  // Store the latest onEvent in a ref so we never re-subscribe just
+  // because the callback reference changed.
+  const onEventRef = useRef(onEvent);
+  onEventRef.current = onEvent;
+
+  // Stable debounced handler that reads from the ref.
   const handleEvent = useCallback(() => {
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
     }
     debounceRef.current = setTimeout(() => {
-      onEvent();
+      onEventRef.current();
     }, 500);
-  }, [onEvent]);
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated || !pb) {
@@ -38,9 +42,7 @@ export const useRealtime = (onEvent: () => void): void => {
       return;
     }
 
-    const manager = new RealtimeManager(pb, () => {
-      handleEvent();
-    });
+    const manager = new RealtimeManager(pb, handleEvent);
     managerRef.current = manager;
 
     manager.subscribe();

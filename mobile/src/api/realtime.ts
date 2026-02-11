@@ -19,6 +19,12 @@ type RealtimeEvent = {
 type RealtimeCallback = (event: RealtimeEvent, collection: string) => void;
 
 /**
+ * Simple callback that just signals something changed, ignoring event details.
+ * Used by useRealtime to trigger a sync without inspecting the event.
+ */
+type SimpleCallback = () => void;
+
+/**
  * Manages PocketBase SSE subscriptions for realtime updates.
  *
  * Usage:
@@ -31,11 +37,11 @@ type RealtimeCallback = (event: RealtimeEvent, collection: string) => void;
  */
 export class RealtimeManager {
   private pb: PocketBase;
-  private callback: RealtimeCallback;
+  private callback: RealtimeCallback | SimpleCallback;
   private unsubscribeFns: UnsubscribeFunc[] = [];
   private isSubscribed = false;
 
-  constructor(pb: PocketBase, callback: RealtimeCallback) {
+  constructor(pb: PocketBase, callback: RealtimeCallback | SimpleCallback) {
     this.pb = pb;
     this.callback = callback;
   }

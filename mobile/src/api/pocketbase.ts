@@ -44,6 +44,7 @@ export const getPocketBase = async (): Promise<PocketBase | null> => {
   if (client && clientUrl === url) return client;
 
   const pb = new PocketBase(url);
+  pb.autoCancellation(false);
   bindAuthPersistence(pb);
   await loadAuth(pb);
 

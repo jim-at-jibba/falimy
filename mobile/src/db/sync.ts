@@ -231,6 +231,7 @@ const pushChanges = async (
     string,
     { created: Record<string, unknown>[]; updated: Record<string, unknown>[]; deleted: string[] }
   >,
+  database: Database,
 ): Promise<void> => {
   for (const table of SYNC_TABLES) {
     const tableChanges = changes[table];
@@ -239,42 +240,31 @@ const pushChanges = async (
     const collection = TABLE_TO_COLLECTION[table];
     if (!collection) continue;
 
-    // Handle created records
-    for (const raw of tableChanges.created) {
-      const pbRecord = rawToPbRecord(table, raw);
-      const serverId = raw.server_id as string | undefined;
-
-      try {
-        if (serverId) {
-          // Record already has a server ID — try to update
-          await pb.collection(collection).update(serverId, pbRecord);
-        } else {
-          // Create new record on server
-          const _created = await pb.collection(collection).create(pbRecord);
-          // Note: We can't easily update the local server_id here since
-          // WatermelonDB handles this through the sync mechanism.
-          // The next pull will match by content.
-        }
-      } catch (error) {
-        console.warn(`[Sync] Failed to push created ${collection} record:`, error);
-        throw error;
-      }
-    }
-
-    // Handle updated records
+    // With sendCreatedAsUpdated: true, all new and modified records
+    // arrive in the "updated" array. We distinguish them by whether
+    // they already have a server_id.
     for (const raw of tableChanges.updated) {
       const pbRecord = rawToPbRecord(table, raw);
       const serverId = raw.server_id as string | undefined;
-
-      if (!serverId) {
-        console.warn(`[Sync] Skipping update for ${collection} record without server_id`);
-        continue;
-      }
+      const localId = raw.id as string;
 
       try {
-        await pb.collection(collection).update(serverId, pbRecord);
+        if (serverId) {
+          // Record already exists on server — update it.
+          await pb.collection(collection).update(serverId, pbRecord);
+        } else {
+          // New local record — create on server and write back the server ID.
+          const created = await pb.collection(collection).create(pbRecord);
+          await database.write(async () => {
+            const localRecord = await database.get(table).find(localId);
+            await localRecord.update(() => {
+              // biome-ignore lint: _raw is the underlying record; server_id is a dynamic column
+              (localRecord._raw as any).server_id = created.id;
+            });
+          });
+        }
       } catch (error) {
-        console.warn(`[Sync] Failed to push updated ${collection} record:`, error);
+        console.warn(`[Sync] Failed to push ${collection} record (${localId}):`, error);
         throw error;
       }
     }
@@ -330,6 +320,7 @@ export const sync = async (database: Database): Promise<void> => {
             deleted: string[];
           }
         >,
+        database,
       );
     },
     migrationsEnabledAtVersion: 1,

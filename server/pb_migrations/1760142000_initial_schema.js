@@ -19,6 +19,18 @@ migrate(
           maxSelect: 1,
           collectionId: "_pb_users_auth_",
         },
+        {
+          name: "created",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: false,
+        },
+        {
+          name: "updated",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: true,
+        },
       ],
     });
     app.save(families);
@@ -121,6 +133,18 @@ migrate(
           maxSelect: 1,
           collectionId: "_pb_users_auth_",
         },
+        {
+          name: "created",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: false,
+        },
+        {
+          name: "updated",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: true,
+        },
       ],
     });
     app.save(shoppingLists);
@@ -159,6 +183,18 @@ migrate(
           maxSelect: 1,
           collectionId: "_pb_users_auth_",
         },
+        {
+          name: "created",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: false,
+        },
+        {
+          name: "updated",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: true,
+        },
       ],
     });
     app.save(shoppingItems);
@@ -184,6 +220,18 @@ migrate(
         { name: "accuracy", type: "number" },
         { name: "battery_level", type: "number" },
         { name: "timestamp", type: "date" },
+        {
+          name: "created",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: false,
+        },
+        {
+          name: "updated",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: true,
+        },
       ],
     });
     app.save(locationHistory);
@@ -227,6 +275,18 @@ migrate(
           values: ["enter", "exit", "both"],
         },
         { name: "enabled", type: "bool" },
+        {
+          name: "created",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: false,
+        },
+        {
+          name: "updated",
+          type: "autodate",
+          onCreate: true,
+          onUpdate: true,
+        },
       ],
     });
     app.save(geofences);

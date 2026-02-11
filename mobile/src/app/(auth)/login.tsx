@@ -6,12 +6,12 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 import { z } from "zod";
-import { getPocketBase } from "../../api/pocketbase";
-import { Button } from "../../components/Button";
-import { DefaultText } from "../../components/DefaultText";
-import { FormError } from "../../components/Form/FormError";
-import { FormInputText } from "../../components/Form/FormInputText";
-import Title from "../../components/Title";
+import { getPocketBase } from "@/api/pocketbase";
+import { Button } from "@/components/Button";
+import { DefaultText } from "@/components/DefaultText";
+import { FormError } from "@/components/Form/FormError";
+import { FormInputText } from "@/components/Form/FormInputText";
+import Title from "@/components/Title";
 
 const schema = z.object({
   email: z.string().min(1, "Email is required.").email("Enter a valid email address."),

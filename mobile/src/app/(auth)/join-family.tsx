@@ -6,13 +6,13 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 import { z } from "zod";
-import { getPocketBase, resetPocketBase, validateServerUrl } from "../../api/pocketbase";
-import { Button } from "../../components/Button";
-import { DefaultText } from "../../components/DefaultText";
-import { FormError } from "../../components/Form/FormError";
-import { FormInputText } from "../../components/Form/FormInputText";
-import Title from "../../components/Title";
-import { setServerUrl } from "../../utils/config";
+import { getPocketBase, resetPocketBase, validateServerUrl } from "@/api/pocketbase";
+import { Button } from "@/components/Button";
+import { DefaultText } from "@/components/DefaultText";
+import { FormError } from "@/components/Form/FormError";
+import { FormInputText } from "@/components/Form/FormInputText";
+import Title from "@/components/Title";
+import { setServerUrl } from "@/utils/config";
 
 type JoinParams = {
   server?: string;

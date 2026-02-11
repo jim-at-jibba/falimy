@@ -6,13 +6,13 @@ import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 import { z } from "zod";
-import { getPocketBase } from "../../api/pocketbase";
-import { Button } from "../../components/Button";
-import { DefaultText } from "../../components/DefaultText";
-import { FormError } from "../../components/Form/FormError";
-import { FormInputText } from "../../components/Form/FormInputText";
-import Title from "../../components/Title";
-import { generateInviteCode, generateTopicPrefix } from "../../utils/invite";
+import { getPocketBase } from "@/api/pocketbase";
+import { Button } from "@/components/Button";
+import { DefaultText } from "@/components/DefaultText";
+import { FormError } from "@/components/Form/FormError";
+import { FormInputText } from "@/components/Form/FormInputText";
+import Title from "@/components/Title";
+import { generateInviteCode, generateTopicPrefix } from "@/utils/invite";
 
 const schema = z.object({
   familyName: z.string().min(1, "Family name is required."),

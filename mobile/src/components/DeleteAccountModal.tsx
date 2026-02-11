@@ -1,10 +1,10 @@
+import { AlertTriangle } from "lucide-react-native";
 import React from "react";
-import { View, Modal, Pressable } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { DefaultText } from "@/components/DefaultText";
+import { Modal, Pressable, View } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import ButtonContainer from "@/components/Button/ButtonContainer";
 import ButtonText from "@/components/Button/ButtonText";
-import { AlertTriangle } from "lucide-react-native";
+import { DefaultText } from "@/components/DefaultText";
 import Title from "./Title";
 
 interface DeleteAccountModalProps {
@@ -14,7 +14,7 @@ interface DeleteAccountModalProps {
 }
 
 export function DeleteAccountModal({ visible, onClose, onConfirm }: DeleteAccountModalProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
 
   return (
     <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
@@ -41,7 +41,7 @@ export function DeleteAccountModal({ visible, onClose, onConfirm }: DeleteAccoun
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   centeredView: {
     flex: 1,
     justifyContent: "center",

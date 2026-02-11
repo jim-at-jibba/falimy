@@ -1,7 +1,7 @@
-import React from "react";
-import { View, useWindowDimensions } from "react-native";
-import Animated, { useAnimatedStyle, interpolate, SharedValue } from "react-native-reanimated";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import type React from "react";
+import { useWindowDimensions, View } from "react-native";
+import Animated, { interpolate, type SharedValue, useAnimatedStyle } from "react-native-reanimated";
+import { StyleSheet } from "react-native-unistyles";
 
 type SlideProps = {
   translateX: SharedValue<number>;
@@ -11,7 +11,6 @@ type SlideProps = {
 
 export const OnboardingSlide = ({ translateX, index, children }: SlideProps) => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
-  const { styles } = useStyles(stylesheet);
 
   const animatedStyle = useAnimatedStyle(() => {
     const input = translateX.value / SCREEN_WIDTH;
@@ -31,7 +30,7 @@ export const OnboardingSlide = ({ translateX, index, children }: SlideProps) => 
   );
 };
 
-const stylesheet = createStyleSheet(() => ({
+const styles = StyleSheet.create(() => ({
   slideContainer: {
     flex: 1,
     alignItems: "center",

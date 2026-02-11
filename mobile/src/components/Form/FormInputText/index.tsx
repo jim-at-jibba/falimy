@@ -1,16 +1,21 @@
-import React, { RefObject, useState } from "react";
-import {
-  KeyboardTypeOptions,
-  ReturnKeyTypeOptions,
-  TextInput,
-  TextInputProps,
-  TextStyle,
-  View,
-  TouchableOpacity,
-} from "react-native";
-import { useController, useFormContext, FieldValues, UseControllerProps } from "react-hook-form";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Eye, EyeOff } from "lucide-react-native";
+import React, { type RefObject, useState } from "react";
+import {
+  type FieldValues,
+  type UseControllerProps,
+  useController,
+  useFormContext,
+} from "react-hook-form";
+import {
+  type KeyboardTypeOptions,
+  type ReturnKeyTypeOptions,
+  TextInput,
+  type TextInputProps,
+  type TextStyle,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { FormError } from "../FormError";
 
 interface Props<TFieldValues extends FieldValues> extends UseControllerProps<TFieldValues> {
@@ -55,7 +60,7 @@ export const FormInputText = <TFieldValues extends FieldValues>(props: Props<TFi
 
   const [hasFocus, setHasFocus] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
   const { formState } = useFormContext();
   const { field, fieldState } = useController({ name });
 
@@ -68,7 +73,7 @@ export const FormInputText = <TFieldValues extends FieldValues>(props: Props<TFi
         <TextInput
           style={[styles.textInput, textInputStyle, !editable && styles.disabled]}
           value={field.value?.toString()}
-          onChangeText={text => field.onChange(text)}
+          onChangeText={(text) => field.onChange(text)}
           autoCapitalize={props.autoCapitalize || "sentences"}
           ref={forwardRef}
           onBlur={() => {
@@ -105,7 +110,7 @@ export const FormInputText = <TFieldValues extends FieldValues>(props: Props<TFi
   );
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: (hasFocus: boolean, hasErrors: boolean) => ({
     flexDirection: "row",
     alignItems: "center",

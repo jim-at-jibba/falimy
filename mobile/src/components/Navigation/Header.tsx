@@ -1,5 +1,5 @@
-import { View, Text } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 import { BackButton } from "./BackButton";
 
 interface HeaderProps {
@@ -10,8 +10,6 @@ interface HeaderProps {
 }
 
 export function Header({ title, showBack = true, onBackPress, rightElement }: HeaderProps) {
-  const { styles } = useStyles(stylesheet);
-
   return (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
@@ -27,7 +25,7 @@ export function Header({ title, showBack = true, onBackPress, rightElement }: He
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",

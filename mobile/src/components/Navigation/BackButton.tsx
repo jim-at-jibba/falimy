@@ -1,14 +1,14 @@
-import { Pressable } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { ChevronLeft } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import { ChevronLeft } from "lucide-react-native";
+import { Pressable } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 interface BackButtonProps {
   onPress?: () => void;
 }
 
 export function BackButton({ onPress }: BackButtonProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
   const router = useRouter();
 
   const handlePress = () => {
@@ -26,7 +26,7 @@ export function BackButton({ onPress }: BackButtonProps) {
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   backButton: {
     padding: theme.spacing[2],
     marginLeft: -theme.spacing[2],

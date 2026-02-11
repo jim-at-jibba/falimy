@@ -1,6 +1,6 @@
-import { View, Pressable, TextStyle } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { ChevronRight } from "lucide-react-native";
+import { Pressable, type TextStyle, View } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { DefaultText } from "@/components/DefaultText";
 
 interface SettingsItemProps {
@@ -18,44 +18,36 @@ export function SettingsItem({
   rightElement,
   additionalLabelStyle,
 }: SettingsItemProps) {
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
 
-  // Combine base style with conditional style into a single object
-  const labelStyle: TextStyle = {
-    ...styles.settingsItemLabel,
-    ...(additionalLabelStyle && additionalLabelStyle),
-    // Add any conditional styles here if needed, e.g.:
-    // ...(!icon && { marginLeft: 0 })
-    // Relying on the 'gap' in parent View for now
-  };
+  const labelStyles: TextStyle[] = [styles.settingsItemLabel];
+  if (additionalLabelStyle) {
+    labelStyles.push(additionalLabelStyle);
+  }
 
   return (
     <Pressable style={styles.settingsItem} onPress={onPress}>
       <View style={styles.settingsItemLeft}>
         {icon}
-        {/* Pass the single, potentially merged, style object */}
-        <DefaultText text={label} additionalStyles={labelStyle} />
+        <DefaultText text={label} additionalStyles={labelStyles} />
       </View>
       {rightElement ?? <ChevronRight size={20} color={theme.colors.typography} />}
     </Pressable>
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   settingsItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     padding: theme.spacing[4],
     backgroundColor: theme.colors.background,
-    // Optionally add borderBottom for list usage:
-    // borderBottomWidth: 1,
-    // borderBottomColor: theme.colors.greyLight,
   },
   settingsItemLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: theme.spacing[3], // This gap should handle spacing between icon and text
+    gap: theme.spacing[3],
   },
   settingsItemLabel: {
     fontSize: theme.fontSizes.sm,

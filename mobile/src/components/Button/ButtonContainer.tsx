@@ -1,6 +1,6 @@
-import { Pressable } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 import * as Haptics from "expo-haptics";
+import { Pressable } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -15,8 +15,6 @@ export default function ButtonContainer({
   disabled = false,
   variant = "primary",
 }: ButtonProps) {
-  const { styles } = useStyles(stylesheet);
-
   const handlePressWithHaptics = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     handlePress();
@@ -33,7 +31,7 @@ export default function ButtonContainer({
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     gap: theme.gap,
     flexDirection: "row",

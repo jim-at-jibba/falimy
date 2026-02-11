@@ -1,7 +1,12 @@
-import { Pressable } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 import { Check } from "lucide-react-native";
-import { FieldValues, UseControllerProps, useController, useFormContext } from "react-hook-form";
+import {
+  type FieldValues,
+  type UseControllerProps,
+  useController,
+  useFormContext,
+} from "react-hook-form";
+import { Pressable } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 interface Props<TFieldValues extends FieldValues>
   extends Omit<UseControllerProps<TFieldValues>, "control"> {
@@ -12,7 +17,7 @@ export const FormCheckbox = <TFieldValues extends FieldValues>({
   name,
   disabled = false,
 }: Props<TFieldValues>) => {
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
   const { formState, control } = useFormContext();
   const { field } = useController({ name, control });
 
@@ -32,7 +37,7 @@ export const FormCheckbox = <TFieldValues extends FieldValues>({
   );
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     height: 24,
     width: 24,

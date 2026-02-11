@@ -1,5 +1,5 @@
+import { StyleSheet } from "react-native-unistyles";
 import { DefaultText } from "@/components/DefaultText";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 
 interface ButtonTextProps {
   label: string;
@@ -7,11 +7,10 @@ interface ButtonTextProps {
 }
 
 export default function ButtonText({ label, variant = "primary" }: ButtonTextProps) {
-  const { styles } = useStyles(stylesheet);
   return <DefaultText additionalStyles={styles[variant]} text={label} />;
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   primary: {
     color: theme.colors.white,
     fontSize: theme.fontSizes.sm,

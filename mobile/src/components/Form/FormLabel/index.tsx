@@ -1,5 +1,5 @@
-import { Text, TextStyle } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Text, type TextStyle } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 interface Props {
   label: string;
@@ -7,11 +7,10 @@ interface Props {
 }
 
 export const FormLabel = ({ label, additionalStyles = {} }: Props) => {
-  const { styles } = useStyles(stylesheet);
   return <Text style={[styles.textInput, additionalStyles]}>{label}</Text>;
 };
 
-const stylesheet = createStyleSheet((theme, runtime) => ({
+const styles = StyleSheet.create((theme) => ({
   textInput: {
     fontSize: theme.fontSizes.xs,
     fontWeight: "700",

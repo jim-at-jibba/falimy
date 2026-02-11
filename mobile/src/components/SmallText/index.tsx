@@ -1,16 +1,15 @@
-import { Text, TextStyle } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Text, type TextStyle } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 interface SmallTextProps {
   text: string;
   additionalStyles?: TextStyle;
 }
 export const SmallText = ({ text, additionalStyles }: SmallTextProps) => {
-  const { styles } = useStyles(stylesheet);
   return <Text style={[styles.text, additionalStyles]}>{text}</Text>;
 };
 
-const stylesheet = createStyleSheet((theme, runtime) => ({
+const styles = StyleSheet.create((theme) => ({
   text: {
     color: theme.colors.typography,
     fontSize: theme.fontSizes.xs,

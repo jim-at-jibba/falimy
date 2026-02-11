@@ -1,16 +1,21 @@
+import { Check, ChevronDown } from "lucide-react-native";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  Pressable,
-  Modal,
+  type FieldValues,
+  type UseControllerProps,
+  useController,
+  useFormContext,
+} from "react-hook-form";
+import {
   FlatList,
+  Modal,
+  Pressable,
+  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import { useController, useFormContext, FieldValues, UseControllerProps } from "react-hook-form";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { ChevronDown, Check } from "lucide-react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { FormError } from "../FormError";
 
 export interface SelectOption {
@@ -33,12 +38,12 @@ export const FormSelect = <TFieldValues extends FieldValues>({
   disableErrors = false,
 }: Props<TFieldValues>) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
   const { formState } = useFormContext();
   const { field, fieldState } = useController({ name });
 
   const errors = disableErrors ? undefined : formState?.errors[name];
-  const selectedOption = options.find(option => option.value === field.value);
+  const selectedOption = options.find((option) => option.value === field.value);
 
   const handleSelect = (value: string) => {
     field.onChange(value);
@@ -70,7 +75,7 @@ export const FormSelect = <TFieldValues extends FieldValues>({
               <View style={styles.modalContent}>
                 <FlatList
                   data={options}
-                  keyExtractor={item => item.value}
+                  keyExtractor={(item) => item.value}
                   renderItem={({ item, index }) => (
                     <TouchableOpacity
                       style={[
@@ -108,7 +113,7 @@ export const FormSelect = <TFieldValues extends FieldValues>({
   );
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: (hasErrors: boolean, isPressed: boolean) => ({
     flexDirection: "row",
     alignItems: "center",

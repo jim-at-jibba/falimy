@@ -1,16 +1,15 @@
-import { Text, TextStyle } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Text, type TextStyle } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 interface DefaultTextProps {
   text: string;
   additionalStyles?: TextStyle;
 }
 export const LabelText = ({ text, additionalStyles }: DefaultTextProps) => {
-  const { styles } = useStyles(stylesheet);
   return <Text style={[styles.text, additionalStyles]}>{text}</Text>;
 };
 
-const stylesheet = createStyleSheet((theme, runtime) => ({
+const styles = StyleSheet.create((theme) => ({
   text: {
     fontSize: theme.fontSizes.md,
     lineHeight: 22,

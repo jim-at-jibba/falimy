@@ -1,15 +1,15 @@
+import { Check, ChevronDown } from "lucide-react-native";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  Pressable,
-  Modal,
   FlatList,
+  Modal,
+  Pressable,
+  Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  View,
 } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { ChevronDown, Check } from "lucide-react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 export interface SelectOption {
   label: string;
@@ -34,9 +34,9 @@ export const Select = ({
   error,
 }: SelectProps) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
 
-  const selectedOption = options.find(option => option.value === value);
+  const selectedOption = options.find((option) => option.value === value);
 
   const handleSelect = (selectedValue: string) => {
     if (onChange) {
@@ -70,7 +70,7 @@ export const Select = ({
               <View style={styles.modalContent}>
                 <FlatList
                   data={options}
-                  keyExtractor={item => item.value}
+                  keyExtractor={(item) => item.value}
                   renderItem={({ item, index }) => (
                     <TouchableOpacity
                       style={[
@@ -106,7 +106,7 @@ export const Select = ({
   );
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: (isPressed: boolean) => ({
     flexDirection: "row",
     alignItems: "center",

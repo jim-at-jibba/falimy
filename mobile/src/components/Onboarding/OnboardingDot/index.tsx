@@ -1,7 +1,7 @@
 import React from "react";
-import { StyleSheet, useWindowDimensions } from "react-native";
-import Animated, { useAnimatedStyle, interpolate } from "react-native-reanimated";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { useWindowDimensions } from "react-native";
+import Animated, { interpolate, useAnimatedStyle } from "react-native-reanimated";
+import { StyleSheet } from "react-native-unistyles";
 
 type DotProps = {
   translateX: Animated.SharedValue<number>;
@@ -10,7 +10,6 @@ type DotProps = {
 
 export const PaginationDot = ({ translateX, index }: DotProps) => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
-  const { styles } = useStyles(stylesheet);
   const dotStyle = useAnimatedStyle(() => {
     const input = translateX.value / SCREEN_WIDTH;
     const opacity = interpolate(input, [index - 1, index, index + 1], [0.5, 1, 0.5], "clamp");
@@ -25,7 +24,7 @@ export const PaginationDot = ({ translateX, index }: DotProps) => {
   return <Animated.View style={[styles.dot, dotStyle]} />;
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   dot: {
     width: 8,
     height: 8,

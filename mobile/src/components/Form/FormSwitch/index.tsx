@@ -1,7 +1,12 @@
 import React from "react";
-import { View, Text, Switch, SwitchProps, Platform } from "react-native";
-import { useController, useFormContext, FieldValues, UseControllerProps } from "react-hook-form";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import {
+  type FieldValues,
+  type UseControllerProps,
+  useController,
+  useFormContext,
+} from "react-hook-form";
+import { Platform, Switch, type SwitchProps, Text, View } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 interface Props<TFieldValues extends FieldValues> extends UseControllerProps<TFieldValues> {
   label: string; // Label is required for a switch
@@ -15,7 +20,7 @@ export const FormSwitch = <TFieldValues extends FieldValues>({
   switchProps,
   disabled = false,
 }: Props<TFieldValues>) => {
-  const { styles, theme } = useStyles(stylesheet);
+  const { theme } = useUnistyles();
   const { control } = useFormContext();
   const { field } = useController({ name, control });
 
@@ -35,7 +40,7 @@ export const FormSwitch = <TFieldValues extends FieldValues>({
   );
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flexDirection: "row",
     alignItems: "center",

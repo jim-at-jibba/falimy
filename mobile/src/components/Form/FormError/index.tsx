@@ -1,17 +1,18 @@
-import { SmallText } from "@/components/SmallText";
 import { AlertCircle } from "lucide-react-native";
-import { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
-import { View } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
 import React from "react";
+import type { FieldError, FieldErrorsImpl, Merge } from "react-hook-form";
+import { View } from "react-native";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { SmallText } from "@/components/SmallText";
 
 interface Props {
   message?: string | FieldError | Merge<FieldError, FieldErrorsImpl<any>> | undefined;
 }
 
 export const FormError = ({ message }: Props) => {
+  const { theme } = useUnistyles();
+
   if (!message) return null;
-  const { styles, theme } = useStyles(stylesheet);
 
   const messageText =
     typeof message === "string"
@@ -32,7 +33,7 @@ export const FormError = ({ message }: Props) => {
   );
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     flexDirection: "row",
     alignItems: "center",

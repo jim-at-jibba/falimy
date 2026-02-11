@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
-import { Select, SelectOption } from "./index";
+import { Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
+import { Select, type SelectOption } from "./index";
 
 export const SelectExample = () => {
-  const { styles, theme } = useStyles(stylesheet);
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [error, setError] = useState<string | undefined>(undefined);
 
@@ -44,7 +43,7 @@ export const SelectExample = () => {
   );
 };
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     padding: theme.spacing[4],
   },

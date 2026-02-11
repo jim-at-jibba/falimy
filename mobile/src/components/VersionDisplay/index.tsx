@@ -1,14 +1,12 @@
-import { View, Text } from "react-native";
 import * as Application from "expo-application";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 interface VersionDisplayProps {
   containerStyle?: object;
 }
 
 export function VersionDisplay({ containerStyle }: VersionDisplayProps) {
-  const { styles } = useStyles(stylesheet);
-
   return (
     <View style={[styles.container, containerStyle]}>
       <Text style={styles.text}>
@@ -18,7 +16,7 @@ export function VersionDisplay({ containerStyle }: VersionDisplayProps) {
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   container: {
     width: "100%",
     alignItems: "center",

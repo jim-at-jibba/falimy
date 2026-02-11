@@ -1,5 +1,5 @@
-import { View, Text, Pressable } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Pressable, Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 interface ToggleOption {
   label: string;
@@ -21,11 +21,9 @@ export function Toggle({
   disabled = false,
   fullWidth = true,
 }: ToggleProps) {
-  const { styles } = useStyles(stylesheet);
-
   return (
     <View style={[styles.toggleContainer, !fullWidth && styles.toggleContainerAuto]}>
-      {options.map(option => (
+      {options.map((option) => (
         <Pressable
           key={option.value}
           style={[
@@ -52,7 +50,7 @@ export function Toggle({
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   toggleContainer: {
     flexDirection: "row",
     backgroundColor: theme.colors.backgroundAccent,

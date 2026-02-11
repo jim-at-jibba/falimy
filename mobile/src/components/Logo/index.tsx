@@ -1,13 +1,11 @@
-import { View, Text } from "react-native";
-import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { Text, View } from "react-native";
+import { StyleSheet } from "react-native-unistyles";
 
 interface LogoProps {
   size?: number;
 }
 
 export function Logo({ size = 24 }: LogoProps) {
-  const { styles } = useStyles(stylesheet);
-
   return (
     <View style={styles.logoContainer}>
       <Text style={[styles.logoText, { fontSize: size }]}>Thought</Text>
@@ -16,7 +14,7 @@ export function Logo({ size = 24 }: LogoProps) {
   );
 }
 
-const stylesheet = createStyleSheet(theme => ({
+const styles = StyleSheet.create((theme) => ({
   logoContainer: {
     flexDirection: "row",
     alignItems: "center",

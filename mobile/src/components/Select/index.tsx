@@ -1,0 +1,183 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Pressable,
+  Modal,
+  FlatList,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { createStyleSheet, useStyles } from "react-native-unistyles";
+import { ChevronDown, Check } from "lucide-react-native";
+
+export interface SelectOption {
+  label: string;
+  value: string;
+}
+
+interface SelectProps {
+  options: SelectOption[];
+  value: string | null;
+  onChange?: (value: string) => void;
+  placeholder?: string;
+  disabled?: boolean;
+  error?: string;
+}
+
+export const Select = ({
+  options,
+  value,
+  onChange,
+  placeholder = "Select an option",
+  disabled = false,
+  error,
+}: SelectProps) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const { styles, theme } = useStyles(stylesheet);
+
+  const selectedOption = options.find(option => option.value === value);
+
+  const handleSelect = (selectedValue: string) => {
+    if (onChange) {
+      onChange(selectedValue);
+    }
+    setModalVisible(false);
+  };
+
+  return (
+    <>
+      <Pressable
+        style={({ pressed }) => [styles.container(pressed), disabled && styles.disabled]}
+        onPress={() => !disabled && setModalVisible(true)}
+        disabled={disabled}
+      >
+        <Text style={[styles.selectedText, !selectedOption && styles.placeholderText]}>
+          {selectedOption ? selectedOption.label : placeholder}
+        </Text>
+        <ChevronDown size={20} color={theme.colors.grey} />
+      </Pressable>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={styles.modalContent}>
+                <FlatList
+                  data={options}
+                  keyExtractor={item => item.value}
+                  renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                      style={[
+                        styles.optionItem,
+                        index === options.length - 1 && styles.lastOptionItem,
+                      ]}
+                      onPress={() => handleSelect(item.value)}
+                    >
+                      <View style={styles.optionContent}>
+                        <Text
+                          style={[
+                            styles.optionText,
+                            item.value === value && styles.selectedItemText,
+                          ]}
+                        >
+                          {item.label}
+                        </Text>
+                        {item.value === value && <Check size={18} color={theme.colors.primary} />}
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
+      <View style={styles.fieldInfoContainer}>
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      </View>
+    </>
+  );
+};
+
+const stylesheet = createStyleSheet(theme => ({
+  container: (isPressed: boolean) => ({
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: theme.spacing[4],
+    paddingVertical: theme.spacing[2],
+    opacity: isPressed ? 0.8 : 1,
+  }),
+  disabled: {
+    opacity: 0.5,
+  },
+  selectedText: {
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.typography,
+    fontFamily: theme.fontFamily.regular,
+  },
+  placeholderText: {
+    color: theme.colors.grey,
+  },
+  fieldInfoContainer: {
+    marginTop: theme.spacing[1],
+    height: 30,
+  },
+  errorText: {
+    color: theme.colors.error,
+    fontSize: theme.fontSizes.xs,
+    fontFamily: theme.fontFamily.regular,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "80%",
+    maxHeight: "70%",
+    backgroundColor: theme.colors.background,
+    borderRadius: theme.borderRadiusSm,
+    padding: theme.spacing[2],
+    shadowColor: theme.colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  optionItem: {
+    paddingVertical: theme.spacing[3],
+    paddingHorizontal: theme.spacing[4],
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.greyBackground,
+  },
+  lastOptionItem: {
+    borderBottomWidth: 0,
+  },
+  optionText: {
+    fontSize: theme.fontSizes.sm,
+    color: theme.colors.typography,
+    fontFamily: theme.fontFamily.regular,
+  },
+  selectedItemText: {
+    fontWeight: "600",
+    color: theme.colors.primary,
+  },
+  optionContent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+}));

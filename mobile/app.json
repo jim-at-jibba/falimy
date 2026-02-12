@@ -15,7 +15,11 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "Scan family invite QR codes."
+        "NSCameraUsageDescription": "Scan family invite QR codes.",
+        "NSLocationWhenInUseUsageDescription": "Falimy uses your location to share it with your family members on the map.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+        "NSLocationAlwaysUsageDescription": "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+        "UIBackgroundModes": ["location", "fetch"]
       },
       "bundleIdentifier": "com.anonymous.mobile"
     },
@@ -28,7 +32,12 @@
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION"
       ],
       "package": "com.anonymous.mobile"
     },
@@ -37,7 +46,18 @@
     },
     "plugins": [
       "expo-router",
-      "expo-camera"
+      "expo-camera",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+          "locationAlwaysPermission": "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+          "locationWhenInUsePermission": "Falimy uses your location to share it with your family members on the map.",
+          "isIosBackgroundLocationEnabled": true,
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

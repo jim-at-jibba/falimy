@@ -7,7 +7,7 @@ import Title from "../../components/Title";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function Home() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const handleLogout = async () => {
     await logout();
@@ -18,7 +18,7 @@ export default function Home() {
     <SafeAreaView>
       <View>
         <Title text="Falimy" />
-        <DefaultText text="Phase 1 setup complete. Next up: lists and location." />
+        <DefaultText text={`Welcome${user?.name ? `, ${user.name}` : ""}. Your private family hub.`} />
         <Button label="Log Out" onPress={handleLogout} variant="secondary" />
       </View>
     </SafeAreaView>

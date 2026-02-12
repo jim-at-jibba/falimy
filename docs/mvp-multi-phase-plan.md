@@ -142,43 +142,43 @@ Goal: fully usable shopping lists with offline support and sync.
 
 > **Note:** Long-press drag reorder is deferred — can be added in Phase 6 polish. Notification integration (ntfy) deferred to Phase 5.
 
-## Phase 4: Location Sharing MVP
+## Phase 4: Location Sharing MVP ✅
 
 Goal: basic location sharing with opt-in controls and map view.
 
-### 4.1 Permissions and background tracking
+### 4.1 Permissions and background tracking ✅
 - Outcome: reliable permission flow and tracking.
 - Deliverables:
-  - Permission request screen with rationale.
-  - Background location task setup.
-  - Posting location updates to PocketBase.
+  - ✅ Permission request screen with rationale.
+  - ✅ Background location task setup.
+  - ✅ Posting location updates to PocketBase.
 
-### 4.2 Map view
+### 4.2 Map view ✅
 - Outcome: display family members on a map.
 - Deliverables:
-  - Map screen with markers.
-  - Marker details (name, last updated, battery).
-  - Quick access to last-known positions.
+  - ✅ Map screen with markers.
+  - ✅ Marker details (name, last updated, battery).
+  - ✅ Quick access to last-known positions.
 
-### 4.3 Sharing controls
+### 4.3 Sharing controls ✅
 - Outcome: user-controlled sharing modes.
 - Deliverables:
-  - Sharing mode toggle (off, always, timed, on-request).
-  - Timed sharing with auto-expiry.
+  - ✅ Sharing mode toggle (off, always, timed, on-request).
+  - ✅ Timed sharing with auto-expiry.
 
-### 4.4 On-request ping
+### 4.4 On-request ping ✅
 - Outcome: location request workflow.
 - Deliverables:
-  - Send location request to another user.
-  - Accept/ignore response handling.
-  - Single location response stored.
+  - ✅ Send location request to another user.
+  - ✅ Accept/ignore response handling.
+  - ✅ Single location response stored.
 
-### 4.5 Geofences
+### 4.5 Geofences ✅
 - Outcome: device-side geofence monitoring.
 - Deliverables:
-  - Geofence CRUD screens.
-  - Local monitoring and trigger logic.
-  - Notify via ntfy on enter/exit.
+  - ✅ Geofence CRUD screens.
+  - ✅ Local monitoring and trigger logic.
+  - ⚠️ Notify via ntfy on enter/exit — deferred to Phase 5 (notifications).
 
 ## Phase 5: Notifications
 

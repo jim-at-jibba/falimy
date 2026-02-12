@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { House, List, Settings } from "lucide-react-native";
+import { House, List, MapPin, Settings } from "lucide-react-native";
 import { useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRealtime } from "@/hooks/useRealtime";
@@ -48,6 +48,15 @@ export default function TabsLayout() {
           tabBarLabel: "Lists",
           headerShown: false,
           tabBarIcon: ({ color, size }) => <List size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="location"
+        options={{
+          title: "Map",
+          tabBarLabel: "Map",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <MapPin size={size} color={color} />,
         }}
       />
       <Tabs.Screen

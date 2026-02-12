@@ -13,18 +13,19 @@ const normalizeServerUrl = (url: string): string => url.trim().replace(/\/+$/, "
 /**
  * Creates an AsyncAuthStore backed by expo-secure-store.
  *
- * PocketBase's AsyncAuthStore handles the async hydration lifecycle
- * internally — it accepts an `initial` promise for loading persisted
- * auth on startup and a `save` callback for persisting changes.
- * This eliminates the race window between client creation and auth
- * restoration that the manual approach had.
+ * We pre-load the persisted auth data and pass the resolved string
+ * (not a promise) as `initial`. This ensures the auth state is
+ * hydrated synchronously during construction, avoiding a race where
+ * `isValid`/`record` would return empty before the promise resolved.
+ *
+ * The `save` and `clear` callbacks handle ongoing persistence.
  */
-const createAuthStore = (): AsyncAuthStore =>
+const createAuthStore = (initialData: string | null): AsyncAuthStore =>
   new AsyncAuthStore({
     save: async (serialized: string) => {
       await SecureStore.setItemAsync(AUTH_KEY, serialized);
     },
-    initial: SecureStore.getItemAsync(AUTH_KEY),
+    initial: initialData ?? "",
     clear: async () => {
       await SecureStore.deleteItemAsync(AUTH_KEY);
     },
@@ -41,7 +42,11 @@ export const getPocketBase = async (): Promise<PocketBase | null> => {
 
   if (client && clientUrl === url) return client;
 
-  const store = createAuthStore();
+  // Pre-load persisted auth before creating the store so hydration
+  // is synchronous and `authStore.isValid` is accurate immediately.
+  const persistedAuth = await SecureStore.getItemAsync(AUTH_KEY);
+
+  const store = createAuthStore(persistedAuth);
   const pb = new PocketBase(url, store);
   pb.autoCancellation(false);
 

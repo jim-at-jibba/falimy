@@ -32,13 +32,11 @@ export const useSync = (): SyncState => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastError, setLastError] = useState<Error | null>(null);
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
-  const syncInProgress = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const performSync = useCallback(async () => {
-    if (syncInProgress.current || !isAuthenticated) return;
+    if (!isAuthenticated) return;
 
-    syncInProgress.current = true;
     setIsSyncing(true);
     setLastError(null);
 
@@ -50,7 +48,6 @@ export const useSync = (): SyncState => {
       setLastError(err);
       console.warn("[useSync] Sync failed:", err.message);
     } finally {
-      syncInProgress.current = false;
       setIsSyncing(false);
     }
   }, [database, isAuthenticated]);

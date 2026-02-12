@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDatabase } from "@/contexts/DatabaseContext";
 import type List from "@/db/models/List";
 import type { ListStatus, ListType } from "@/db/models/List";
+import { sync } from "@/db/sync";
 
 type UseListsResult = {
   /** Active lists for the user's family. */
@@ -75,6 +76,9 @@ export const useLists = (statusFilter: ListStatus[] = ["active", "completed"]): 
         list.sortOrder = 0;
       });
     });
+
+    // Push the new list to PocketBase (fire-and-forget)
+    sync(database).catch((err) => console.warn("[useLists] Post-create sync failed:", err));
 
     return newList;
   };

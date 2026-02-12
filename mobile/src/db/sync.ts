@@ -60,6 +60,22 @@ const PB_TO_WMDB_FIELDS: Record<string, Record<string, string>> = {
   },
 };
 
+/**
+ * Maps WMDB relation columns to the local table they reference.
+ * Only fields that store a WatermelonDB local ID (rather than an already-
+ * resolved PocketBase server ID) need to be listed here.
+ *
+ * During push, the local WMDB ID stored in these columns will be resolved
+ * to the corresponding PocketBase server_id by looking up the referenced
+ * record in the local database.
+ */
+const RELATION_FIELDS: Record<string, Record<string, string>> = {
+  list_items: {
+    // list_items.list_id stores a local WMDB ID referencing the "lists" table
+    list_id: "lists",
+  },
+};
+
 /** Tables that should be synced. */
 const SYNC_TABLES = ["families", "members", "lists", "list_items", "location_history", "geofences"];
 
@@ -86,7 +102,9 @@ const pbRecordToRaw = (table: string, record: Record<string, unknown>): Record<s
   const fieldMap = PB_TO_WMDB_FIELDS[table] ?? {};
   const raw: Record<string, unknown> = {};
 
-  // Map server ID
+  // WMDB sync requires an `id` field on every raw record for reconciliation.
+  // Use the PocketBase ID so pulled records can be matched to local records.
+  raw.id = record.id as string;
   raw.server_id = record.id as string;
 
   // Map timestamps
@@ -217,7 +235,119 @@ const pullChanges = async (
 };
 
 /**
+ * Resolve local WMDB IDs in relation fields to PocketBase server IDs.
+ *
+ * For each relation field defined in RELATION_FIELDS for the given table,
+ * looks up the referenced record in the local database and replaces the
+ * local WMDB ID with the record's `server_id`.
+ *
+ * If the referenced record has no `server_id` yet (i.e. it hasn't been
+ * pushed to PocketBase), returns null to signal this record should be
+ * skipped for now — it will be retried on the next sync cycle.
+ */
+const resolveRelationIds = async (
+  table: string,
+  pbRecord: Record<string, unknown>,
+  raw: Record<string, unknown>,
+  database: Database,
+): Promise<Record<string, unknown> | null> => {
+  const relationFields = RELATION_FIELDS[table];
+  if (!relationFields) return pbRecord;
+
+  const fieldMap = PB_TO_WMDB_FIELDS[table] ?? {};
+  // Build reverse map to find PB field name from WMDB column name
+  const reverseMap: Record<string, string> = {};
+  for (const [pbKey, wmdbKey] of Object.entries(fieldMap)) {
+    reverseMap[wmdbKey] = pbKey;
+  }
+
+  const resolved = { ...pbRecord };
+
+  for (const [wmdbColumn, referencedTable] of Object.entries(relationFields)) {
+    const localId = raw[wmdbColumn] as string | undefined;
+    if (!localId) continue;
+
+    // The PB field name might differ from the WMDB column name
+    const pbFieldName = reverseMap[wmdbColumn] ?? wmdbColumn;
+
+    try {
+      const referencedRecord = await database.get(referencedTable).find(localId);
+      // biome-ignore lint: _raw is the underlying record; server_id is a dynamic column
+      const serverId = (referencedRecord._raw as any).server_id as string | undefined;
+      console.log(`[Sync] resolveRelation ${table}.${wmdbColumn}: localId=${localId}, serverId=${serverId || "(empty)"}`);
+
+      if (!serverId) {
+        // Referenced record hasn't been pushed yet — skip this record.
+        // It will be pushed on the next sync cycle after its parent is created.
+        console.warn(
+          `[Sync] Skipping ${table} record: referenced ${referencedTable} (${localId}) has no server_id yet`,
+        );
+        return null;
+      }
+
+      resolved[pbFieldName] = serverId;
+    } catch {
+      // Referenced record not found locally — might have been deleted.
+      // Let PocketBase handle the validation error.
+      console.warn(
+        `[Sync] Referenced ${referencedTable} record (${localId}) not found locally for ${table}.${wmdbColumn}`,
+      );
+    }
+  }
+
+  return resolved;
+};
+
+/**
+ * Push a single record (created or updated) to PocketBase.
+ *
+ * - For records without a server_id: creates in PB and writes the server_id back locally.
+ * - For records with a server_id: updates the existing PB record.
+ */
+const pushRecord = async (
+  pb: PocketBase,
+  table: string,
+  collection: string,
+  raw: Record<string, unknown>,
+  database: Database,
+): Promise<void> => {
+  const pbRecord = rawToPbRecord(table, raw);
+  const serverId = raw.server_id as string | undefined;
+  const localId = raw.id as string;
+
+  // Resolve any relation fields that store local WMDB IDs
+  const resolvedRecord = await resolveRelationIds(table, pbRecord, raw, database);
+  if (!resolvedRecord) {
+    // A referenced record hasn't been pushed yet — skip for now.
+    // It will be pushed on the next sync cycle after its parent is created.
+    return;
+  }
+
+  if (serverId) {
+    // Record already exists on server — update it.
+    console.log(`[Sync] Updating ${collection}/${serverId}`);
+    await pb.collection(collection).update(serverId, resolvedRecord);
+  } else {
+    // New local record — create on server and write back the server ID.
+    console.log(`[Sync] Creating ${collection} record:`, JSON.stringify(resolvedRecord));
+    const created = await pb.collection(collection).create(resolvedRecord);
+    console.log(`[Sync] Created ${collection} with server ID: ${created.id}`);
+    await database.write(async () => {
+      const localRecord = await database.get(table).find(localId);
+      await localRecord.update(() => {
+        // biome-ignore lint: _raw is the underlying record; server_id is a dynamic column
+        (localRecord._raw as any).server_id = created.id;
+      });
+    });
+  }
+};
+
+/**
  * Push local changes to PocketBase.
+ *
+ * WatermelonDB's `fetchLocalChanges` always separates records into `created`,
+ * `updated`, and `deleted` arrays. Both `created` and `updated` need to be
+ * pushed to the server.
  */
 const pushChanges = async (
   pb: PocketBase,
@@ -234,42 +364,30 @@ const pushChanges = async (
     const collection = TABLE_TO_COLLECTION[table];
     if (!collection) continue;
 
-    // With sendCreatedAsUpdated: true, all new and modified records
-    // arrive in the "updated" array. We distinguish them by whether
-    // they already have a server_id.
-    for (const raw of tableChanges.updated) {
-      const pbRecord = rawToPbRecord(table, raw);
-      const serverId = raw.server_id as string | undefined;
-      const localId = raw.id as string;
-
+    // Push created records (new local records that don't exist on server)
+    for (const raw of tableChanges.created) {
       try {
-        if (serverId) {
-          // Record already exists on server — update it.
-          await pb.collection(collection).update(serverId, pbRecord);
-        } else {
-          // New local record — create on server and write back the server ID.
-          const created = await pb.collection(collection).create(pbRecord);
-          await database.write(async () => {
-            const localRecord = await database.get(table).find(localId);
-            await localRecord.update(() => {
-              // biome-ignore lint: _raw is the underlying record; server_id is a dynamic column
-              (localRecord._raw as any).server_id = created.id;
-            });
-          });
-        }
+        console.log(`[Sync] Pushing new ${collection} record (id=${raw.id})`);
+        await pushRecord(pb, table, collection, raw, database);
       } catch (error) {
-        console.warn(`[Sync] Failed to push ${collection} record (${localId}):`, error);
+        console.warn(`[Sync] Failed to push new ${collection} record (${raw.id}):`, error);
+        throw error;
+      }
+    }
+
+    // Push updated records (existing records that were modified locally)
+    for (const raw of tableChanges.updated) {
+      try {
+        console.log(`[Sync] Pushing updated ${collection} record (id=${raw.id}, server_id=${raw.server_id})`);
+        await pushRecord(pb, table, collection, raw, database);
+      } catch (error) {
+        console.warn(`[Sync] Failed to push updated ${collection} record (${raw.id}):`, error);
         throw error;
       }
     }
 
     // Handle deleted records
     for (const id of tableChanges.deleted) {
-      // The deleted array contains WatermelonDB IDs, but we need server IDs.
-      // WatermelonDB sync passes the raw record ID here. We need to look up
-      // the server_id. However, since the record is deleted locally, we can't
-      // query it. For now, we treat the ID as the server_id if it looks like a
-      // PocketBase ID (15 chars). This is a known limitation of client-side sync.
       try {
         await pb.collection(collection).delete(id);
       } catch (error) {
@@ -285,38 +403,75 @@ const pushChanges = async (
 };
 
 /**
- * Perform a full sync cycle between WatermelonDB and PocketBase.
+ * Global sync lock.
+ * WatermelonDB's `synchronize()` throws if called concurrently on the same
+ * database. We guard against that at our level so callers don't have to.
  *
- * Uses WatermelonDB's built-in `synchronize()` function with a client-side
- * adapter that translates between WMDB sync protocol and PocketBase REST API.
+ * If a sync is already running when a new one is requested, we record that
+ * a follow-up is needed and run it once the current one finishes. This
+ * ensures mutations that happen *during* a sync still get pushed promptly.
  */
+let syncInProgress = false;
+let syncQueued = false;
+
 export const sync = async (database: Database): Promise<void> => {
-  const pb = await getPocketBase();
-  if (!pb || !pb.authStore.isValid) {
-    console.warn("[Sync] Cannot sync: not authenticated");
+  if (syncInProgress) {
+    syncQueued = true;
     return;
   }
 
-  await synchronize({
-    database,
-    sendCreatedAsUpdated: true,
-    pullChanges: async ({ lastPulledAt }) => {
-      return pullChanges(pb, lastPulledAt ?? null);
-    },
-    pushChanges: async ({ changes }) => {
-      await pushChanges(
-        pb,
-        changes as Record<
-          string,
-          {
-            created: Record<string, unknown>[];
-            updated: Record<string, unknown>[];
-            deleted: string[];
+  syncInProgress = true;
+
+  try {
+    const pb = await getPocketBase();
+    if (!pb) {
+      console.warn("[Sync] No PocketBase instance (no server URL?)");
+      return;
+    }
+    if (!pb.authStore.isValid) {
+      console.warn("[Sync] Auth not valid, skipping sync");
+      return;
+    }
+
+    await synchronize({
+      database,
+      pullChanges: async ({ lastPulledAt }) => {
+        const result = await pullChanges(pb, lastPulledAt ?? null);
+        return result;
+      },
+      pushChanges: async ({ changes }) => {
+        // Log what we're about to push
+        for (const [table, tableChanges] of Object.entries(changes)) {
+          const c = (tableChanges as any).created?.length ?? 0;
+          const u = (tableChanges as any).updated?.length ?? 0;
+          const d = (tableChanges as any).deleted?.length ?? 0;
+          if (c || u || d) {
+            console.log(`[Sync] push ${table}: ${c} created, ${u} updated, ${d} deleted`);
           }
-        >,
-        database,
-      );
-    },
-    migrationsEnabledAtVersion: 1,
-  });
+        }
+        await pushChanges(
+          pb,
+          changes as Record<
+            string,
+            {
+              created: Record<string, unknown>[];
+              updated: Record<string, unknown>[];
+              deleted: string[];
+            }
+          >,
+          database,
+        );
+      },
+      migrationsEnabledAtVersion: 1,
+    });
+  } catch (error) {
+    console.warn("[Sync] Failed:", error);
+  } finally {
+    syncInProgress = false;
+
+    if (syncQueued) {
+      syncQueued = false;
+      sync(database);
+    }
+  }
 };

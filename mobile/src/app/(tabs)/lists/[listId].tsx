@@ -104,7 +104,7 @@ export default function ListDetailScreen() {
   const { isSyncing, triggerSync } = useSync();
 
   const { uncheckedItems, checkedItems, list, isLoading, addItem, toggleItem, deleteItem } =
-    useListItems(listId ?? "");
+    useListItems(listId);
 
   // New item input state
   const [newItemName, setNewItemName] = useState("");

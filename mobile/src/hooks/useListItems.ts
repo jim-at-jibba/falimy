@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDatabase } from "@/contexts/DatabaseContext";
 import type List from "@/db/models/List";
 import type ListItem from "@/db/models/ListItem";
+import { sync } from "@/db/sync";
 
 type UseListItemsResult = {
   /** Unchecked items, sorted by sort_order. */
@@ -32,7 +33,7 @@ type UseListItemsResult = {
  *
  * @param listId - The WatermelonDB local ID of the list.
  */
-export const useListItems = (listId: string): UseListItemsResult => {
+export const useListItems = (listId: string | undefined): UseListItemsResult => {
   const database = useDatabase();
   const { user } = useAuth();
   const [uncheckedItems, setUncheckedItems] = useState<ListItem[]>([]);
@@ -136,15 +137,20 @@ export const useListItems = (listId: string): UseListItemsResult => {
       });
     });
 
+    // Push the new item to PocketBase (fire-and-forget)
+    sync(database).catch((err) => console.warn("[useListItems] Post-add sync failed:", err));
+
     return newItem;
   };
 
   const toggleItem = async (item: ListItem): Promise<void> => {
     await item.toggleChecked(user?.id ?? "");
+    sync(database).catch((err) => console.warn("[useListItems] Post-toggle sync failed:", err));
   };
 
   const deleteItem = async (item: ListItem): Promise<void> => {
     await item.markDeleted();
+    sync(database).catch((err) => console.warn("[useListItems] Post-delete sync failed:", err));
   };
 
   const updateItem = async (
@@ -152,6 +158,7 @@ export const useListItems = (listId: string): UseListItemsResult => {
     fields: { name?: string; quantity?: string; note?: string },
   ): Promise<void> => {
     await item.updateDetails(fields);
+    sync(database).catch((err) => console.warn("[useListItems] Post-update sync failed:", err));
   };
 
   return {

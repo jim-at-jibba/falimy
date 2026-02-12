@@ -3,8 +3,8 @@ import type { UnsubscribeFunc } from "pocketbase";
 
 /** Collections we want to watch for realtime updates. */
 const REALTIME_COLLECTIONS = [
-  "shopping_lists",
-  "shopping_items",
+  "lists",
+  "list_items",
   "families",
   "users",
   "location_history",

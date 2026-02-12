@@ -1,15 +1,15 @@
 import { Model, type Query } from "@nozbe/watermelondb";
 import { children, date, field, text, writer } from "@nozbe/watermelondb/decorators";
 import type Geofence from "./Geofence";
+import type List from "./List";
 import type Member from "./Member";
-import type ShoppingList from "./ShoppingList";
 
 export default class Family extends Model {
   static table = "families";
 
   static associations = {
     members: { type: "has_many" as const, foreignKey: "family_id" },
-    shopping_lists: { type: "has_many" as const, foreignKey: "family_id" },
+    lists: { type: "has_many" as const, foreignKey: "family_id" },
     geofences: { type: "has_many" as const, foreignKey: "family_id" },
   };
 
@@ -22,7 +22,7 @@ export default class Family extends Model {
   @date("updated_at") updatedAt!: Date;
 
   @children("members") members!: Query<Member>;
-  @children("shopping_lists") shoppingLists!: Query<ShoppingList>;
+  @children("lists") lists!: Query<List>;
   @children("geofences") geofences!: Query<Geofence>;
 
   @writer async updateName(newName: string) {

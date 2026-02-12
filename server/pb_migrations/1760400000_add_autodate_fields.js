@@ -7,8 +7,8 @@ migrate(
   (app) => {
     const baseCollections = [
       "families",
-      "shopping_lists",
-      "shopping_items",
+      "lists",
+      "list_items",
       "location_history",
       "geofences",
     ];
@@ -43,8 +43,8 @@ migrate(
   (app) => {
     const baseCollections = [
       "families",
-      "shopping_lists",
-      "shopping_items",
+      "lists",
+      "list_items",
       "location_history",
       "geofences",
     ];

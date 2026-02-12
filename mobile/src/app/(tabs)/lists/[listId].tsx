@@ -15,8 +15,8 @@ import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler"
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { DefaultText } from "@/components/DefaultText";
 import { SmallText } from "@/components/SmallText";
-import type ShoppingItem from "@/db/models/ShoppingItem";
-import { useShoppingItems } from "@/hooks/useShoppingItems";
+import type ListItem from "@/db/models/ListItem";
+import { useListItems } from "@/hooks/useListItems";
 import { useSync } from "@/hooks/useSync";
 
 /** Swipeable item row with check toggle and delete. */
@@ -25,9 +25,9 @@ function ItemRow({
   onToggle,
   onDelete,
 }: {
-  item: ShoppingItem;
-  onToggle: (item: ShoppingItem) => void;
-  onDelete: (item: ShoppingItem) => void;
+  item: ListItem;
+  onToggle: (item: ListItem) => void;
+  onDelete: (item: ListItem) => void;
 }) {
   const { theme } = useUnistyles();
   const swipeableRef = useRef<Swipeable>(null);
@@ -104,7 +104,7 @@ export default function ListDetailScreen() {
   const { isSyncing, triggerSync } = useSync();
 
   const { uncheckedItems, checkedItems, list, isLoading, addItem, toggleItem, deleteItem } =
-    useShoppingItems(listId ?? "");
+    useListItems(listId ?? "");
 
   // New item input state
   const [newItemName, setNewItemName] = useState("");
@@ -142,14 +142,14 @@ export default function ListDetailScreen() {
   }, [newItemName, newItemQuantity, addItem]);
 
   const handleToggle = useCallback(
-    (item: ShoppingItem) => {
+    (item: ListItem) => {
       toggleItem(item);
     },
     [toggleItem],
   );
 
   const handleDelete = useCallback(
-    (item: ShoppingItem) => {
+    (item: ListItem) => {
       Alert.alert("Delete Item", `Remove "${item.name}" from the list?`, [
         { text: "Cancel", style: "cancel" },
         {
@@ -165,20 +165,22 @@ export default function ListDetailScreen() {
   const handleArchive = useCallback(() => {
     if (!list) return;
 
-    Alert.alert(
-      "Complete Shopping",
-      "This will archive the list. You can find it later in archived lists.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Complete",
-          onPress: async () => {
-            await list.archive();
-            router.back();
-          },
+    const archiveLabel = list.listType === "shopping" ? "Complete Shopping" : "Mark Complete";
+    const archiveDescription =
+      list.listType === "shopping"
+        ? "This will archive the list. You can find it later in archived lists."
+        : "This will mark the list as complete and archive it.";
+
+    Alert.alert(archiveLabel, archiveDescription, [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Complete",
+        onPress: async () => {
+          await list.archive();
+          router.back();
         },
-      ],
-    );
+      },
+    ]);
   }, [list]);
 
   const handleDeleteList = useCallback(() => {
@@ -220,6 +222,8 @@ export default function ListDetailScreen() {
       </View>
     );
   }
+
+  const archiveLabel = list.listType === "shopping" ? "Complete Shopping" : "Mark Complete";
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -324,10 +328,7 @@ export default function ListDetailScreen() {
 
           <Pressable style={styles.actionButton} onPress={handleArchive}>
             <Archive size={18} color={theme.colors.primary} />
-            <DefaultText
-              text="Complete Shopping"
-              additionalStyles={{ color: theme.colors.primary }}
-            />
+            <DefaultText text={archiveLabel} additionalStyles={{ color: theme.colors.primary }} />
           </Pressable>
 
           <Pressable style={styles.actionButton} onPress={handleDeleteList}>

@@ -12,8 +12,8 @@ import { getPocketBase } from "@/api/pocketbase";
 const TABLE_TO_COLLECTION: Record<string, string> = {
   families: "families",
   members: "users",
-  shopping_lists: "shopping_lists",
-  shopping_items: "shopping_items",
+  lists: "lists",
+  list_items: "list_items",
   location_history: "location_history",
   geofences: "geofences",
 };
@@ -32,13 +32,13 @@ const PB_TO_WMDB_FIELDS: Record<string, Record<string, string>> = {
     last_lng: "last_lng",
     last_location_at: "last_location_at",
   },
-  shopping_items: {
+  list_items: {
     id: "server_id",
     checked: "is_checked",
     checked_by: "checked_by_id",
     created_by: "created_by_id",
   },
-  shopping_lists: {
+  lists: {
     id: "server_id",
     assigned_to: "assigned_to_id",
     created_by: "created_by_id",
@@ -60,14 +60,7 @@ const PB_TO_WMDB_FIELDS: Record<string, Record<string, string>> = {
 };
 
 /** Tables that should be synced. */
-const SYNC_TABLES = [
-  "families",
-  "members",
-  "shopping_lists",
-  "shopping_items",
-  "location_history",
-  "geofences",
-];
+const SYNC_TABLES = ["families", "members", "lists", "list_items", "location_history", "geofences"];
 
 /**
  * Convert a PocketBase date string (ISO 8601) to a Unix timestamp in milliseconds.

@@ -2,42 +2,42 @@ import { Q } from "@nozbe/watermelondb";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDatabase } from "@/contexts/DatabaseContext";
-import type ShoppingItem from "@/db/models/ShoppingItem";
-import type ShoppingList from "@/db/models/ShoppingList";
+import type List from "@/db/models/List";
+import type ListItem from "@/db/models/ListItem";
 
-type UseShoppingItemsResult = {
+type UseListItemsResult = {
   /** Unchecked items, sorted by sort_order. */
-  uncheckedItems: ShoppingItem[];
+  uncheckedItems: ListItem[];
   /** Checked items, sorted by most recently checked. */
-  checkedItems: ShoppingItem[];
+  checkedItems: ListItem[];
   /** The list model itself (observed reactively). */
-  list: ShoppingList | null;
+  list: List | null;
   /** Whether the initial load is still in progress. */
   isLoading: boolean;
   /** Add a new item to the list. */
-  addItem: (fields: { name: string; quantity?: string; note?: string }) => Promise<ShoppingItem>;
+  addItem: (fields: { name: string; quantity?: string; note?: string }) => Promise<ListItem>;
   /** Toggle checked state on an item. */
-  toggleItem: (item: ShoppingItem) => Promise<void>;
+  toggleItem: (item: ListItem) => Promise<void>;
   /** Delete an item (mark as deleted for sync). */
-  deleteItem: (item: ShoppingItem) => Promise<void>;
+  deleteItem: (item: ListItem) => Promise<void>;
   /** Update item details. */
   updateItem: (
-    item: ShoppingItem,
+    item: ListItem,
     fields: { name?: string; quantity?: string; note?: string },
   ) => Promise<void>;
 };
 
 /**
- * Reactively observes items for a given shopping list.
+ * Reactively observes items for a given list.
  *
- * @param listId - The WatermelonDB local ID of the shopping list.
+ * @param listId - The WatermelonDB local ID of the list.
  */
-export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
+export const useListItems = (listId: string): UseListItemsResult => {
   const database = useDatabase();
   const { user } = useAuth();
-  const [uncheckedItems, setUncheckedItems] = useState<ShoppingItem[]>([]);
-  const [checkedItems, setCheckedItems] = useState<ShoppingItem[]>([]);
-  const [list, setList] = useState<ShoppingList | null>(null);
+  const [uncheckedItems, setUncheckedItems] = useState<ListItem[]>([]);
+  const [checkedItems, setCheckedItems] = useState<ListItem[]>([]);
+  const [list, setList] = useState<List | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Observe the list itself
@@ -45,7 +45,7 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
     if (!listId) return;
 
     let cancelled = false;
-    const collection = database.get<ShoppingList>("shopping_lists");
+    const collection = database.get<List>("lists");
 
     collection
       .find(listId)
@@ -53,14 +53,14 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
         if (cancelled) return;
         const subscription = found.observe().subscribe({
           next: (record) => setList(record),
-          error: (err) => console.warn("[useShoppingItems] List observe error:", err),
+          error: (err) => console.warn("[useListItems] List observe error:", err),
         });
         // Store unsubscribe for cleanup
         cleanupRef = () => subscription.unsubscribe();
       })
       .catch((err) => {
         if (!cancelled) {
-          console.warn("[useShoppingItems] List not found:", err);
+          console.warn("[useListItems] List not found:", err);
           setIsLoading(false);
         }
       });
@@ -76,7 +76,7 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
   useEffect(() => {
     if (!listId) return;
 
-    const collection = database.get<ShoppingItem>("shopping_items");
+    const collection = database.get<ListItem>("list_items");
     const query = collection.query(
       Q.where("list_id", listId),
       Q.where("is_checked", false),
@@ -89,7 +89,7 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
         setIsLoading(false);
       },
       error: (err) => {
-        console.warn("[useShoppingItems] Unchecked items error:", err);
+        console.warn("[useListItems] Unchecked items error:", err);
         setIsLoading(false);
       },
     });
@@ -101,7 +101,7 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
   useEffect(() => {
     if (!listId) return;
 
-    const collection = database.get<ShoppingItem>("shopping_items");
+    const collection = database.get<ListItem>("list_items");
     const query = collection.query(
       Q.where("list_id", listId),
       Q.where("is_checked", true),
@@ -110,7 +110,7 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
 
     const subscription = query.observe().subscribe({
       next: (results) => setCheckedItems(results),
-      error: (err) => console.warn("[useShoppingItems] Checked items error:", err),
+      error: (err) => console.warn("[useListItems] Checked items error:", err),
     });
 
     return () => subscription.unsubscribe();
@@ -120,8 +120,8 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
     name: string;
     quantity?: string;
     note?: string;
-  }): Promise<ShoppingItem> => {
-    const collection = database.get<ShoppingItem>("shopping_items");
+  }): Promise<ListItem> => {
+    const collection = database.get<ListItem>("list_items");
 
     const newItem = await database.write(async () => {
       return collection.create((item) => {
@@ -139,16 +139,16 @@ export const useShoppingItems = (listId: string): UseShoppingItemsResult => {
     return newItem;
   };
 
-  const toggleItem = async (item: ShoppingItem): Promise<void> => {
+  const toggleItem = async (item: ListItem): Promise<void> => {
     await item.toggleChecked(user?.id ?? "");
   };
 
-  const deleteItem = async (item: ShoppingItem): Promise<void> => {
+  const deleteItem = async (item: ListItem): Promise<void> => {
     await item.markDeleted();
   };
 
   const updateItem = async (
-    item: ShoppingItem,
+    item: ListItem,
     fields: { name?: string; quantity?: string; note?: string },
   ): Promise<void> => {
     await item.updateDetails(fields);

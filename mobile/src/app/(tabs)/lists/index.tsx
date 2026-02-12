@@ -1,6 +1,6 @@
 import { Q } from "@nozbe/watermelondb";
 import { router } from "expo-router";
-import { Plus, ShoppingCart } from "lucide-react-native";
+import { List as ListIcon, Plus } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,19 +16,19 @@ import { DefaultText } from "@/components/DefaultText";
 import { SmallText } from "@/components/SmallText";
 import Title from "@/components/Title";
 import { useDatabase } from "@/contexts/DatabaseContext";
-import type ShoppingItem from "@/db/models/ShoppingItem";
-import type ShoppingList from "@/db/models/ShoppingList";
-import { useShoppingLists } from "@/hooks/useShoppingLists";
+import type List from "@/db/models/List";
+import type ListItem from "@/db/models/ListItem";
+import { useLists } from "@/hooks/useLists";
 import { useSync } from "@/hooks/useSync";
 
 /** Small sub-component to display live item counts for a list. */
-function ListItemCounts({ list }: { list: ShoppingList }) {
+function ListItemCounts({ list }: { list: List }) {
   const database = useDatabase();
   const [totalCount, setTotalCount] = useState(0);
   const [checkedCount, setCheckedCount] = useState(0);
 
   useEffect(() => {
-    const collection = database.get<ShoppingItem>("shopping_items");
+    const collection = database.get<ListItem>("list_items");
 
     const totalSub = collection
       .query(Q.where("list_id", list.id))
@@ -53,9 +53,9 @@ function ListItemCounts({ list }: { list: ShoppingList }) {
   return <SmallText text={`${checkedCount}/${totalCount} items checked`} />;
 }
 
-export default function ShoppingListsScreen() {
+export default function ListsScreen() {
   const { theme } = useUnistyles();
-  const { lists, isLoading, createList } = useShoppingLists();
+  const { lists, isLoading, createList } = useLists();
   const { isSyncing, triggerSync } = useSync();
   const [showNewInput, setShowNewInput] = useState(false);
   const [newListName, setNewListName] = useState("");
@@ -69,15 +69,15 @@ export default function ShoppingListsScreen() {
       setNewListName("");
       setShowNewInput(false);
     } catch (error) {
-      console.warn("[ShoppingLists] Create error:", error);
-      const message = error instanceof Error ? error.message : "Failed to create shopping list.";
+      console.warn("[Lists] Create error:", error);
+      const message = error instanceof Error ? error.message : "Failed to create list.";
       Alert.alert("Error", message);
     }
   }, [newListName, createList]);
 
-  const handleOpenList = useCallback((list: ShoppingList) => {
+  const handleOpenList = useCallback((list: List) => {
     router.push({
-      pathname: "/(tabs)/shopping/[listId]" as const,
+      pathname: "/(tabs)/lists/[listId]" as const,
       params: { listId: list.id },
     } as never);
   }, []);
@@ -104,7 +104,7 @@ export default function ShoppingListsScreen() {
     >
       {/* Header row */}
       <View style={styles.headerRow}>
-        <Title text="Shopping Lists" />
+        <Title text="Lists" />
         <Pressable style={styles.addButton} onPress={() => setShowNewInput(true)} hitSlop={8}>
           <Plus size={24} color={theme.colors.primary} />
         </Pressable>
@@ -145,9 +145,9 @@ export default function ShoppingListsScreen() {
       {/* Empty state */}
       {lists.length === 0 && !showNewInput && (
         <View style={styles.emptyState}>
-          <ShoppingCart size={48} color={theme.colors.grey} />
+          <ListIcon size={48} color={theme.colors.grey} />
           <DefaultText
-            text="No shopping lists yet"
+            text="No lists yet"
             additionalStyles={{ color: theme.colors.grey, marginTop: 12 }}
           />
           <DefaultText

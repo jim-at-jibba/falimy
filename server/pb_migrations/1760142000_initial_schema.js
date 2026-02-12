@@ -97,9 +97,9 @@ migrate(
 
     app.save(users);
 
-    const shoppingLists = new Collection({
+    const lists = new Collection({
       type: "base",
-      name: "shopping_lists",
+      name: "lists",
       listRule: "@request.auth.id != '' && family_id = @request.auth.family_id",
       viewRule: "@request.auth.id != '' && family_id = @request.auth.family_id",
       createRule: "@request.auth.id != '' && family_id = @request.auth.family_id",
@@ -107,6 +107,13 @@ migrate(
       deleteRule: "@request.auth.id != '' && family_id = @request.auth.family_id",
       fields: [
         { name: "name", type: "text", required: true },
+        {
+          name: "type",
+          type: "select",
+          required: true,
+          maxSelect: 1,
+          values: ["shopping", "todo", "packing", "custom"],
+        },
         {
           name: "family_id",
           type: "relation",
@@ -147,11 +154,11 @@ migrate(
         },
       ],
     });
-    app.save(shoppingLists);
+    app.save(lists);
 
-    const shoppingItems = new Collection({
+    const listItems = new Collection({
       type: "base",
-      name: "shopping_items",
+      name: "list_items",
       listRule: "@request.auth.id != '' && list_id.family_id = @request.auth.family_id",
       viewRule: "@request.auth.id != '' && list_id.family_id = @request.auth.family_id",
       createRule: "@request.auth.id != '' && list_id.family_id = @request.auth.family_id",
@@ -163,7 +170,7 @@ migrate(
           type: "relation",
           required: true,
           maxSelect: 1,
-          collectionId: shoppingLists.id,
+          collectionId: lists.id,
           cascadeDelete: true,
         },
         { name: "name", type: "text", required: true },
@@ -197,7 +204,7 @@ migrate(
         },
       ],
     });
-    app.save(shoppingItems);
+    app.save(listItems);
 
     const locationHistory = new Collection({
       type: "base",
@@ -295,8 +302,8 @@ migrate(
     const collectionNames = [
       "geofences",
       "location_history",
-      "shopping_items",
-      "shopping_lists",
+      "list_items",
+      "lists",
       "families",
     ];
 

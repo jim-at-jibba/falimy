@@ -42,10 +42,10 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="shopping"
+        name="lists"
         options={{
-          title: "Shopping",
-          tabBarLabel: "Shopping",
+          title: "Lists",
+          tabBarLabel: "Lists",
           headerShown: false,
           tabBarIcon: ({ color, size }) => <List size={size} color={color} />,
         }}

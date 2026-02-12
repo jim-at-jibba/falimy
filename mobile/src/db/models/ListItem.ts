@@ -1,12 +1,12 @@
 import { Model } from "@nozbe/watermelondb";
 import { date, field, relation, text, writer } from "@nozbe/watermelondb/decorators";
-import type ShoppingList from "./ShoppingList";
+import type List from "./List";
 
-export default class ShoppingItem extends Model {
-  static table = "shopping_items";
+export default class ListItem extends Model {
+  static table = "list_items";
 
   static associations = {
-    shopping_lists: { type: "belongs_to" as const, key: "list_id" },
+    lists: { type: "belongs_to" as const, key: "list_id" },
   };
 
   @text("server_id") serverId!: string;
@@ -21,11 +21,11 @@ export default class ShoppingItem extends Model {
   @date("created_at") createdAt!: Date;
   @date("updated_at") updatedAt!: Date;
 
-  @relation("shopping_lists", "list_id") list!: ShoppingList;
+  @relation("lists", "list_id") list!: List;
 
   @writer async toggleChecked(userId: string) {
     await this.update((item) => {
-      const self = item as ShoppingItem;
+      const self = item as ListItem;
       self.isChecked = !self.isChecked;
       self.checkedById = self.isChecked ? userId : null;
     });
@@ -33,7 +33,7 @@ export default class ShoppingItem extends Model {
 
   @writer async updateDetails(fields: { name?: string; quantity?: string; note?: string }) {
     await this.update((item) => {
-      const self = item as ShoppingItem;
+      const self = item as ListItem;
       if (fields.name !== undefined) self.name = fields.name;
       if (fields.quantity !== undefined) self.quantity = fields.quantity;
       if (fields.note !== undefined) self.note = fields.note;
@@ -42,7 +42,7 @@ export default class ShoppingItem extends Model {
 
   @writer async updateSortOrder(order: number) {
     await this.update((item) => {
-      (item as ShoppingItem).sortOrder = order;
+      (item as ListItem).sortOrder = order;
     });
   }
 

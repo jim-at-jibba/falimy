@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 
-export default function ShoppingLayout() {
+export default function ListsLayout() {
   return (
     <Stack
       screenOptions={{
@@ -8,7 +8,7 @@ export default function ShoppingLayout() {
         headerStyle: { backgroundColor: "#f6f8fb" },
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Shopping Lists" }} />
+      <Stack.Screen name="index" options={{ title: "Lists" }} />
       <Stack.Screen name="[listId]" options={{ title: "List" }} />
     </Stack>
   );

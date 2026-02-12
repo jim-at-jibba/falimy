@@ -9,20 +9,22 @@ import {
   writer,
 } from "@nozbe/watermelondb/decorators";
 import type Family from "./Family";
-import type ShoppingItem from "./ShoppingItem";
+import type ListItem from "./ListItem";
 
 export type ListStatus = "active" | "completed" | "archived";
+export type ListType = "shopping" | "todo" | "packing" | "custom";
 
-export default class ShoppingList extends Model {
-  static table = "shopping_lists";
+export default class List extends Model {
+  static table = "lists";
 
   static associations = {
     families: { type: "belongs_to" as const, key: "family_id" },
-    shopping_items: { type: "has_many" as const, foreignKey: "list_id" },
+    list_items: { type: "has_many" as const, foreignKey: "list_id" },
   };
 
   @text("server_id") serverId!: string;
   @text("name") name!: string;
+  @text("type") listType!: ListType;
   @field("family_id") familyId!: string;
   @field("assigned_to_id") assignedToId!: string | null;
   @text("status") status!: ListStatus;
@@ -32,26 +34,26 @@ export default class ShoppingList extends Model {
   @date("updated_at") updatedAt!: Date;
 
   @relation("families", "family_id") family!: Family;
-  @children("shopping_items") items!: Query<ShoppingItem>;
+  @children("list_items") items!: Query<ListItem>;
 
   @lazy uncheckedItems = this.items.extend(Q.where("is_checked", false));
   @lazy checkedItems = this.items.extend(Q.where("is_checked", true));
 
   @writer async updateName(newName: string) {
     await this.update((list) => {
-      (list as ShoppingList).name = newName;
+      (list as List).name = newName;
     });
   }
 
   @writer async updateStatus(newStatus: ListStatus) {
     await this.update((list) => {
-      (list as ShoppingList).status = newStatus;
+      (list as List).status = newStatus;
     });
   }
 
   @writer async archive() {
     await this.update((list) => {
-      (list as ShoppingList).status = "archived";
+      (list as List).status = "archived";
     });
   }
 

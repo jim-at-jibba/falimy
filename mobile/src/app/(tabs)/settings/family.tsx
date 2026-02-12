@@ -7,21 +7,9 @@ import { Button } from "../../../components/Button";
 import { Select, type SelectOption } from "../../../components/Select";
 import { SmallText } from "../../../components/SmallText";
 import Title from "../../../components/Title";
+import type { FamiliesResponse, UsersResponse } from "../../../types/pocketbase-types";
 import { getServerUrl } from "../../../utils/config";
 import { generateInviteCode } from "../../../utils/invite";
-
-type Family = {
-  id: string;
-  name: string;
-  invite_code: string;
-};
-
-type Member = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-};
 
 const ROLE_OPTIONS: SelectOption[] = [
   { label: "Admin", value: "admin" },
@@ -30,8 +18,8 @@ const ROLE_OPTIONS: SelectOption[] = [
 ];
 
 export default function FamilySettings() {
-  const [family, setFamily] = useState<Family | null>(null);
-  const [members, setMembers] = useState<Member[]>([]);
+  const [family, setFamily] = useState<FamiliesResponse | null>(null);
+  const [members, setMembers] = useState<UsersResponse[]>([]);
   const [serverUrl, setServerUrlState] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,7 +38,12 @@ export default function FamilySettings() {
           return;
         }
 
-        const model = pb.authStore.model as { id: string; family_id?: string; role?: string };
+        const model = pb.authStore.record as UsersResponse | null;
+        if (!model) {
+          setError("No active session.");
+          return;
+        }
+
         setCurrentUserId(model.id);
         setCurrentUserRole(model.role ?? null);
 
@@ -60,10 +53,10 @@ export default function FamilySettings() {
           return;
         }
 
-        const familyRecord = await pb.collection("families").getOne<Family>(familyId);
+        const familyRecord = await pb.collection("families").getOne<FamiliesResponse>(familyId);
         setFamily(familyRecord);
 
-        const userRecords = await pb.collection("users").getFullList<Member>({
+        const userRecords = await pb.collection("users").getFullList<UsersResponse>({
           filter: `family_id="${familyId}"`,
           sort: "name",
         });
@@ -93,7 +86,7 @@ export default function FamilySettings() {
       const pb = await getPocketBase();
       if (!pb) return;
 
-      const updated = await pb.collection("families").update<Family>(family.id, {
+      const updated = await pb.collection("families").update<FamiliesResponse>(family.id, {
         invite_code: generateInviteCode(),
       });
       setFamily(updated);
@@ -102,7 +95,7 @@ export default function FamilySettings() {
     }
   };
 
-  const handleRoleChange = async (memberId: string, newRole: string) => {
+  const handleRoleChange = async (memberId: string, newRole: UsersResponse["role"]) => {
     try {
       const pb = await getPocketBase();
       if (!pb) return;
@@ -203,7 +196,7 @@ export default function FamilySettings() {
                     <Select
                       options={ROLE_OPTIONS}
                       value={member.role}
-                      onChange={(newRole) => handleRoleChange(member.id, newRole)}
+                      onChange={(newRole) => handleRoleChange(member.id, newRole as UsersResponse["role"])}
                     />
                   </View>
                 ) : (

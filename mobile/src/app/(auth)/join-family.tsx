@@ -12,6 +12,7 @@ import { DefaultText } from "@/components/DefaultText";
 import { FormError } from "@/components/Form/FormError";
 import { FormInputText } from "@/components/Form/FormInputText";
 import Title from "@/components/Title";
+import type { FamiliesResponse } from "@/types/pocketbase-types";
 import { setServerUrl } from "@/utils/config";
 
 type JoinParams = {
@@ -80,7 +81,7 @@ export default function JoinFamily() {
         return;
       }
 
-      const family = await pb.collection("families").getOne(data.familyId.trim());
+      const family = await pb.collection("families").getOne<FamiliesResponse>(data.familyId.trim());
       if (family.invite_code !== data.inviteCode.trim()) {
         methods.setError("inviteCode", {
           message: "Invite code is invalid.",

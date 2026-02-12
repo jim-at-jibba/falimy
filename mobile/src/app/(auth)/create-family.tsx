@@ -12,6 +12,7 @@ import { DefaultText } from "@/components/DefaultText";
 import { FormError } from "@/components/Form/FormError";
 import { FormInputText } from "@/components/Form/FormInputText";
 import Title from "@/components/Title";
+import type { FamiliesResponse, UsersResponse } from "@/types/pocketbase-types";
 import { generateInviteCode, generateTopicPrefix } from "@/utils/invite";
 
 const schema = z.object({
@@ -41,7 +42,7 @@ export default function CreateFamily() {
         return;
       }
 
-      const user = await pb.collection("users").create({
+      const user = await pb.collection("users").create<UsersResponse>({
         email: data.email.trim(),
         password: data.password,
         passwordConfirm: data.password,
@@ -51,7 +52,7 @@ export default function CreateFamily() {
 
       await pb.collection("users").authWithPassword(data.email.trim(), data.password);
 
-      const family = await pb.collection("families").create({
+      const family = await pb.collection("families").create<FamiliesResponse>({
         name: data.familyName.trim(),
         invite_code: generateInviteCode(),
         ntfy_topic_prefix: generateTopicPrefix(),

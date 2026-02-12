@@ -1,15 +1,10 @@
 import type PocketBase from "pocketbase";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getPocketBase, resetPocketBase } from "@/api/pocketbase";
+import type { UsersResponse } from "@/types/pocketbase-types";
 import { clearServerUrl } from "@/utils/config";
 
-type AuthUser = {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  family_id: string | null;
-};
+type AuthUser = Pick<UsersResponse, "id" | "email" | "name" | "role" | "family_id">;
 
 type AuthState = {
   isAuthenticated: boolean;
@@ -35,14 +30,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const extractUser = useCallback((client: PocketBase): AuthUser | null => {
-    const model = client.authStore.model as Record<string, unknown> | null;
+    const model = client.authStore.record as UsersResponse | null;
     if (!client.authStore.isValid || !model) return null;
     return {
-      id: model.id as string,
-      email: model.email as string,
-      name: (model.name as string) ?? "",
-      role: (model.role as string) ?? "member",
-      family_id: (model.family_id as string) ?? null,
+      id: model.id,
+      email: model.email,
+      name: model.name ?? "",
+      role: model.role ?? "member",
+      family_id: model.family_id ?? null,
     };
   }, []);
 

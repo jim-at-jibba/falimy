@@ -1,5 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-import PocketBase from "pocketbase";
+import PocketBase, { AsyncAuthStore } from "pocketbase";
 
 import { getServerUrl } from "../utils/config";
 
@@ -10,27 +10,25 @@ let clientUrl: string | null = null;
 
 const normalizeServerUrl = (url: string): string => url.trim().replace(/\/+$/, "");
 
-const loadAuth = async (pb: PocketBase): Promise<void> => {
-  const raw = await SecureStore.getItemAsync(AUTH_KEY);
-  if (!raw) return;
-
-  try {
-    const parsed = JSON.parse(raw) as { token: string; model: Record<string, unknown> | null };
-    pb.authStore.save(parsed.token, parsed.model);
-  } catch {
-    await SecureStore.deleteItemAsync(AUTH_KEY);
-  }
-};
-
-const bindAuthPersistence = (pb: PocketBase): void => {
-  pb.authStore.onChange(async (token, model) => {
-    if (token) {
-      await SecureStore.setItemAsync(AUTH_KEY, JSON.stringify({ token, model }));
-    } else {
+/**
+ * Creates an AsyncAuthStore backed by expo-secure-store.
+ *
+ * PocketBase's AsyncAuthStore handles the async hydration lifecycle
+ * internally — it accepts an `initial` promise for loading persisted
+ * auth on startup and a `save` callback for persisting changes.
+ * This eliminates the race window between client creation and auth
+ * restoration that the manual approach had.
+ */
+const createAuthStore = (): AsyncAuthStore =>
+  new AsyncAuthStore({
+    save: async (serialized: string) => {
+      await SecureStore.setItemAsync(AUTH_KEY, serialized);
+    },
+    initial: SecureStore.getItemAsync(AUTH_KEY),
+    clear: async () => {
       await SecureStore.deleteItemAsync(AUTH_KEY);
-    }
-  }, true);
-};
+    },
+  });
 
 export const resetPocketBase = (): void => {
   client = null;
@@ -43,10 +41,9 @@ export const getPocketBase = async (): Promise<PocketBase | null> => {
 
   if (client && clientUrl === url) return client;
 
-  const pb = new PocketBase(url);
+  const store = createAuthStore();
+  const pb = new PocketBase(url, store);
   pb.autoCancellation(false);
-  bindAuthPersistence(pb);
-  await loadAuth(pb);
 
   client = pb;
   clientUrl = url;

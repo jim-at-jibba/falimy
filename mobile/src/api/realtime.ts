@@ -1,14 +1,15 @@
 import type PocketBase from "pocketbase";
 import type { UnsubscribeFunc } from "pocketbase";
+import { Collections } from "@/types/pocketbase-types";
 
 /** Collections we want to watch for realtime updates. */
 const REALTIME_COLLECTIONS = [
-  "lists",
-  "list_items",
-  "families",
-  "users",
-  "location_history",
-  "geofences",
+  Collections.Lists,
+  Collections.ListItems,
+  Collections.Families,
+  Collections.Users,
+  Collections.LocationHistory,
+  Collections.Geofences,
 ];
 
 type RealtimeEvent = {

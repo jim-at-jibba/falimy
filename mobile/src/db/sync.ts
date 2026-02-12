@@ -3,6 +3,7 @@ import { synchronize } from "@nozbe/watermelondb/sync";
 import type PocketBase from "pocketbase";
 
 import { getPocketBase } from "@/api/pocketbase";
+import { Collections } from "@/types/pocketbase-types";
 
 /**
  * Maps WatermelonDB table names to PocketBase collection names.
@@ -10,12 +11,12 @@ import { getPocketBase } from "@/api/pocketbase";
  * PocketBase uses a built-in users auth collection.
  */
 const TABLE_TO_COLLECTION: Record<string, string> = {
-  families: "families",
-  members: "users",
-  lists: "lists",
-  list_items: "list_items",
-  location_history: "location_history",
-  geofences: "geofences",
+  families: Collections.Families,
+  members: Collections.Users,
+  lists: Collections.Lists,
+  list_items: Collections.ListItems,
+  location_history: Collections.LocationHistory,
+  geofences: Collections.Geofences,
 };
 
 /**

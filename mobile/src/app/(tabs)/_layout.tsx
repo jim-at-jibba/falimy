@@ -17,11 +17,11 @@ export default function TabsLayout() {
     }
   }, [user, refresh]);
 
-  // Auto-sync on mount, foreground, and 5-min interval
-  const { triggerSync } = useSync();
+  // Auto-sync (pull) on mount, foreground, and 5-min interval
+  useSync();
 
-  // Subscribe to PocketBase SSE — trigger sync on incoming changes
-  useRealtime(triggerSync);
+  // Subscribe to PocketBase SSE — directly upserts records into WMDB
+  useRealtime();
 
   return (
     <Tabs

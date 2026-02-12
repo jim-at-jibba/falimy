@@ -19,12 +19,14 @@ type SyncState = {
 };
 
 /**
- * Hook that manages WatermelonDB <-> PocketBase synchronization.
+ * Hook that manages pull-based sync from PocketBase into WatermelonDB.
  *
- * - Syncs on mount (if authenticated).
- * - Syncs when app comes to foreground.
- * - Syncs on a periodic interval.
+ * - Pulls on mount (if authenticated).
+ * - Pulls when app comes to foreground.
+ * - Pulls on a periodic interval.
  * - Exposes a manual trigger for pull-to-refresh.
+ *
+ * There is no push — mutations go to PB first via hooks, then upsert locally.
  */
 export const useSync = (): SyncState => {
   const database = useDatabase();

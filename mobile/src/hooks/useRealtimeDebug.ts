@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { RealtimeManager } from "@/api/realtime";
+import type { UnsubscribeFunc } from "pocketbase";
 import { useAuth } from "@/contexts/AuthContext";
+import { Collections } from "@/types/pocketbase-types";
 
 type RealtimeLogEntry = {
   id: number;
@@ -10,11 +11,24 @@ type RealtimeLogEntry = {
   recordId: string;
 };
 
+/** Collections to watch in the debug logger. */
+const DEBUG_COLLECTIONS = [
+  Collections.Lists,
+  Collections.ListItems,
+  Collections.Families,
+  Collections.Users,
+  Collections.LocationHistory,
+  Collections.Geofences,
+];
+
 /**
  * Debug hook for verifying PocketBase SSE realtime subscriptions.
  *
  * Subscribes to all collections and logs every event received.
  * Use this during development to confirm events are flowing correctly.
+ *
+ * This subscribes independently of the main RealtimeManager so it can be
+ * used to verify events without interfering with production sync.
  *
  * Usage:
  *   const { logs, isConnected, clear } = useRealtimeDebug();
@@ -23,8 +37,8 @@ export const useRealtimeDebug = () => {
   const { isAuthenticated, pb } = useAuth();
   const [logs, setLogs] = useState<RealtimeLogEntry[]>([]);
   const [isConnected, setIsConnected] = useState(false);
-  const managerRef = useRef<RealtimeManager | null>(null);
   const counterRef = useRef(0);
+  const unsubFnsRef = useRef<UnsubscribeFunc[]>([]);
 
   const clear = useCallback(() => {
     setLogs([]);
@@ -37,33 +51,45 @@ export const useRealtimeDebug = () => {
       return;
     }
 
-    const manager = new RealtimeManager(pb, (event, collection) => {
-      counterRef.current += 1;
-      const entry: RealtimeLogEntry = {
-        id: counterRef.current,
-        timestamp: new Date(),
-        collection,
-        action: event.action,
-        recordId: (event.record as { id?: string })?.id ?? "unknown",
-      };
+    const subscribe = async () => {
+      for (const collection of DEBUG_COLLECTIONS) {
+        try {
+          const unsub = await pb.collection(collection).subscribe("*", (data) => {
+            counterRef.current += 1;
+            const entry: RealtimeLogEntry = {
+              id: counterRef.current,
+              timestamp: new Date(),
+              collection,
+              action: data.action,
+              recordId: (data.record as { id?: string })?.id ?? "unknown",
+            };
 
-      console.log(`[Realtime] ${entry.action} on ${entry.collection}: ${entry.recordId}`);
+            console.log(`[Realtime] ${entry.action} on ${entry.collection}: ${entry.recordId}`);
 
-      setLogs((prev) => [entry, ...prev].slice(0, 100)); // Keep last 100 entries
-    });
-
-    managerRef.current = manager;
-    manager.subscribe().then(() => {
+            setLogs((prev) => [entry, ...prev].slice(0, 100)); // Keep last 100 entries
+          });
+          unsubFnsRef.current.push(unsub);
+        } catch (error) {
+          console.warn(`[Realtime Debug] Failed to subscribe to ${collection}:`, error);
+        }
+      }
       setIsConnected(true);
       console.log("[Realtime Debug] Subscribed to all collections");
-    });
+    };
+
+    subscribe();
 
     return () => {
-      manager.unsubscribe().then(() => {
-        setIsConnected(false);
-        console.log("[Realtime Debug] Unsubscribed from all collections");
-      });
-      managerRef.current = null;
+      for (const fn of unsubFnsRef.current) {
+        try {
+          fn();
+        } catch {
+          // ignore cleanup errors
+        }
+      }
+      unsubFnsRef.current = [];
+      setIsConnected(false);
+      console.log("[Realtime Debug] Unsubscribed from all collections");
     };
   }, [isAuthenticated, pb]);
 

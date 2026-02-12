@@ -17,6 +17,7 @@ import { DefaultText } from "@/components/DefaultText";
 import { SmallText } from "@/components/SmallText";
 import type ListItem from "@/db/models/ListItem";
 import { useListItems } from "@/hooks/useListItems";
+import { useLists } from "@/hooks/useLists";
 import { useSync } from "@/hooks/useSync";
 
 /** Swipeable item row with check toggle and delete. */
@@ -102,6 +103,7 @@ export default function ListDetailScreen() {
   const { listId } = useLocalSearchParams<{ listId: string }>();
   const navigation = useNavigation();
   const { isSyncing, triggerSync } = useSync();
+  const { archiveList, deleteList, renameList } = useLists();
 
   const { uncheckedItems, checkedItems, list, isLoading, addItem, toggleItem, deleteItem } =
     useListItems(listId);
@@ -163,7 +165,7 @@ export default function ListDetailScreen() {
   );
 
   const handleArchive = useCallback(() => {
-    if (!list) return;
+    if (!list || !listId) return;
 
     const archiveLabel = list.listType === "shopping" ? "Complete Shopping" : "Mark Complete";
     const archiveDescription =
@@ -176,15 +178,20 @@ export default function ListDetailScreen() {
       {
         text: "Complete",
         onPress: async () => {
-          await list.archive();
-          router.back();
+          try {
+            await archiveList(listId);
+            router.back();
+          } catch (error) {
+            console.warn("[ListDetail] Archive error:", error);
+            Alert.alert("Error", "Failed to archive list.");
+          }
         },
       },
     ]);
-  }, [list]);
+  }, [list, listId, archiveList]);
 
   const handleDeleteList = useCallback(() => {
-    if (!list) return;
+    if (!list || !listId) return;
 
     Alert.alert("Delete List", `Delete "${list.name}" and all its items?`, [
       { text: "Cancel", style: "cancel" },
@@ -192,12 +199,17 @@ export default function ListDetailScreen() {
         text: "Delete",
         style: "destructive",
         onPress: async () => {
-          await list.markDeleted();
-          router.back();
+          try {
+            await deleteList(listId);
+            router.back();
+          } catch (error) {
+            console.warn("[ListDetail] Delete error:", error);
+            Alert.alert("Error", "Failed to delete list.");
+          }
         },
       },
     ]);
-  }, [list]);
+  }, [list, listId, deleteList]);
 
   const handleStartRename = useCallback(() => {
     if (!list) return;
@@ -207,13 +219,18 @@ export default function ListDetailScreen() {
 
   const handleSubmitRename = useCallback(async () => {
     const trimmed = renameValue.trim();
-    if (!trimmed || !list) {
+    if (!trimmed || !list || !listId) {
       setIsRenaming(false);
       return;
     }
-    await list.updateName(trimmed);
+    try {
+      await renameList(listId, trimmed);
+    } catch (error) {
+      console.warn("[ListDetail] Rename error:", error);
+      Alert.alert("Error", "Failed to rename list.");
+    }
     setIsRenaming(false);
-  }, [renameValue, list]);
+  }, [renameValue, list, listId, renameList]);
 
   if (isLoading || !list) {
     return (

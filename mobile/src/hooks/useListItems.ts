@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDatabase } from "@/contexts/DatabaseContext";
 import type List from "@/db/models/List";
 import type ListItem from "@/db/models/ListItem";
-import { sync } from "@/db/sync";
+import { upsertRecord, deleteRecordByServerId } from "@/db/sync";
 
 type UseListItemsResult = {
   /** Unchecked items, sorted by sort_order. */
@@ -16,10 +16,10 @@ type UseListItemsResult = {
   /** Whether the initial load is still in progress. */
   isLoading: boolean;
   /** Add a new item to the list. */
-  addItem: (fields: { name: string; quantity?: string; note?: string }) => Promise<ListItem>;
+  addItem: (fields: { name: string; quantity?: string; note?: string }) => Promise<void>;
   /** Toggle checked state on an item. */
   toggleItem: (item: ListItem) => Promise<void>;
-  /** Delete an item (mark as deleted for sync). */
+  /** Delete an item. */
   deleteItem: (item: ListItem) => Promise<void>;
   /** Update item details. */
   updateItem: (
@@ -31,55 +31,46 @@ type UseListItemsResult = {
 /**
  * Reactively observes items for a given list.
  *
- * @param listId - The WatermelonDB local ID of the list.
+ * Mutations go to PocketBase first, then upsert the result into WatermelonDB.
+ * All relation fields (list_id, checked_by, created_by) store PB server IDs.
+ *
+ * @param listServerId - The PocketBase server ID of the list.
  */
-export const useListItems = (listId: string | undefined): UseListItemsResult => {
+export const useListItems = (listServerId: string | undefined): UseListItemsResult => {
   const database = useDatabase();
-  const { user } = useAuth();
+  const { user, pb } = useAuth();
   const [uncheckedItems, setUncheckedItems] = useState<ListItem[]>([]);
   const [checkedItems, setCheckedItems] = useState<ListItem[]>([]);
   const [list, setList] = useState<List | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Observe the list itself
+  // Observe the list itself (looked up by server_id, not WMDB id)
   useEffect(() => {
-    if (!listId) return;
+    if (!listServerId) return;
 
-    let cancelled = false;
     const collection = database.get<List>("lists");
+    const query = collection.query(Q.where("server_id", listServerId));
 
-    collection
-      .find(listId)
-      .then((found) => {
-        if (cancelled) return;
-        const subscription = found.observe().subscribe({
-          next: (record) => setList(record),
-          error: (err) => console.warn("[useListItems] List observe error:", err),
-        });
-        // Store unsubscribe for cleanup
-        cleanupRef = () => subscription.unsubscribe();
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          console.warn("[useListItems] List not found:", err);
-          setIsLoading(false);
-        }
-      });
+    const subscription = query.observe().subscribe({
+      next: (results) => {
+        setList(results.length > 0 ? results[0] : null);
+      },
+      error: (err) => {
+        console.warn("[useListItems] List observe error:", err);
+        setIsLoading(false);
+      },
+    });
 
-    let cleanupRef: (() => void) | null = null;
-    return () => {
-      cancelled = true;
-      cleanupRef?.();
-    };
-  }, [database, listId]);
+    return () => subscription.unsubscribe();
+  }, [database, listServerId]);
 
-  // Observe unchecked items
+  // Observe unchecked items (list_id stores PB server ID)
   useEffect(() => {
-    if (!listId) return;
+    if (!listServerId) return;
 
     const collection = database.get<ListItem>("list_items");
     const query = collection.query(
-      Q.where("list_id", listId),
+      Q.where("list_id", listServerId),
       Q.where("is_checked", false),
       Q.sortBy("sort_order", Q.asc),
     );
@@ -96,15 +87,15 @@ export const useListItems = (listId: string | undefined): UseListItemsResult => 
     });
 
     return () => subscription.unsubscribe();
-  }, [database, listId]);
+  }, [database, listServerId]);
 
   // Observe checked items
   useEffect(() => {
-    if (!listId) return;
+    if (!listServerId) return;
 
     const collection = database.get<ListItem>("list_items");
     const query = collection.query(
-      Q.where("list_id", listId),
+      Q.where("list_id", listServerId),
       Q.where("is_checked", true),
       Q.sortBy("updated_at", Q.desc),
     );
@@ -115,50 +106,76 @@ export const useListItems = (listId: string | undefined): UseListItemsResult => 
     });
 
     return () => subscription.unsubscribe();
-  }, [database, listId]);
+  }, [database, listServerId]);
 
   const addItem = async (fields: {
     name: string;
     quantity?: string;
     note?: string;
-  }): Promise<ListItem> => {
-    const collection = database.get<ListItem>("list_items");
+  }): Promise<void> => {
+    if (!listServerId) throw new Error("No list ID");
+    if (!pb) throw new Error("PocketBase not available.");
 
-    const newItem = await database.write(async () => {
-      return collection.create((item) => {
-        item.listId = listId;
-        item.name = fields.name;
-        item.quantity = fields.quantity ?? null;
-        item.note = fields.note ?? null;
-        item.isChecked = false;
-        item.checkedById = null;
-        item.sortOrder = uncheckedItems.length;
-        item.createdById = user?.id ?? null;
-      });
+    // 1. Create on PocketBase first
+    const pbRecord = await pb.collection("list_items").create({
+      list_id: listServerId,
+      name: fields.name,
+      quantity: fields.quantity ?? "",
+      note: fields.note ?? "",
+      checked: false,
+      sort_order: uncheckedItems.length,
+      created_by: user?.id ?? "",
     });
 
-    // Push the new item to PocketBase (fire-and-forget)
-    sync(database).catch((err) => console.warn("[useListItems] Post-add sync failed:", err));
-
-    return newItem;
+    // 2. Upsert into local WMDB cache
+    await upsertRecord(database, "list_items", pbRecord as unknown as Record<string, unknown>);
   };
 
   const toggleItem = async (item: ListItem): Promise<void> => {
-    await item.toggleChecked(user?.id ?? "");
-    sync(database).catch((err) => console.warn("[useListItems] Post-toggle sync failed:", err));
+    if (!pb) throw new Error("PocketBase not available.");
+
+    const serverId = item.serverId;
+    if (!serverId) throw new Error("Item has no server_id — cannot update on PB.");
+
+    const newChecked = !item.isChecked;
+
+    // 1. Update on PocketBase first
+    const pbRecord = await pb.collection("list_items").update(serverId, {
+      checked: newChecked,
+      checked_by: newChecked ? (user?.id ?? "") : "",
+    });
+
+    // 2. Upsert into local WMDB cache
+    await upsertRecord(database, "list_items", pbRecord as unknown as Record<string, unknown>);
   };
 
   const deleteItem = async (item: ListItem): Promise<void> => {
-    await item.markDeleted();
-    sync(database).catch((err) => console.warn("[useListItems] Post-delete sync failed:", err));
+    if (!pb) throw new Error("PocketBase not available.");
+
+    const serverId = item.serverId;
+    if (!serverId) throw new Error("Item has no server_id — cannot delete on PB.");
+
+    // 1. Delete on PocketBase first
+    await pb.collection("list_items").delete(serverId);
+
+    // 2. Remove from local WMDB cache
+    await deleteRecordByServerId(database, "list_items", serverId);
   };
 
   const updateItem = async (
     item: ListItem,
     fields: { name?: string; quantity?: string; note?: string },
   ): Promise<void> => {
-    await item.updateDetails(fields);
-    sync(database).catch((err) => console.warn("[useListItems] Post-update sync failed:", err));
+    if (!pb) throw new Error("PocketBase not available.");
+
+    const serverId = item.serverId;
+    if (!serverId) throw new Error("Item has no server_id — cannot update on PB.");
+
+    // 1. Update on PocketBase first
+    const pbRecord = await pb.collection("list_items").update(serverId, fields);
+
+    // 2. Upsert into local WMDB cache
+    await upsertRecord(database, "list_items", pbRecord as unknown as Record<string, unknown>);
   };
 
   return {

@@ -31,12 +31,12 @@ function ListItemCounts({ list }: { list: List }) {
     const collection = database.get<ListItem>("list_items");
 
     const totalSub = collection
-      .query(Q.where("list_id", list.id))
+      .query(Q.where("list_id", list.serverId))
       .observeCount()
       .subscribe((count) => setTotalCount(count));
 
     const checkedSub = collection
-      .query(Q.where("list_id", list.id), Q.where("is_checked", true))
+      .query(Q.where("list_id", list.serverId), Q.where("is_checked", true))
       .observeCount()
       .subscribe((count) => setCheckedCount(count));
 
@@ -44,7 +44,7 @@ function ListItemCounts({ list }: { list: List }) {
       totalSub.unsubscribe();
       checkedSub.unsubscribe();
     };
-  }, [database, list.id]);
+  }, [database, list.serverId]);
 
   if (totalCount === 0) {
     return <SmallText text="No items" />;
@@ -78,7 +78,7 @@ export default function ListsScreen() {
   const handleOpenList = useCallback((list: List) => {
     router.push({
       pathname: "/(tabs)/lists/[listId]" as const,
-      params: { listId: list.id },
+      params: { listId: list.serverId },
     } as never);
   }, []);
 

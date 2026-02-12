@@ -1,36 +1,22 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { AppState, type AppStateStatus } from "react-native";
 import { RealtimeManager } from "@/api/realtime";
 import { useAuth } from "@/contexts/AuthContext";
+import { useDatabase } from "@/contexts/DatabaseContext";
 
 /**
  * Hook that manages PocketBase SSE realtime subscriptions.
  *
- * When a realtime event is received, calls `onEvent` which should
- * trigger a sync to pull the latest changes into WatermelonDB.
+ * When a realtime event is received, the RealtimeManager directly upserts
+ * (or deletes) the record in WatermelonDB — no full sync trigger needed.
  *
  * Automatically subscribes when authenticated and unsubscribes on cleanup.
  * Re-subscribes when the app returns to the foreground.
  */
-export const useRealtime = (onEvent: () => void): void => {
+export const useRealtime = (): void => {
   const { isAuthenticated, pb } = useAuth();
+  const database = useDatabase();
   const managerRef = useRef<RealtimeManager | null>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Store the latest onEvent in a ref so we never re-subscribe just
-  // because the callback reference changed.
-  const onEventRef = useRef(onEvent);
-  onEventRef.current = onEvent;
-
-  // Stable debounced handler that reads from the ref.
-  const handleEvent = useCallback(() => {
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-    debounceRef.current = setTimeout(() => {
-      onEventRef.current();
-    }, 500);
-  }, []);
 
   useEffect(() => {
     if (!isAuthenticated || !pb) {
@@ -42,7 +28,7 @@ export const useRealtime = (onEvent: () => void): void => {
       return;
     }
 
-    const manager = new RealtimeManager(pb, handleEvent);
+    const manager = new RealtimeManager(pb, database);
     managerRef.current = manager;
 
     manager.subscribe();
@@ -59,9 +45,6 @@ export const useRealtime = (onEvent: () => void): void => {
       subscription.remove();
       manager.unsubscribe();
       managerRef.current = null;
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-      }
     };
-  }, [isAuthenticated, pb, handleEvent]);
+  }, [isAuthenticated, pb, database]);
 };

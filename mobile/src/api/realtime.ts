@@ -1,6 +1,8 @@
+import type { Database } from "@nozbe/watermelondb";
 import type PocketBase from "pocketbase";
 import type { UnsubscribeFunc } from "pocketbase";
 import { Collections } from "@/types/pocketbase-types";
+import { upsertRecord, deleteRecordByServerId } from "@/db/sync";
 
 /** Collections we want to watch for realtime updates. */
 const REALTIME_COLLECTIONS = [
@@ -12,39 +14,40 @@ const REALTIME_COLLECTIONS = [
   Collections.Geofences,
 ];
 
-type RealtimeEvent = {
-  action: "create" | "update" | "delete";
-  record: Record<string, unknown>;
-};
-
-type RealtimeCallback = (event: RealtimeEvent, collection: string) => void;
-
 /**
- * Simple callback that just signals something changed, ignoring event details.
- * Used by useRealtime to trigger a sync without inspecting the event.
+ * Maps PocketBase collection names to WatermelonDB table names.
+ * Inverse of TABLE_TO_COLLECTION in sync.ts.
  */
-type SimpleCallback = () => void;
+const COLLECTION_TO_TABLE: Record<string, string> = {
+  [Collections.Families]: "families",
+  [Collections.Users]: "members",
+  [Collections.Lists]: "lists",
+  [Collections.ListItems]: "list_items",
+  [Collections.LocationHistory]: "location_history",
+  [Collections.Geofences]: "geofences",
+};
 
 /**
  * Manages PocketBase SSE subscriptions for realtime updates.
  *
+ * When a realtime event is received, the record is directly upserted into
+ * (or deleted from) WatermelonDB — no full sync needed.
+ *
  * Usage:
- *   const rt = new RealtimeManager(pb, (event, collection) => {
- *     // trigger sync or update local DB
- *   });
+ *   const rt = new RealtimeManager(pb, database);
  *   await rt.subscribe();
  *   // later...
  *   await rt.unsubscribe();
  */
 export class RealtimeManager {
   private pb: PocketBase;
-  private callback: RealtimeCallback | SimpleCallback;
+  private database: Database;
   private unsubscribeFns: UnsubscribeFunc[] = [];
   private isSubscribed = false;
 
-  constructor(pb: PocketBase, callback: RealtimeCallback | SimpleCallback) {
+  constructor(pb: PocketBase, database: Database) {
     this.pb = pb;
-    this.callback = callback;
+    this.database = database;
   }
 
   /**
@@ -56,14 +59,23 @@ export class RealtimeManager {
 
     for (const collection of REALTIME_COLLECTIONS) {
       try {
-        const unsubscribe = await this.pb.collection(collection).subscribe("*", (data) => {
-          this.callback(
-            {
-              action: data.action as RealtimeEvent["action"],
-              record: data.record as Record<string, unknown>,
-            },
-            collection,
-          );
+        const table = COLLECTION_TO_TABLE[collection];
+        if (!table) continue;
+
+        const unsubscribe = await this.pb.collection(collection).subscribe("*", async (data) => {
+          try {
+            const record = data.record as Record<string, unknown>;
+
+            if (data.action === "delete") {
+              const serverId = record.id as string;
+              await deleteRecordByServerId(this.database, table, serverId);
+            } else {
+              // "create" or "update" — upsert into WMDB
+              await upsertRecord(this.database, table, record);
+            }
+          } catch (error) {
+            console.warn(`[Realtime] Failed to process ${data.action} on ${collection}:`, error);
+          }
         });
         this.unsubscribeFns.push(unsubscribe);
       } catch (error) {

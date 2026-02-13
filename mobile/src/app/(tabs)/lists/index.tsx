@@ -68,21 +68,23 @@ export default function ListsScreen() {
   const { isSyncing, triggerSync } = useSync();
   const [showNewInput, setShowNewInput] = useState(false);
   const [newListName, setNewListName] = useState("");
+  const [newListType, setNewListType] = useState<ListType>("shopping");
 
   const handleCreateList = useCallback(async () => {
     const name = newListName.trim();
     if (!name) return;
 
     try {
-      await createList(name);
+      await createList(name, newListType);
       setNewListName("");
+      setNewListType("shopping");
       setShowNewInput(false);
     } catch (error) {
       console.warn("[Lists] Create error:", error);
       const message = error instanceof Error ? error.message : "Failed to create list.";
       Alert.alert("Error", message);
     }
-  }, [newListName, createList]);
+  }, [newListName, newListType, createList]);
 
   const handleOpenList = useCallback((list: List) => {
     router.push({
@@ -135,11 +137,60 @@ export default function ListsScreen() {
             autoFocus
             returnKeyType="done"
           />
+          
+          {/* List type selector */}
+          <View style={styles.typeSelector}>
+            <SmallText text="Type:" />
+            <View style={styles.typeButtons}>
+              <Pressable
+                style={[
+                  styles.typeButton,
+                  { backgroundColor: LIST_TYPE_COLORS.shopping },
+                  newListType === "shopping" && styles.typeButtonActive,
+                ]}
+                onPress={() => setNewListType("shopping")}
+              >
+                <SmallText text="🛒" />
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.typeButton,
+                  { backgroundColor: LIST_TYPE_COLORS.todo },
+                  newListType === "todo" && styles.typeButtonActive,
+                ]}
+                onPress={() => setNewListType("todo")}
+              >
+                <SmallText text="✓" />
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.typeButton,
+                  { backgroundColor: LIST_TYPE_COLORS.packing },
+                  newListType === "packing" && styles.typeButtonActive,
+                ]}
+                onPress={() => setNewListType("packing")}
+              >
+                <SmallText text="🎒" />
+              </Pressable>
+              <Pressable
+                style={[
+                  styles.typeButton,
+                  { backgroundColor: LIST_TYPE_COLORS.custom },
+                  newListType === "custom" && styles.typeButtonActive,
+                ]}
+                onPress={() => setNewListType("custom")}
+              >
+                <SmallText text="⭐" />
+              </Pressable>
+            </View>
+          </View>
+
           <View style={styles.newListActions}>
             <Pressable
               onPress={() => {
                 setShowNewInput(false);
                 setNewListName("");
+                setNewListType("shopping");
               }}
             >
               <SmallText text="Cancel" />
@@ -262,6 +313,31 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "flex-end",
     gap: theme.spacing[4],
     alignItems: "center",
+  },
+  typeSelector: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: theme.spacing[3],
+  },
+  typeButtons: {
+    flexDirection: "row",
+    gap: theme.spacing[2],
+  },
+  typeButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
+  },
+  typeButtonActive: {
+    borderWidth: 3,
+    borderColor: theme.colors.black,
   },
   emptyState: {
     alignItems: "center",

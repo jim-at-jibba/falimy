@@ -18,7 +18,9 @@ export default function Home() {
     <SafeAreaView>
       <View>
         <Title text="Falimy" />
-        <DefaultText text={`Welcome${user?.name ? `, ${user.name}` : ""}. Your private family hub.`} />
+        <DefaultText
+          text={`Welcome${user?.name ? `, ${user.name}` : ""}. Your private family hub.`}
+        />
         <Button label="Log Out" onPress={handleLogout} variant="secondary" />
       </View>
     </SafeAreaView>

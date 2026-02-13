@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 import { House, List, MapPin, Settings } from "lucide-react-native";
 import { useEffect } from "react";
+import CustomTabBar from "@/components/CustomTabBar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRealtime } from "@/hooks/useRealtime";
 import { useSync } from "@/hooks/useSync";
@@ -25,12 +26,10 @@ export default function TabsLayout() {
 
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerTitleAlign: "center",
         headerStyle: { backgroundColor: "#f6f8fb" },
-        tabBarStyle: { backgroundColor: "#ffffff" },
-        tabBarActiveTintColor: "#0c8ce9",
-        tabBarInactiveTintColor: "#6b7d8d",
       }}
     >
       <Tabs.Screen

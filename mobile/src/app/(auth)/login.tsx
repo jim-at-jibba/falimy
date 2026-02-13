@@ -95,5 +95,6 @@ export default function Login() {
 const styles = StyleSheet.create((theme) => ({
   container: {
     padding: theme.spacing[4],
+    gap: theme.spacing[3],
   },
 }));

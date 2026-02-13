@@ -39,6 +39,11 @@ const styles = StyleSheet.create((theme) => ({
     height: theme.buttonHeight,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
   },
   primary: {
     backgroundColor: theme.colors.primary,

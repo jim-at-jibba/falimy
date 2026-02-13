@@ -17,9 +17,18 @@ import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
 import { useDatabase } from "@/contexts/DatabaseContext";
 import type List from "@/db/models/List";
+import type { ListType } from "@/db/models/List";
 import type ListItem from "@/db/models/ListItem";
 import { useLists } from "@/hooks/useLists";
 import { useSync } from "@/hooks/useSync";
+
+/** Color mapping for list types */
+const LIST_TYPE_COLORS: Record<ListType, string> = {
+  shopping: "#b4dbfa", // blue
+  todo: "#dad4fc", // purple
+  packing: "#fadeaf", // orange
+  custom: "#f8d5f4", // pink
+};
 
 /** Small sub-component to display live item counts for a list. */
 function ListItemCounts({ list }: { list: List }) {
@@ -162,7 +171,14 @@ export default function ListsScreen() {
 
       {/* List cards */}
       {lists.map((list) => (
-        <Pressable key={list.id} style={styles.listCard} onPress={() => handleOpenList(list)}>
+        <Pressable 
+          key={list.id} 
+          style={[
+            styles.listCard, 
+            { backgroundColor: LIST_TYPE_COLORS[list.listType] }
+          ]} 
+          onPress={() => handleOpenList(list)}
+        >
           <View style={styles.listCardContent}>
             <View style={styles.listCardText}>
               <DefaultText
@@ -219,19 +235,27 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: theme.borderRadiusSm,
     padding: theme.spacing[4],
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
     gap: theme.spacing[3],
+    borderWidth: 3,
+    borderColor: "#b4dbfa", // blue
   },
   newListInput: {
     fontSize: theme.fontSizes.md,
     fontFamily: theme.fontFamily.regular,
     color: theme.colors.typography,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.greyLight,
+    backgroundColor: theme.colors.greyBackground,
+    borderRadius: theme.borderRadiusSm,
+    paddingHorizontal: theme.spacing[4],
     paddingVertical: theme.spacing[2],
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
   },
   newListActions: {
     flexDirection: "row",
@@ -245,14 +269,13 @@ const styles = StyleSheet.create((theme) => ({
     gap: 4,
   },
   listCard: {
-    backgroundColor: theme.colors.white,
     borderRadius: theme.borderRadiusSm,
     padding: theme.spacing[4],
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
   },
   listCardContent: {
     flexDirection: "row",

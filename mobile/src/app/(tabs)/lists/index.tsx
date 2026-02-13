@@ -13,8 +13,8 @@ import {
 } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { DefaultText } from "@/components/DefaultText";
+import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
-import Title from "@/components/Title";
 import { useDatabase } from "@/contexts/DatabaseContext";
 import type List from "@/db/models/List";
 import type ListItem from "@/db/models/ListItem";
@@ -91,24 +91,27 @@ export default function ListsScreen() {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      refreshControl={
-        <RefreshControl
-          refreshing={isSyncing}
-          onRefresh={triggerSync}
-          tintColor={theme.colors.primary}
-        />
-      }
-    >
-      {/* Header row */}
-      <View style={styles.headerRow}>
-        <Title text="Lists" />
-        <Pressable style={styles.addButton} onPress={() => setShowNewInput(true)} hitSlop={8}>
-          <Plus size={24} color={theme.colors.primary} />
-        </Pressable>
-      </View>
+    <View style={styles.outerContainer}>
+      <Header
+        title="Lists"
+        backgroundColor="#dad4fc"
+        rightElement={
+          <Pressable style={styles.addButton} onPress={() => setShowNewInput(true)} hitSlop={8}>
+            <Plus size={24} color={theme.colors.backgroundAccent} />
+          </Pressable>
+        }
+      />
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={isSyncing}
+            onRefresh={triggerSync}
+            tintColor={theme.colors.primary}
+          />
+        }
+      >
 
       {/* Create new list input */}
       {showNewInput && (
@@ -179,10 +182,15 @@ export default function ListsScreen() {
         </Pressable>
       ))}
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -198,16 +206,11 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     backgroundColor: theme.colors.background,
   },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   addButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: theme.colors.backgroundAccent,
+    backgroundColor: theme.colors.accentLight,
     justifyContent: "center",
     alignItems: "center",
   },

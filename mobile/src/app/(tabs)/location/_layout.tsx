@@ -4,14 +4,13 @@ export default function LocationLayout() {
   return (
     <Stack
       screenOptions={{
-        headerTitleAlign: "center",
-        headerStyle: { backgroundColor: "#f6f8fb" },
+        headerShown: false,
       }}
     >
-      <Stack.Screen name="index" options={{ title: "Map" }} />
-      <Stack.Screen name="settings" options={{ title: "Location Settings" }} />
-      <Stack.Screen name="geofences" options={{ title: "Geofences" }} />
-      <Stack.Screen name="create-geofence" options={{ title: "New Geofence" }} />
+      <Stack.Screen name="index" />
+      <Stack.Screen name="settings" />
+      <Stack.Screen name="geofences" />
+      <Stack.Screen name="create-geofence" />
     </Stack>
   );
 }

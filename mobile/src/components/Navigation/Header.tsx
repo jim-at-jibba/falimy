@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 import { BackButton } from "./BackButton";
 
@@ -7,32 +8,54 @@ interface HeaderProps {
   showBack?: boolean;
   onBackPress?: () => void;
   rightElement?: React.ReactNode;
+  backgroundColor?: string;
 }
 
-export function Header({ title, showBack = true, onBackPress, rightElement }: HeaderProps) {
+export function Header({
+  title,
+  showBack = false,
+  onBackPress,
+  rightElement,
+  backgroundColor,
+}: HeaderProps) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.header}>
-      <View style={styles.headerLeft}>
-        {showBack && <BackButton onPress={onBackPress} />}
-        {title && (
-          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-            {title}
-          </Text>
-        )}
+    <View
+      style={[
+        styles.wrapper,
+        { paddingTop: insets.top, backgroundColor: backgroundColor ?? "transparent" },
+      ]}
+    >
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          {showBack && <BackButton onPress={onBackPress} />}
+          {title && (
+            <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+              {title}
+            </Text>
+          )}
+        </View>
+        {rightElement && <View style={styles.headerRight}>{rightElement}</View>}
       </View>
-      {rightElement && <View style={styles.headerRight}>{rightElement}</View>}
     </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  wrapper: {
+    borderBottomLeftRadius: theme.borderRadiusSm,
+    borderBottomRightRadius: theme.borderRadiusSm,
+    overflow: "hidden",
+    zIndex: 1,
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: theme.spacing[4],
-    paddingVertical: theme.spacing[2],
-    height: 66,
+    alignItems: "flex-end",
+    paddingHorizontal: theme.spacing[5],
+    paddingTop: theme.spacing[3],
+    paddingBottom: theme.spacing[4],
   },
   headerLeft: {
     flexDirection: "row",
@@ -49,7 +72,8 @@ const styles = StyleSheet.create((theme) => ({
   },
   title: {
     fontSize: theme.fontSizes.xl,
-    fontWeight: "bold",
+    fontFamily: theme.fontFamily.bold,
+    fontWeight: "800",
     color: theme.colors.typography,
     flex: 1,
   },

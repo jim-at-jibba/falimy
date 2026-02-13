@@ -28,8 +28,7 @@ export default function TabsLayout() {
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
-        headerTitleAlign: "center",
-        headerStyle: { backgroundColor: "#f6f8fb" },
+        headerShown: false,
       }}
     >
       <Tabs.Screen

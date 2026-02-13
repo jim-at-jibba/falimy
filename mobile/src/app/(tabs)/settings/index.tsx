@@ -1,16 +1,16 @@
 import { router } from "expo-router";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native-unistyles";
 
-import { Button } from "../../../components/Button";
-import { DefaultText } from "../../../components/DefaultText";
-import Title from "../../../components/Title";
+import { Button } from "@/components/Button";
+import { DefaultText } from "@/components/DefaultText";
+import { Header } from "@/components/Navigation/Header";
 
 export default function SettingsHome() {
   return (
-    <SafeAreaView>
-      <View>
-        <Title text="Settings" />
+    <View style={styles.container}>
+      <Header title="Settings" backgroundColor="#fadeaf" />
+      <View style={styles.content}>
         <DefaultText text="Manage your family and server connection." />
 
         <Button label="Family" onPress={() => router.push("/(tabs)/settings/family")} />
@@ -20,6 +20,17 @@ export default function SettingsHome() {
           variant="secondary"
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  content: {
+    padding: theme.spacing[5],
+    gap: theme.spacing[3],
+  },
+}));

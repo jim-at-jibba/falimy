@@ -46,10 +46,15 @@ const base = {
 
 export const lightTheme = {
   colors: {
-    primary: "#2BCCBD",
-    accentLight: "#9FE8E1",
-    backgroundAccent: "#CFF3EF",
+    primary: "#b4dbfa",
+    accentLight: "#dad4fc",
+    backgroundAccent: "#2c2c2c",
     background: "#fff",
+    blue: "#b4dbfa",
+    purple: "#dad4fc",
+    orange: "#fadeaf",
+    pink: "#f8d5f4",
+    green: "#b2ecca",
     black: "#2C2C2C",
     greyDark: "#4C4C4C",
     grey: "#B1B8BE",
@@ -84,9 +89,14 @@ export const lightTheme = {
 export const darkTheme = {
   colors: {
     typography: "#ffffff",
-    primary: "#2BCCBD",
-    accentLight: "#9FE8E1",
-    backgroundAccent: "#CFF3EF",
+    primary: "#b4dbfa",
+    accentLight: "#dad4fc",
+    backgroundAccent: "#2c2c2c",
+    blue: "#b4dbfa",
+    purple: "#dad4fc",
+    orange: "#fadeaf",
+    pink: "#f8d5f4",
+    green: "#b2ecca",
     background: "#0D0D0D",
     black: "#2C2C2C",
     greyDark: "#4C4C4C",

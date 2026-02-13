@@ -6,8 +6,8 @@ import MapView, { Circle, Marker, type Region } from "react-native-maps";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { DefaultText } from "@/components/DefaultText";
+import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
-import Title from "@/components/Title";
 import { useAuth } from "@/contexts/AuthContext";
 import type Member from "@/db/models/Member";
 import { useFamilyLocations } from "@/hooks/useFamilyLocations";
@@ -121,142 +121,150 @@ export default function MapScreen() {
   // No location data at all — show empty state
   if (members.length === 0) {
     return (
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.emptyContent}
-        refreshControl={
-          <RefreshControl
-            refreshing={isSyncing}
-            onRefresh={triggerSync}
-            tintColor={theme.colors.primary}
-          />
-        }
-      >
-        <MapPin size={48} color={theme.colors.grey} />
-        <Title text="No Locations Yet" />
-        <DefaultText
-          text="No family members are sharing their location. Enable location sharing in settings to get started."
-          additionalStyles={{
-            color: theme.colors.grey,
-            textAlign: "center",
-            paddingHorizontal: 32,
-          }}
-        />
-        <Pressable
-          style={styles.settingsButton}
-          onPress={() => router.push("/(tabs)/location/settings" as never)}
+      <View style={styles.container}>
+        <Header title="Map" backgroundColor="#b2ecca" />
+        <ScrollView
+          contentContainerStyle={styles.emptyContent}
+          refreshControl={
+            <RefreshControl
+              refreshing={isSyncing}
+              onRefresh={triggerSync}
+              tintColor={theme.colors.primary}
+            />
+          }
         >
-          <Settings2 size={20} color={theme.colors.white} />
+          <MapPin size={48} color={theme.colors.grey} />
           <DefaultText
-            text="Location Settings"
-            additionalStyles={{ color: theme.colors.white, fontWeight: "600" }}
+            text="No Locations Yet"
+            additionalStyles={{ fontWeight: "700", fontSize: theme.fontSizes.xl }}
           />
-        </Pressable>
-      </ScrollView>
+          <DefaultText
+            text="No family members are sharing their location. Enable location sharing in settings to get started."
+            additionalStyles={{
+              color: theme.colors.grey,
+              textAlign: "center",
+              paddingHorizontal: 32,
+            }}
+          />
+          <Pressable
+            style={styles.settingsButton}
+            onPress={() => router.push("/(tabs)/location/settings" as never)}
+          >
+            <Settings2 size={20} color={theme.colors.white} />
+            <DefaultText
+              text="Location Settings"
+              additionalStyles={{ color: theme.colors.white, fontWeight: "600" }}
+            />
+          </Pressable>
+        </ScrollView>
+      </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        initialRegion={initialRegion}
-        showsUserLocation={
-          permissionStatus === "granted" || permissionStatus === "background_granted"
-        }
-        showsMyLocationButton={false}
-      >
-        {/* Family member markers */}
-        {members.map((member) => (
-          <Marker
-            key={member.id}
-            coordinate={{
-              latitude: member.lastLat ?? 0,
-              longitude: member.lastLng ?? 0,
-            }}
-            title={member.name}
-            description={formatRelativeTime(member.lastLocationAt)}
-            pinColor={getMarkerColor(member.lastLocationAt)}
-            onPress={() => handleMarkerPress(member)}
-          />
-        ))}
-
-        {/* Geofence circles */}
-        {geofences
-          .filter((g) => g.isEnabled)
-          .map((geofence) => (
-            <Circle
-              key={geofence.id}
-              center={{ latitude: geofence.lat, longitude: geofence.lng }}
-              radius={geofence.radius}
-              strokeColor="rgba(43, 204, 189, 0.6)"
-              fillColor="rgba(43, 204, 189, 0.1)"
-              strokeWidth={2}
+      <Header title="Map" backgroundColor="#b2ecca" />
+      <View style={styles.mapContainer}>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          initialRegion={initialRegion}
+          showsUserLocation={
+            permissionStatus === "granted" || permissionStatus === "background_granted"
+          }
+          showsMyLocationButton={false}
+        >
+          {/* Family member markers */}
+          {members.map((member) => (
+            <Marker
+              key={member.id}
+              coordinate={{
+                latitude: member.lastLat ?? 0,
+                longitude: member.lastLng ?? 0,
+              }}
+              title={member.name}
+              description={formatRelativeTime(member.lastLocationAt)}
+              pinColor={getMarkerColor(member.lastLocationAt)}
+              onPress={() => handleMarkerPress(member)}
             />
           ))}
-      </MapView>
 
-      {/* Floating action buttons */}
-      <View style={styles.fabContainer}>
-        <Pressable style={styles.fab} onPress={handleCenterOnMembers}>
-          <Navigation size={20} color={theme.colors.primary} />
-        </Pressable>
-        <Pressable
-          style={styles.fab}
-          onPress={() => router.push("/(tabs)/location/settings" as never)}
-        >
-          <Settings2 size={20} color={theme.colors.primary} />
-        </Pressable>
-        <Pressable
-          style={styles.fab}
-          onPress={() => router.push("/(tabs)/location/geofences" as never)}
-        >
-          <Shield size={20} color={theme.colors.primary} />
-        </Pressable>
-      </View>
+          {/* Geofence circles */}
+          {geofences
+            .filter((g) => g.isEnabled)
+            .map((geofence) => (
+              <Circle
+                key={geofence.id}
+                center={{ latitude: geofence.lat, longitude: geofence.lng }}
+                radius={geofence.radius}
+                strokeColor="rgba(43, 204, 189, 0.6)"
+                fillColor="rgba(43, 204, 189, 0.1)"
+                strokeWidth={2}
+              />
+            ))}
+        </MapView>
 
-      {/* Selected member detail card */}
-      {selectedMember && (
-        <View style={styles.memberCard}>
-          <Pressable style={styles.memberCardClose} onPress={() => setSelectedMember(null)}>
-            <SmallText text="x" />
+        {/* Floating action buttons */}
+        <View style={styles.fabContainer}>
+          <Pressable style={styles.fab} onPress={handleCenterOnMembers}>
+            <Navigation size={20} color={theme.colors.primary} />
           </Pressable>
-          <View style={styles.memberCardRow}>
-            <View style={styles.memberAvatar}>
-              <DefaultText
-                text={getInitials(selectedMember.name)}
-                additionalStyles={{ color: theme.colors.white, fontWeight: "700" }}
-              />
-            </View>
-            <View style={styles.memberCardText}>
-              <DefaultText
-                text={selectedMember.name}
-                additionalStyles={{ fontWeight: "600", fontSize: theme.fontSizes.md }}
-              />
-              <SmallText text={formatRelativeTime(selectedMember.lastLocationAt)} />
-              {selectedMember.locationSharingMode && (
-                <SmallText text={`Sharing: ${selectedMember.locationSharingMode}`} />
-              )}
-              {selectedMember.serverId === user?.id && <SmallText text="(You)" />}
+          <Pressable
+            style={styles.fab}
+            onPress={() => router.push("/(tabs)/location/settings" as never)}
+          >
+            <Settings2 size={20} color={theme.colors.primary} />
+          </Pressable>
+          <Pressable
+            style={styles.fab}
+            onPress={() => router.push("/(tabs)/location/geofences" as never)}
+          >
+            <Shield size={20} color={theme.colors.primary} />
+          </Pressable>
+        </View>
+
+        {/* Selected member detail card */}
+        {selectedMember && (
+          <View style={styles.memberCard}>
+            <Pressable style={styles.memberCardClose} onPress={() => setSelectedMember(null)}>
+              <SmallText text="x" />
+            </Pressable>
+            <View style={styles.memberCardRow}>
+              <View style={styles.memberAvatar}>
+                <DefaultText
+                  text={getInitials(selectedMember.name)}
+                  additionalStyles={{ color: theme.colors.white, fontWeight: "700" }}
+                />
+              </View>
+              <View style={styles.memberCardText}>
+                <DefaultText
+                  text={selectedMember.name}
+                  additionalStyles={{ fontWeight: "600", fontSize: theme.fontSizes.md }}
+                />
+                <SmallText text={formatRelativeTime(selectedMember.lastLocationAt)} />
+                {selectedMember.locationSharingMode && (
+                  <SmallText text={`Sharing: ${selectedMember.locationSharingMode}`} />
+                )}
+                {selectedMember.serverId === user?.id && <SmallText text="(You)" />}
+              </View>
             </View>
           </View>
-        </View>
-      )}
+        )}
 
-      {/* Sharing status banner */}
-      {showsPermissionBanner && (
-        <Pressable
-          style={styles.banner}
-          onPress={() => router.push("/(tabs)/location/settings" as never)}
-        >
-          <MapPin size={16} color={theme.colors.white} />
-          <DefaultText
-            text="Location sharing is off. Tap to configure."
-            additionalStyles={{ color: theme.colors.white, fontSize: theme.fontSizes.sm }}
-          />
-        </Pressable>
-      )}
+        {/* Sharing status banner */}
+        {showsPermissionBanner && (
+          <Pressable
+            style={styles.banner}
+            onPress={() => router.push("/(tabs)/location/settings" as never)}
+          >
+            <MapPin size={16} color={theme.colors.white} />
+            <DefaultText
+              text="Location sharing is off. Tap to configure."
+              additionalStyles={{ color: theme.colors.white, fontSize: theme.fontSizes.sm }}
+            />
+          </Pressable>
+        )}
+      </View>
     </View>
   );
 }
@@ -278,6 +286,11 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: "center",
     gap: theme.spacing[4],
     padding: theme.spacing[5],
+  },
+  mapContainer: {
+    flex: 1,
+    position: "relative",
+    marginTop: -theme.borderRadiusSm,
   },
   map: {
     flex: 1,

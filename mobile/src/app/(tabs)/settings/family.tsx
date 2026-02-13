@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { getPocketBase } from "../../../api/pocketbase";
-import { Button } from "../../../components/Button";
-import { Select, type SelectOption } from "../../../components/Select";
-import { SmallText } from "../../../components/SmallText";
-import Title from "../../../components/Title";
-import type { FamiliesResponse, UsersResponse } from "../../../types/pocketbase-types";
-import { getServerUrl } from "../../../utils/config";
-import { generateInviteCode } from "../../../utils/invite";
+import { StyleSheet, useUnistyles } from "react-native-unistyles";
+import { getPocketBase } from "@/api/pocketbase";
+import { Button } from "@/components/Button";
+import { Header } from "@/components/Navigation/Header";
+import { Select, type SelectOption } from "@/components/Select";
+import { SmallText } from "@/components/SmallText";
+import type { FamiliesResponse, UsersResponse } from "@/types/pocketbase-types";
+import { getServerUrl } from "@/utils/config";
+import { generateInviteCode } from "@/utils/invite";
 
 const ROLE_OPTIONS: SelectOption[] = [
   { label: "Admin", value: "admin" },
@@ -109,25 +109,20 @@ export default function FamilySettings() {
 
   const isAdmin = currentUserRole === "admin";
 
+  const { theme } = useUnistyles();
+
   if (loading) {
     return (
-      <SafeAreaView
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#f6f8fb",
-        }}
-      >
-        <ActivityIndicator size="large" color="#0c8ce9" />
-      </SafeAreaView>
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </View>
     );
   }
 
   return (
-    <SafeAreaView>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 16 }}>
-        <Title text="Family" />
+    <View style={styles.container}>
+      <Header title="Family" showBack backgroundColor="#fadeaf" />
+      <ScrollView contentContainerStyle={styles.content}>
 
         {error ? <Text style={{ color: "#b11d1d" }}>{error}</Text> : null}
 
@@ -207,6 +202,24 @@ export default function FamilySettings() {
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: theme.colors.background,
+  },
+  content: {
+    padding: theme.spacing[5],
+    paddingBottom: 40,
+    gap: theme.spacing[4],
+  },
+}));

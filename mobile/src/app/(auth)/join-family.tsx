@@ -11,7 +11,6 @@ import { DefaultText } from "@/components/DefaultText";
 import { FormError } from "@/components/Form/FormError";
 import { FormInputText } from "@/components/Form/FormInputText";
 import { Header } from "@/components/Navigation/Header";
-import type { FamiliesResponse } from "@/types/pocketbase-types";
 import { setServerUrl } from "@/utils/config";
 
 type JoinParams = {
@@ -69,18 +68,9 @@ export default function JoinFamily() {
   const onSubmit = async (data: Schema) => {
     setLoading(true);
 
-    console.log("[JoinFamily] Attempting to join with data:", {
-      server: data.server,
-      familyId: data.familyId,
-      inviteCode: data.inviteCode,
-      email: data.email,
-      name: data.name,
-    });
-
     try {
       // Step 1: Validate and set server URL
       const normalized = await validateServerUrl(data.server);
-      console.log("[JoinFamily] Normalized server URL:", normalized);
       await setServerUrl(normalized);
       resetPocketBase();
 
@@ -93,130 +83,45 @@ export default function JoinFamily() {
         return;
       }
 
-      // Step 2: Fetch family and validate invite code
-      let family: FamiliesResponse;
-      try {
-        console.log("[JoinFamily] Fetching family with ID:", data.familyId.trim());
-        
-        // Use raw fetch instead of PocketBase SDK for unauthenticated requests
-        // The PocketBase SDK has an issue returning empty objects for unauthenticated getOne() calls
-        const rawUrl = `${pb.baseUrl}/api/collections/families/records/${data.familyId.trim()}`;
-        const rawResponse = await fetch(rawUrl);
-        
-        if (!rawResponse.ok) {
-          throw new Error(`HTTP ${rawResponse.status}: ${rawResponse.statusText}`);
-        }
-        
-        family = await rawResponse.json() as FamiliesResponse;
-        console.log("[JoinFamily] Family found:", family.name, family.id);
-      } catch (err) {
-        console.error("[JoinFamily] Failed to fetch family:", err);
-        methods.setError("familyId", {
-          message: "Family not found. Check the Family ID.",
-        });
-        setLoading(false);
-        return;
-      }
-
-      const inviteCode = family.invite_code;
-      console.log("[JoinFamily] Invite code from family:", inviteCode);
-      console.log("[JoinFamily] Invite code from form:", data.inviteCode.trim());
-
-      if (!inviteCode) {
-        methods.setError("root", {
-          message: "This family does not have an invite code set. Contact the family admin.",
-        });
-        setLoading(false);
-        return;
-      }
-
-      if (inviteCode !== data.inviteCode.trim()) {
-        console.error("[JoinFamily] Invite code mismatch:", {
-          expected: inviteCode,
-          received: data.inviteCode.trim(),
-        });
-        methods.setError("inviteCode", {
-          message: `Invite code is invalid. Expected: "${inviteCode}", Got: "${data.inviteCode.trim()}"`,
-        });
-        setLoading(false);
-        return;
-      }
-
-      console.log("[JoinFamily] Invite code validated successfully");
-
-      // Step 3: Create user account
-      try {
-        console.log("[JoinFamily] Creating user account...");
-        const userPayload = {
+      // Step 2: Call server-side join endpoint
+      // Invite code is validated server-side and never exposed to the client.
+      const response = await fetch(`${pb.baseUrl}/api/falimy/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          familyId: data.familyId.trim(),
+          inviteCode: data.inviteCode.trim(),
           email: data.email.trim(),
           password: data.password,
-          passwordConfirm: data.password,
           name: data.name.trim(),
-          role: "member",
-          family_id: family.id,
-        };
-        console.log("[JoinFamily] User payload:", JSON.stringify(userPayload, null, 2));
-        
-        const createResponse = await fetch(`${pb.baseUrl}/api/collections/users/records`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userPayload),
-        });
-        
-        console.log("[JoinFamily] Create response status:", createResponse.status);
-        const createResult = await createResponse.json();
-        console.log("[JoinFamily] Create result:", JSON.stringify(createResult, null, 2));
-        
-        if (!createResponse.ok) {
-          throw new Error(`Failed to create user: ${JSON.stringify(createResult)}`);
-        }
-        
-        console.log("[JoinFamily] User account created successfully");
-      } catch (err) {
-        console.error("[JoinFamily] Failed to create user:", err);
-        // @ts-expect-error - PocketBase error structure
-        const pbError = err?.response?.data;
-        console.error("[JoinFamily] PocketBase error details:", pbError);
-        
-        let message = "Could not create account. ";
-        // @ts-expect-error - PocketBase error structure
-        if (err?.message?.includes("email")) {
-          message = "Email already in use. Try logging in instead.";
-        // @ts-expect-error - PocketBase error structure
-        } else if (pbError) {
-          // Try to extract field-specific errors
-          const fieldErrors = Object.entries(pbError)
-            .map(([field, error]) => `${field}: ${error}`)
-            .join(", ");
-          message += fieldErrors || "Check your details.";
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        const message = result?.message || "Could not join the family. Check your details and try again.";
+
+        // Map server errors to specific form fields where possible
+        if (response.status === 404) {
+          methods.setError("familyId", { message });
+        } else if (response.status === 401) {
+          methods.setError("inviteCode", { message });
+        } else if (response.status === 409) {
+          methods.setError("email", { message });
         } else {
-          message += "Check your details.";
+          methods.setError("root", { message });
         }
-        
-        methods.setError("root", { message });
+
         setLoading(false);
         return;
       }
 
-      // Step 4: Log in
-      try {
-        console.log("[JoinFamily] Authenticating user...");
-        await pb.collection("users").authWithPassword(data.email.trim(), data.password);
-        console.log("[JoinFamily] Authentication successful, redirecting to app");
-      } catch (err) {
-        console.error("[JoinFamily] Failed to authenticate:", err);
-        methods.setError("root", {
-          message: "Account created but login failed. Try the login screen.",
-        });
-        setLoading(false);
-        return;
-      }
+      // Step 3: Hydrate auth store with the returned token
+      pb.authStore.save(result.token, result.record);
 
       router.replace("/(tabs)");
     } catch (err) {
-      console.error("[JoinFamily] Unexpected error:", err);
       methods.setError("root", {
         message: "Could not join the family. Check your details and try again.",
       });

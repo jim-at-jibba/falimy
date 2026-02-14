@@ -4,16 +4,9 @@ migrate(
     const families = app.findCollectionByNameOrId("families");
 
     // Allow anyone to view and list family records (needed for invite code validation during signup)
-    // Users still can only see families where they have the family ID (from QR code/invite)
+    // Users still need to know the exact family ID to access it
     families.viewRule = "";
     families.listRule = "";
-    
-    // Make sure the invite_code field is visible to everyone
-    const inviteCodeField = families.fields.getByName("invite_code");
-    if (inviteCodeField) {
-      inviteCodeField.hidden = false;
-      inviteCodeField.presentable = true;
-    }
 
     app.save(families);
   },

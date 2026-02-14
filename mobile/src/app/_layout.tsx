@@ -28,8 +28,6 @@ const InitialLayout = () => {
   );
 };
 
-export { ErrorBoundary };
-
 export default function RootLayout() {
   return (
     <DatabaseProvider>

@@ -13,7 +13,7 @@
     "typegen": "pocketbase-typegen --env --out src/types/pocketbase-types.ts"
   },
   "dependencies": {
-    "@expo-google-fonts/open-sans": "^0.4.2",
+    "@expo-google-fonts/montserrat": "^0.4.2",
     "@hookform/resolvers": "^5.2.2",
     "@nozbe/watermelondb": "^0.28.0",
     "babel-preset-expo": "~54.0.10",
@@ -21,6 +21,7 @@
     "expo-battery": "~10.0.8",
     "expo-camera": "^17.0.10",
     "expo-constants": "~18.0.13",
+    "expo-dev-client": "~6.0.20",
     "expo-font": "~14.0.11",
     "expo-haptics": "~15.0.8",
     "expo-linking": "~8.0.11",

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "falimy",
+    "slug": "falimy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,7 @@
           "fetch"
         ]
       },
-      "bundleIdentifier": "com.anonymous.mobile"
+      "bundleIdentifier": "com.jimatjibba.falimy"
     },
     "android": {
       "adaptiveIcon": {
@@ -42,7 +42,7 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_LOCATION"
       ],
-      "package": "com.anonymous.mobile"
+      "package": "com.jimatjibba.falimy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -62,19 +62,26 @@
         }
       ],
       [
-      "expo-font",
-              {
+        "expo-font",
+        {
           "fonts": [
-            "node_modules/@expo-google-fonts/inter/Inter_600SemiBold.ttf",
-            "node_modules/@expo-google-fonts/inter/Inter_700Bold.ttf",
-            "node_modules/@expo-google-fonts/inter/Inter_500Medium.ttf",
-            "node_modules/@expo-google-fonts/inter/Inter_400Regular.ttf"
+            "node_modules/@expo-google-fonts/montserrat/600SemiBold/Montserrat_600SemiBold.ttf",
+            "node_modules/@expo-google-fonts/montserrat/700Bold/Montserrat_700Bold.ttf",
+            "node_modules/@expo-google-fonts/montserrat/500Medium/Montserrat_500Medium.ttf",
+            "node_modules/@expo-google-fonts/montserrat/400Regular/Montserrat_400Regular.ttf"
           ]
         }
-      ],
+      ]
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "dda021c5-96ea-4a64-b122-a635824fd891"
+      }
+    },
+    "owner": "jim-at-jibba"
   }
 }

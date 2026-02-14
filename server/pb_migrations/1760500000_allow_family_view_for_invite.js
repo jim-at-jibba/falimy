@@ -8,8 +8,6 @@ migrate(
     families.viewRule = "";
 
     app.save(families);
-
-    return true;
   },
   (app) => {
     const families = app.findCollectionByNameOrId("families");
@@ -18,7 +16,5 @@ migrate(
     families.viewRule = "@request.auth.id != '' && id = @request.auth.family_id";
 
     app.save(families);
-
-    return true;
   },
 );

@@ -111,10 +111,14 @@ export default function JoinFamily() {
       if (family.invite_code !== data.inviteCode.trim()) {
         console.error("[JoinFamily] Invite code mismatch:", {
           expected: family.invite_code,
+          expectedLength: family.invite_code.length,
+          expectedChars: family.invite_code.split("").map(c => c.charCodeAt(0)),
           received: data.inviteCode.trim(),
+          receivedLength: data.inviteCode.trim().length,
+          receivedChars: data.inviteCode.trim().split("").map(c => c.charCodeAt(0)),
         });
         methods.setError("inviteCode", {
-          message: "Invite code is invalid.",
+          message: `Invite code is invalid. Expected: "${family.invite_code}", Got: "${data.inviteCode.trim()}"`,
         });
         setLoading(false);
         return;

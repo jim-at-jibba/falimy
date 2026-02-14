@@ -124,27 +124,16 @@ export default function FamilySettings() {
       <Header title="Family" showBack backgroundColor="#fadeaf" />
       <ScrollView contentContainerStyle={styles.content}>
 
-        {error ? <Text style={{ color: "#b11d1d" }}>{error}</Text> : null}
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         {family ? (
-          <View
-            style={{
-              backgroundColor: "#ffffff",
-              borderRadius: 16,
-              padding: 20,
-              shadowColor: "#0d3a5a",
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.08,
-              shadowRadius: 12,
-              elevation: 2,
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: "700", color: "#0d3a5a", marginBottom: 6 }}>
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>
               {family.name}
             </Text>
             <SmallText text={`Invite code: ${family.invite_code}`} />
             {invitePayload ? (
-              <View style={{ alignItems: "center", marginVertical: 16, gap: 8 }}>
+              <View style={styles.qrContainer}>
                 <QRCode value={invitePayload} size={180} />
                 <SmallText text="Scan to join the family." />
               </View>
@@ -153,19 +142,8 @@ export default function FamilySettings() {
           </View>
         ) : null}
 
-        <View
-          style={{
-            backgroundColor: "#ffffff",
-            borderRadius: 16,
-            padding: 20,
-            shadowColor: "#0d3a5a",
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.08,
-            shadowRadius: 12,
-            elevation: 2,
-          }}
-        >
-          <Text style={{ fontSize: 18, fontWeight: "700", color: "#0d3a5a", marginBottom: 6 }}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
             Members
           </Text>
           {members.length === 0 ? (
@@ -174,20 +152,13 @@ export default function FamilySettings() {
             members.map((member) => (
               <View
                 key={member.id}
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingVertical: 8,
-                  borderBottomWidth: 1,
-                  borderBottomColor: "#eef2f6",
-                }}
+                style={styles.memberRow}
               >
-                <Text style={{ fontSize: 15, color: "#0d3a5a", flex: 1 }}>
+                <Text style={styles.memberName}>
                   {member.name || member.email}
                 </Text>
                 {isAdmin && member.id !== currentUserId ? (
-                  <View style={{ width: 120 }}>
+                  <View style={styles.roleSelect}>
                     <Select
                       options={ROLE_OPTIONS}
                       value={member.role}
@@ -221,5 +192,45 @@ const styles = StyleSheet.create((theme) => ({
     padding: theme.spacing[5],
     paddingBottom: 40,
     gap: theme.spacing[4],
+  },
+  errorText: {
+    color: theme.colors.error,
+  },
+  card: {
+    backgroundColor: theme.colors.white,
+    borderRadius: theme.borderRadiusSm,
+    padding: theme.spacing[5],
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
+  },
+  cardTitle: {
+    fontSize: theme.fontSizes.lg,
+    fontWeight: "700",
+    color: theme.colors.typography,
+    marginBottom: theme.spacing[2],
+  },
+  qrContainer: {
+    alignItems: "center",
+    marginVertical: theme.spacing[4],
+    gap: theme.spacing[2],
+  },
+  memberRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: theme.spacing[2],
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.greyLight,
+  },
+  memberName: {
+    fontSize: theme.fontSizes.md,
+    color: theme.colors.typography,
+    flex: 1,
+  },
+  roleSelect: {
+    width: 120,
   },
 }));

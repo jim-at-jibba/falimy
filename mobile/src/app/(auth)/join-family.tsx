@@ -70,36 +70,92 @@ export default function JoinFamily() {
     setLoading(true);
 
     try {
+      // Step 1: Validate and set server URL
       const normalized = await validateServerUrl(data.server);
       await setServerUrl(normalized);
       resetPocketBase();
 
       const pb = await getPocketBase();
       if (!pb) {
-        router.replace("/(auth)/server-url");
+        methods.setError("root", {
+          message: "Could not connect to server. Check the server URL.",
+        });
+        setLoading(false);
         return;
       }
 
-      const family = await pb.collection("families").getOne<FamiliesResponse>(data.familyId.trim());
+      // Step 2: Fetch family and validate invite code
+      let family: FamiliesResponse;
+      try {
+        family = await pb.collection("families").getOne<FamiliesResponse>(data.familyId.trim());
+      } catch (err) {
+        console.error("[JoinFamily] Failed to fetch family:", err);
+        methods.setError("familyId", {
+          message: "Family not found. Check the Family ID.",
+        });
+        setLoading(false);
+        return;
+      }
+
       if (family.invite_code !== data.inviteCode.trim()) {
         methods.setError("inviteCode", {
           message: "Invite code is invalid.",
         });
+        setLoading(false);
         return;
       }
 
-      await pb.collection("users").create({
-        email: data.email.trim(),
-        password: data.password,
-        passwordConfirm: data.password,
-        name: data.name.trim(),
-        role: "member",
-        family_id: family.id,
-      });
+      // Step 3: Create user account
+      try {
+        await pb.collection("users").create({
+          email: data.email.trim(),
+          password: data.password,
+          passwordConfirm: data.password,
+          name: data.name.trim(),
+          role: "member",
+          family_id: family.id,
+        });
+      } catch (err) {
+        console.error("[JoinFamily] Failed to create user:", err);
+        // @ts-expect-error - PocketBase error structure
+        const pbError = err?.response?.data;
+        console.error("[JoinFamily] PocketBase error details:", pbError);
+        
+        let message = "Could not create account. ";
+        // @ts-expect-error - PocketBase error structure
+        if (err?.message?.includes("email")) {
+          message = "Email already in use. Try logging in instead.";
+        // @ts-expect-error - PocketBase error structure
+        } else if (pbError) {
+          // Try to extract field-specific errors
+          const fieldErrors = Object.entries(pbError)
+            .map(([field, error]) => `${field}: ${error}`)
+            .join(", ");
+          message += fieldErrors || "Check your details.";
+        } else {
+          message += "Check your details.";
+        }
+        
+        methods.setError("root", { message });
+        setLoading(false);
+        return;
+      }
 
-      await pb.collection("users").authWithPassword(data.email.trim(), data.password);
+      // Step 4: Log in
+      try {
+        await pb.collection("users").authWithPassword(data.email.trim(), data.password);
+      } catch (err) {
+        console.error("[JoinFamily] Failed to authenticate:", err);
+        methods.setError("root", {
+          message: "Account created but login failed. Try the login screen.",
+        });
+        setLoading(false);
+        return;
+      }
+
       router.replace("/(tabs)");
-    } catch {
+    } catch (err) {
+      console.error("[JoinFamily] Unexpected error:", err);
       methods.setError("root", {
         message: "Could not join the family. Check your details and try again.",
       });

@@ -147,7 +147,8 @@ UnistylesRuntime.setRootViewBackgroundColor("black");
 
 // or with adaptive themes
 const settings = {
-  adaptiveThemes: true,
+  initialTheme: "light",
+  // adaptiveThemes: true,
 };
 
 StyleSheet.configure({

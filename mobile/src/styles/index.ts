@@ -76,14 +76,14 @@ export const lightTheme = {
   spacing: base.spacing,
   fontFamily: base.fontFamily,
   gap: 8,
-  borderRadiusXs: 12,
+  borderRadiusXs: 8,
   borderRadiusSm: 16,
   borderRadiusMd: 32,
   borderRadiusLg: 50,
   buttonHeight: 56,
   listItemHeight: 80,
   bigButtonHeight: 72,
-  inputHeight: 50,
+  inputHeight: 56,
 } as const;
 
 export const darkTheme = {
@@ -118,14 +118,14 @@ export const darkTheme = {
   fontSizes: base.fontSizes,
   spacing: base.spacing,
   gap: 8,
-  borderRadiusXs: 12,
+  borderRadiusXs: 8,
   borderRadiusSm: 16,
   borderRadiusMd: 32,
   borderRadiusLg: 50,
   buttonHeight: 56,
   listItemHeight: 80,
   bigButtonHeight: 72,
-  inputHeight: 50,
+  inputHeight: 56,
 } as const;
 
 // If you’re using TypeScript, create types for your breakpoints and/or themes. This step is required to achieve perfect Intellisense support across all StyleSheets.

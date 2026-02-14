@@ -114,7 +114,7 @@ const styles = StyleSheet.create((theme) => ({
   container: (hasFocus: boolean, hasErrors: boolean) => ({
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: theme.borderRadiusSm,
+    borderRadius: theme.borderRadiusXs,
     backgroundColor: theme.colors.greyBackground,
     overflow: "hidden",
     borderWidth: hasErrors || hasFocus ? 3 : 0,

@@ -1,9 +1,16 @@
 module.exports = function (api) {
   api.cache(true);
+  const isProduction = process.env.NODE_ENV === "production";
   return {
     presets: ["babel-preset-expo"],
     plugins: [
       ["@babel/plugin-proposal-decorators", { legacy: true }],
+      isProduction && [
+        "babel-plugin-transform-remove-console",
+        {
+          exclude: ["error", "warn"],
+        },
+      ],
       [
         "react-native-unistyles/plugin",
         {
@@ -14,6 +21,6 @@ module.exports = function (api) {
           root: "src",
         },
       ],
-    ],
+    ].filter(Boolean),
   };
 };

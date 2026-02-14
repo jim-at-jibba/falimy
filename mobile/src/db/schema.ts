@@ -1,12 +1,12 @@
 import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export const schema = appSchema({
-  version: 2,
+  version: 3,
   tables: [
     tableSchema({
       name: "families",
       columns: [
-        { name: "server_id", type: "string" },
+        { name: "server_id", type: "string", isIndexed: true },
         { name: "name", type: "string" },
         { name: "invite_code", type: "string" },
         { name: "ntfy_topic_prefix", type: "string" },
@@ -18,7 +18,7 @@ export const schema = appSchema({
     tableSchema({
       name: "members",
       columns: [
-        { name: "server_id", type: "string" },
+        { name: "server_id", type: "string", isIndexed: true },
         { name: "name", type: "string" },
         { name: "email", type: "string" },
         { name: "role", type: "string" },
@@ -36,7 +36,7 @@ export const schema = appSchema({
     tableSchema({
       name: "lists",
       columns: [
-        { name: "server_id", type: "string" },
+        { name: "server_id", type: "string", isIndexed: true },
         { name: "name", type: "string" },
         { name: "type", type: "string" },
         { name: "family_id", type: "string", isIndexed: true },
@@ -51,7 +51,7 @@ export const schema = appSchema({
     tableSchema({
       name: "list_items",
       columns: [
-        { name: "server_id", type: "string" },
+        { name: "server_id", type: "string", isIndexed: true },
         { name: "list_id", type: "string", isIndexed: true },
         { name: "name", type: "string" },
         { name: "quantity", type: "string", isOptional: true },
@@ -67,7 +67,7 @@ export const schema = appSchema({
     tableSchema({
       name: "location_history",
       columns: [
-        { name: "server_id", type: "string" },
+        { name: "server_id", type: "string", isIndexed: true },
         { name: "user_id", type: "string", isIndexed: true },
         { name: "lat", type: "number" },
         { name: "lng", type: "number" },
@@ -81,7 +81,7 @@ export const schema = appSchema({
     tableSchema({
       name: "geofences",
       columns: [
-        { name: "server_id", type: "string" },
+        { name: "server_id", type: "string", isIndexed: true },
         { name: "family_id", type: "string", isIndexed: true },
         { name: "name", type: "string" },
         { name: "lat", type: "number" },

@@ -87,7 +87,7 @@ export default function FamilySettings() {
       if (!pb) return;
 
       const updated = await pb.collection("families").update<FamiliesResponse>(family.id, {
-        invite_code: generateInviteCode(),
+        invite_code: await generateInviteCode(),
       });
       setFamily(updated);
     } catch {

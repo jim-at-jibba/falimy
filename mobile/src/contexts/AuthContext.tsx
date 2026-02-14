@@ -50,6 +50,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(null);
         return;
       }
+
+      // Validate token with server - catches revoked tokens
+      if (client.authStore.isValid) {
+        try {
+          await client.collection("users").authRefresh();
+        } catch (err) {
+          // Token invalid (401) or network error
+          // For network errors, allow offline use with stale token
+          const isNetworkError = String(err).includes("fetch") || String(err).includes("network");
+          if (!isNetworkError) {
+            client.authStore.clear();
+            setPb(null);
+            setUser(null);
+            return;
+          }
+        }
+      }
+
       setPb(client);
       setUser(extractUser(client));
     } catch {

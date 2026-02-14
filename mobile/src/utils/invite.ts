@@ -1,13 +1,14 @@
+import * as Crypto from "expo-crypto";
+
 const ALPHANUM = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-const randomString = (length: number): string => {
-  let output = "";
-  for (let i = 0; i < length; i += 1) {
-    output += ALPHANUM[Math.floor(Math.random() * ALPHANUM.length)];
-  }
-  return output;
+const randomString = async (length: number): Promise<string> => {
+  const bytes = await Crypto.getRandomBytesAsync(length);
+  return Array.from(bytes)
+    .map(b => ALPHANUM[b % ALPHANUM.length])
+    .join("");
 };
 
-export const generateInviteCode = (): string => randomString(8);
+export const generateInviteCode = async (): Promise<string> => randomString(8);
 
-export const generateTopicPrefix = (): string => `fam_${randomString(6)}`;
+export const generateTopicPrefix = async (): Promise<string> => `fam_${await randomString(6)}`;

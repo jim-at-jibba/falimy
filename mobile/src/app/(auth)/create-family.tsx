@@ -53,8 +53,8 @@ export default function CreateFamily() {
 
       const family = await pb.collection("families").create<FamiliesResponse>({
         name: data.familyName.trim(),
-        invite_code: generateInviteCode(),
-        ntfy_topic_prefix: generateTopicPrefix(),
+        invite_code: await generateInviteCode(),
+        ntfy_topic_prefix: await generateTopicPrefix(),
         created_by: user.id,
       });
 

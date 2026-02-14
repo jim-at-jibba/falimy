@@ -27,6 +27,11 @@
       "bundleIdentifier": "com.jimatjibba.falimy"
     },
     "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB2AH67zFmScxxQxoQhSm_NamfnLlX_5JM"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

@@ -6,6 +6,7 @@ import "../styles";
 import { Toaster } from "sonner-native";
 import { AuthProvider } from "../contexts/AuthContext";
 import { DatabaseProvider } from "../contexts/DatabaseContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -27,13 +28,17 @@ const InitialLayout = () => {
   );
 };
 
+export { ErrorBoundary };
+
 export default function RootLayout() {
   return (
     <DatabaseProvider>
       <AuthProvider>
-        <StatusBar style="dark" />
-        <InitialLayout />
-        <Toaster />
+        <ErrorBoundary>
+          <StatusBar style="dark" />
+          <InitialLayout />
+          <Toaster />
+        </ErrorBoundary>
       </AuthProvider>
     </DatabaseProvider>
   );

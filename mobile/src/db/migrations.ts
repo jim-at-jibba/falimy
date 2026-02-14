@@ -42,5 +42,34 @@ export const migrations = schemaMigrations({
         }),
       ],
     },
+    {
+      toVersion: 3,
+      steps: [
+        {
+          type: "sql",
+          sql: "CREATE INDEX IF NOT EXISTS index_families_server_id ON families(server_id)",
+        },
+        {
+          type: "sql",
+          sql: "CREATE INDEX IF NOT EXISTS index_members_server_id ON members(server_id)",
+        },
+        {
+          type: "sql",
+          sql: "CREATE INDEX IF NOT EXISTS index_lists_server_id ON lists(server_id)",
+        },
+        {
+          type: "sql",
+          sql: "CREATE INDEX IF NOT EXISTS index_list_items_server_id ON list_items(server_id)",
+        },
+        {
+          type: "sql",
+          sql: "CREATE INDEX IF NOT EXISTS index_location_history_server_id ON location_history(server_id)",
+        },
+        {
+          type: "sql",
+          sql: "CREATE INDEX IF NOT EXISTS index_geofences_server_id ON geofences(server_id)",
+        },
+      ],
+    },
   ],
 });

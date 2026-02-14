@@ -51,6 +51,10 @@ export const Select = ({
         style={({ pressed }) => [styles.container(pressed), disabled && styles.disabled]}
         onPress={() => !disabled && setModalVisible(true)}
         disabled={disabled}
+        accessibilityRole="button"
+        accessibilityLabel={selectedOption ? `Selected: ${selectedOption.label}` : placeholder}
+        accessibilityHint="Opens a menu to select an option"
+        accessibilityState={{ disabled, expanded: modalVisible }}
       >
         <Text style={[styles.selectedText, !selectedOption && styles.placeholderText]}>
           {selectedOption ? selectedOption.label : placeholder}
@@ -63,6 +67,7 @@ export const Select = ({
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
+        accessibilityViewIsModal={true}
       >
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={styles.modalOverlay}>
@@ -78,6 +83,9 @@ export const Select = ({
                         index === options.length - 1 && styles.lastOptionItem,
                       ]}
                       onPress={() => handleSelect(item.value)}
+                      accessibilityRole="radio"
+                      accessibilityLabel={item.label}
+                      accessibilityState={{ selected: item.value === value }}
                     >
                       <View style={styles.optionContent}>
                         <Text

@@ -7,6 +7,8 @@ interface ButtonProps {
   handlePress: () => void;
   disabled?: boolean;
   variant?: "primary" | "secondary" | "social";
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 }
 
 export default function ButtonContainer({
@@ -14,6 +16,8 @@ export default function ButtonContainer({
   handlePress,
   disabled = false,
   variant = "primary",
+  accessibilityLabel,
+  accessibilityHint,
 }: ButtonProps) {
   const handlePressWithHaptics = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -25,6 +29,10 @@ export default function ButtonContainer({
       disabled={disabled}
       style={[styles.container, styles[variant], disabled && styles.disabled]}
       onPress={handlePressWithHaptics}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled }}
     >
       {children}
     </Pressable>

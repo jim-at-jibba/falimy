@@ -87,6 +87,8 @@ export const FormInputText = <TFieldValues extends FieldValues>(props: Props<TFi
           editable={editable}
           multiline={multiline}
           secureTextEntry={secureTextEntry && !isPasswordVisible}
+          accessibilityLabel={label || placeholder}
+          accessibilityHint={fieldInfo}
           {...inputProps}
         />
         {secureTextEntry && (
@@ -94,6 +96,8 @@ export const FormInputText = <TFieldValues extends FieldValues>(props: Props<TFi
             style={styles.iconContainer}
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}
             hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            accessibilityRole="button"
+            accessibilityLabel={isPasswordVisible ? "Hide password" : "Show password"}
           >
             {isPasswordVisible ? (
               <EyeOff size={20} color={theme.colors.grey} />

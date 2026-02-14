@@ -26,12 +26,19 @@ export function Header({
         styles.wrapper,
         { paddingTop: insets.top, backgroundColor: backgroundColor ?? "transparent" },
       ]}
+      accessibilityRole="header"
     >
       <View style={styles.header}>
         <View style={styles.headerLeft}>
           {showBack && <BackButton onPress={onBackPress} />}
           {title && (
-            <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+            <Text 
+              style={styles.title} 
+              numberOfLines={1} 
+              ellipsizeMode="tail"
+              accessibilityRole="text"
+              accessibilityLabel={`${title} screen`}
+            >
               {title}
             </Text>
           )}

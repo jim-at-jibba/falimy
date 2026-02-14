@@ -20,7 +20,13 @@ export function BackButton({ onPress }: BackButtonProps) {
   };
 
   return (
-    <Pressable style={styles.backButton} onPress={handlePress}>
+    <Pressable 
+      style={styles.backButton} 
+      onPress={handlePress}
+      accessibilityRole="button"
+      accessibilityLabel="Go back"
+      accessibilityHint="Navigate to previous screen"
+    >
       <ChevronLeft size={24} color={theme.colors.typography} />
     </Pressable>
   );

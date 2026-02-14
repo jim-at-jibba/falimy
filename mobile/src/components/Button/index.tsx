@@ -8,11 +8,19 @@ type ButtonProps = {
   onPress: () => void;
   disabled?: boolean;
   variant?: ButtonVariant;
+  accessibilityLabel?: string;
+  accessibilityHint?: string;
 };
 
-export const Button = ({ label, onPress, disabled, variant = "primary" }: ButtonProps) => {
+export const Button = ({ label, onPress, disabled, variant = "primary", accessibilityLabel, accessibilityHint }: ButtonProps) => {
   return (
-    <ButtonContainer handlePress={onPress} disabled={disabled} variant={variant}>
+    <ButtonContainer 
+      handlePress={onPress} 
+      disabled={disabled} 
+      variant={variant}
+      accessibilityLabel={accessibilityLabel || label}
+      accessibilityHint={accessibilityHint}
+    >
       <ButtonText label={label} variant={variant} />
     </ButtonContainer>
   );

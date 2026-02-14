@@ -97,8 +97,13 @@ export default function JoinFamily() {
       let family: FamiliesResponse;
       try {
         console.log("[JoinFamily] Fetching family with ID:", data.familyId.trim());
-        family = await pb.collection("families").getOne<FamiliesResponse>(data.familyId.trim());
+        // Explicitly request all fields
+        family = await pb.collection("families").getOne<FamiliesResponse>(data.familyId.trim(), {
+          fields: "*",
+        });
         console.log("[JoinFamily] Family found:", family.name, family.id);
+        console.log("[JoinFamily] Full family object:", JSON.stringify(family, null, 2));
+        console.log("[JoinFamily] Family keys:", Object.keys(family));
       } catch (err) {
         console.error("[JoinFamily] Failed to fetch family:", err);
         methods.setError("familyId", {
@@ -108,17 +113,25 @@ export default function JoinFamily() {
         return;
       }
 
-      if (family.invite_code !== data.inviteCode.trim()) {
+      const inviteCode = family.invite_code;
+      console.log("[JoinFamily] Invite code from family:", inviteCode);
+      console.log("[JoinFamily] Invite code from form:", data.inviteCode.trim());
+
+      if (!inviteCode) {
+        methods.setError("root", {
+          message: "This family does not have an invite code set. Contact the family admin.",
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (inviteCode !== data.inviteCode.trim()) {
         console.error("[JoinFamily] Invite code mismatch:", {
-          expected: family.invite_code,
-          expectedLength: family.invite_code.length,
-          expectedChars: family.invite_code.split("").map(c => c.charCodeAt(0)),
+          expected: inviteCode,
           received: data.inviteCode.trim(),
-          receivedLength: data.inviteCode.trim().length,
-          receivedChars: data.inviteCode.trim().split("").map(c => c.charCodeAt(0)),
         });
         methods.setError("inviteCode", {
-          message: `Invite code is invalid. Expected: "${family.invite_code}", Got: "${data.inviteCode.trim()}"`,
+          message: `Invite code is invalid. Expected: "${inviteCode}", Got: "${data.inviteCode.trim()}"`,
         });
         setLoading(false);
         return;

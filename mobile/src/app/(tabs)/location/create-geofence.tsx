@@ -16,6 +16,7 @@ import MapView, { Circle, Marker } from "react-native-maps";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { DefaultText } from "@/components/DefaultText";
+import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
 import type { GeofenceTrigger } from "@/db/models/Geofence";
 import { useFamilyMembers } from "@/hooks/useFamilyLocations";
@@ -109,19 +110,24 @@ export default function CreateGeofenceScreen() {
 
   if (isLoadingLocation) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <SmallText text="Getting your location..." />
+      <View style={styles.outerContainer}>
+        <Header title="Create Geofence" showBack backgroundColor="#b2ecca" />
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <SmallText text="Getting your location..." />
+        </View>
       </View>
     );
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView contentContainerStyle={styles.content}>
+    <View style={styles.outerContainer}>
+      <Header title="Create Geofence" showBack backgroundColor="#b2ecca" />
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView contentContainerStyle={styles.content}>
         {/* Map picker */}
         <View style={styles.mapContainer}>
           <MapView
@@ -241,11 +247,16 @@ export default function CreateGeofenceScreen() {
           )}
         </Pressable>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,

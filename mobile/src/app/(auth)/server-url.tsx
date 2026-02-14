@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { ActivityIndicator, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 import { z } from "zod";
 import { resetPocketBase, validateServerUrl } from "@/api/pocketbase";
@@ -11,7 +10,7 @@ import { Button } from "@/components/Button";
 import { DefaultText } from "@/components/DefaultText";
 import { FormError } from "@/components/Form/FormError";
 import { FormInputText } from "@/components/Form/FormInputText";
-import Title from "@/components/Title";
+import { Header } from "@/components/Navigation/Header";
 import { setServerUrl } from "@/utils/config";
 
 const schema = z.object({
@@ -46,9 +45,9 @@ export default function ServerUrl() {
   };
 
   return (
-    <SafeAreaView>
+    <View style={styles.outerContainer}>
+      <Header title="Connect to PocketBase" showBack backgroundColor="#b4dbfa" />
       <View style={styles.container}>
-        <Title text="Connect to PocketBase" />
         <DefaultText text="Enter the URL where your family hosts PocketBase." />
 
         <FormProvider {...methods}>
@@ -71,11 +70,15 @@ export default function ServerUrl() {
           {loading ? <ActivityIndicator style={styles.loader} /> : null}
         </FormProvider>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     padding: theme.spacing[4],
   },

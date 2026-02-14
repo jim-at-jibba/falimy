@@ -1,6 +1,6 @@
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Archive, Check, Pencil, Trash2 } from "lucide-react-native";
-import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -14,6 +14,7 @@ import {
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { DefaultText } from "@/components/DefaultText";
+import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
 import type ListItem from "@/db/models/ListItem";
 import { useListItems } from "@/hooks/useListItems";
@@ -101,7 +102,6 @@ function ItemRow({
 export default function ListDetailScreen() {
   const { theme } = useUnistyles();
   const { listId } = useLocalSearchParams<{ listId: string }>();
-  const navigation = useNavigation();
   const { isSyncing, triggerSync } = useSync();
   const { archiveList, deleteList, renameList } = useLists();
 
@@ -117,12 +117,21 @@ export default function ListDetailScreen() {
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState("");
 
-  // Set the header title to the list name
-  useLayoutEffect(() => {
-    if (list) {
-      navigation.setOptions({ title: list.name });
+  // Get header color based on list type
+  const getHeaderColor = () => {
+    if (!list) return "#dad4fc"; // purple default
+    switch (list.listType) {
+      case "shopping":
+        return "#b4dbfa"; // blue
+      case "todo":
+      case "packing":
+        return "#dad4fc"; // purple
+      case "custom":
+        return "#f8d5f4"; // pink
+      default:
+        return "#dad4fc";
     }
-  }, [list, navigation]);
+  };
 
   const handleAddItem = useCallback(async () => {
     const name = newItemName.trim();
@@ -234,8 +243,11 @@ export default function ListDetailScreen() {
 
   if (isLoading || !list) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+      <View style={styles.outerContainer}>
+        <Header title="Loading..." showBack backgroundColor="#dad4fc" />
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
       </View>
     );
   }
@@ -243,19 +255,21 @@ export default function ListDetailScreen() {
   const archiveLabel = list.listType === "shopping" ? "Complete Shopping" : "Mark Complete";
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        refreshControl={
-          <RefreshControl
-            refreshing={isSyncing}
-            onRefresh={triggerSync}
-            tintColor={theme.colors.primary}
-          />
-        }
-      >
+    <View style={styles.outerContainer}>
+      <Header title={list.name} showBack backgroundColor={getHeaderColor()} />
+      <GestureHandlerRootView style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={isSyncing}
+              onRefresh={triggerSync}
+              tintColor={theme.colors.primary}
+            />
+          }
+        >
         {/* Rename input (shown inline when renaming) */}
         {isRenaming && (
           <View style={styles.renameCard}>
@@ -354,11 +368,16 @@ export default function ListDetailScreen() {
           </Pressable>
         </View>
       </ScrollView>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,

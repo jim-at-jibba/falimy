@@ -2,11 +2,11 @@ import { CameraView, useCameraPermissions } from "expo-camera";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native-unistyles";
 
 import { Button } from "../../components/Button";
 import { DefaultText } from "../../components/DefaultText";
-import Title from "../../components/Title";
+import { Header } from "../../components/Navigation/Header";
 
 type InvitePayload = {
   server: string;
@@ -45,26 +45,30 @@ export default function ScanQr() {
 
   if (!permission) {
     return (
-      <SafeAreaView>
-        <DefaultText text="Requesting camera permissions..." />
-      </SafeAreaView>
+      <View style={styles.outerContainer}>
+        <Header title="Camera Permission" showBack backgroundColor="#b4dbfa" />
+        <View style={styles.container}>
+          <DefaultText text="Requesting camera permissions..." />
+        </View>
+      </View>
     );
   }
 
   if (!permission.granted) {
     return (
-      <SafeAreaView>
-        <View>
-          <Title text="Camera Permission" />
+      <View style={styles.outerContainer}>
+        <Header title="Camera Permission" showBack backgroundColor="#b4dbfa" />
+        <View style={styles.container}>
           <DefaultText text="We need camera access to scan the invite QR." />
           <Button label="Grant Permission" onPress={requestPermission} />
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView>
+    <View style={styles.outerContainer}>
+      <Header title="Scan QR Code" showBack backgroundColor="#b4dbfa" />
       <CameraView
         style={{ flex: 1, backgroundColor: "#000000" }}
         onBarcodeScanned={({ data }) => handleScan(data)}
@@ -87,6 +91,17 @@ export default function ScanQr() {
         {error ? <Text style={{ color: "#b11d1d", marginBottom: 10 }}>{error}</Text> : null}
         <Button label="Cancel" onPress={() => router.back()} variant="secondary" />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  container: {
+    padding: theme.spacing[4],
+    gap: theme.spacing[3],
+  },
+}));

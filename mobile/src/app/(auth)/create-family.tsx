@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 import { z } from "zod";
 import { getPocketBase } from "@/api/pocketbase";
@@ -11,7 +10,7 @@ import { Button } from "@/components/Button";
 import { DefaultText } from "@/components/DefaultText";
 import { FormError } from "@/components/Form/FormError";
 import { FormInputText } from "@/components/Form/FormInputText";
-import Title from "@/components/Title";
+import { Header } from "@/components/Navigation/Header";
 import type { FamiliesResponse, UsersResponse } from "@/types/pocketbase-types";
 import { generateInviteCode, generateTopicPrefix } from "@/utils/invite";
 
@@ -75,9 +74,9 @@ export default function CreateFamily() {
   };
 
   return (
-    <SafeAreaView>
+    <View style={styles.outerContainer}>
+      <Header title="Create a Family" showBack backgroundColor="#b4dbfa" />
       <View style={styles.container}>
-        <Title text="Create a Family" />
         <DefaultText text="This account will become the admin." />
 
         <FormProvider {...methods}>
@@ -111,11 +110,15 @@ export default function CreateFamily() {
           />
         </FormProvider>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     padding: theme.spacing[4],
   },

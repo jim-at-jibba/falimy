@@ -13,8 +13,8 @@ import {
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { DefaultText } from "@/components/DefaultText";
+import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
-import Title from "@/components/Title";
 import type Geofence from "@/db/models/Geofence";
 import { useFamilyMembers } from "@/hooks/useFamilyLocations";
 import { useGeofences } from "@/hooks/useGeofences";
@@ -91,37 +91,56 @@ export default function GeofencesScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
+      <View style={styles.outerContainer}>
+        <Header
+          title="Geofences"
+          showBack
+          backgroundColor="#b2ecca"
+          rightElement={
+            <Pressable
+              style={styles.addButton}
+              onPress={() => router.push("/(tabs)/location/create-geofence" as never)}
+              hitSlop={8}
+            >
+              <Plus size={24} color={theme.colors.primary} />
+            </Pressable>
+          }
+        />
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
       </View>
     );
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      refreshControl={
-        <RefreshControl
-          refreshing={isSyncing}
-          onRefresh={triggerSync}
-          tintColor={theme.colors.primary}
-        />
-      }
-    >
-      {/* Header */}
-      <View style={styles.headerRow}>
-        <Title text="Geofences" />
-        <Pressable
-          style={styles.addButton}
-          onPress={() => router.push("/(tabs)/location/create-geofence" as never)}
-          hitSlop={8}
-        >
-          <Plus size={24} color={theme.colors.primary} />
-        </Pressable>
-      </View>
-
-      <SmallText text="Get notified when family members enter or leave saved places." />
+    <View style={styles.outerContainer}>
+      <Header
+        title="Geofences"
+        showBack
+        backgroundColor="#b2ecca"
+        rightElement={
+          <Pressable
+            style={styles.addButton}
+            onPress={() => router.push("/(tabs)/location/create-geofence" as never)}
+            hitSlop={8}
+          >
+            <Plus size={24} color={theme.colors.primary} />
+          </Pressable>
+        }
+      />
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl
+            refreshing={isSyncing}
+            onRefresh={triggerSync}
+            tintColor={theme.colors.primary}
+          />
+        }
+      >
+        <SmallText text="Get notified when family members enter or leave saved places." />
 
       {/* Empty state */}
       {geofences.length === 0 && (
@@ -174,10 +193,15 @@ export default function GeofencesScreen() {
         </View>
       ))}
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -192,11 +216,6 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: theme.colors.background,
-  },
-  headerRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   addButton: {
     width: 44,

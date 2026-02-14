@@ -3,7 +3,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { StyleSheet } from "react-native-unistyles";
 import { z } from "zod";
 import { getPocketBase, resetPocketBase, validateServerUrl } from "@/api/pocketbase";
@@ -11,7 +10,7 @@ import { Button } from "@/components/Button";
 import { DefaultText } from "@/components/DefaultText";
 import { FormError } from "@/components/Form/FormError";
 import { FormInputText } from "@/components/Form/FormInputText";
-import Title from "@/components/Title";
+import { Header } from "@/components/Navigation/Header";
 import type { FamiliesResponse } from "@/types/pocketbase-types";
 import { setServerUrl } from "@/utils/config";
 
@@ -110,9 +109,9 @@ export default function JoinFamily() {
   };
 
   return (
-    <SafeAreaView>
+    <View style={styles.outerContainer}>
+      <Header title="Join Family" showBack backgroundColor="#b4dbfa" />
       <View style={styles.container}>
-        <Title text="Join Family" />
         <DefaultText text="Use the invite from your family admin." />
 
         <FormProvider {...methods}>
@@ -172,11 +171,15 @@ export default function JoinFamily() {
           variant="secondary"
         />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     padding: theme.spacing[4],
   },

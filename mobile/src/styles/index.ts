@@ -36,11 +36,11 @@ const base = {
     8: 64,
   },
   fontFamily: {
-    bold: "Inter_700Bold",
-    semiBold: "Inter_600SemiBold",
-    medium: "Inter_500Medium",
-    regular: "Inter_400Regular",
-    body: "Inter_400Regular",
+    bold: "Montserrat_700Bold",
+    semiBold: "Montserrat_600SemiBold",
+    medium: "Montserrat_500Medium",
+    regular: "Montserrat_400Regular",
+    body: "Montserrat_400Regular",
   },
 } as const;
 

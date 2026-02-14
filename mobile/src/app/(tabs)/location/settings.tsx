@@ -4,8 +4,8 @@ import { ActivityIndicator, Alert, Pressable, ScrollView, View } from "react-nat
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { DefaultText } from "@/components/DefaultText";
+import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
-import Title from "@/components/Title";
 import type { LocationSharingMode } from "@/db/models/Member";
 import { useLocation } from "@/hooks/useLocation";
 
@@ -88,12 +88,13 @@ export default function LocationSettingsScreen() {
   );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Title text="Location Sharing" />
-      <DefaultText
-        text="Control how and when your location is shared with your family. All data stays on your family's private server."
-        additionalStyles={{ color: theme.colors.grey, marginBottom: theme.spacing[3] }}
-      />
+    <View style={styles.outerContainer}>
+      <Header title="Location Sharing" showBack backgroundColor="#b2ecca" />
+      <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+        <DefaultText
+          text="Control how and when your location is shared with your family. All data stays on your family's private server."
+          additionalStyles={{ color: theme.colors.grey, marginBottom: theme.spacing[3] }}
+        />
 
       {/* Current status */}
       <View style={styles.statusCard}>
@@ -203,12 +204,17 @@ export default function LocationSettingsScreen() {
           />
           <SmallText text="Location data is stored only on your family's self-hosted server. No third parties can access it. You can turn off sharing at any time." />
         </View>
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,

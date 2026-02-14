@@ -69,9 +69,18 @@ export default function JoinFamily() {
   const onSubmit = async (data: Schema) => {
     setLoading(true);
 
+    console.log("[JoinFamily] Attempting to join with data:", {
+      server: data.server,
+      familyId: data.familyId,
+      inviteCode: data.inviteCode,
+      email: data.email,
+      name: data.name,
+    });
+
     try {
       // Step 1: Validate and set server URL
       const normalized = await validateServerUrl(data.server);
+      console.log("[JoinFamily] Normalized server URL:", normalized);
       await setServerUrl(normalized);
       resetPocketBase();
 
@@ -87,7 +96,9 @@ export default function JoinFamily() {
       // Step 2: Fetch family and validate invite code
       let family: FamiliesResponse;
       try {
+        console.log("[JoinFamily] Fetching family with ID:", data.familyId.trim());
         family = await pb.collection("families").getOne<FamiliesResponse>(data.familyId.trim());
+        console.log("[JoinFamily] Family found:", family.name, family.id);
       } catch (err) {
         console.error("[JoinFamily] Failed to fetch family:", err);
         methods.setError("familyId", {
@@ -98,6 +109,10 @@ export default function JoinFamily() {
       }
 
       if (family.invite_code !== data.inviteCode.trim()) {
+        console.error("[JoinFamily] Invite code mismatch:", {
+          expected: family.invite_code,
+          received: data.inviteCode.trim(),
+        });
         methods.setError("inviteCode", {
           message: "Invite code is invalid.",
         });
@@ -105,8 +120,11 @@ export default function JoinFamily() {
         return;
       }
 
+      console.log("[JoinFamily] Invite code validated successfully");
+
       // Step 3: Create user account
       try {
+        console.log("[JoinFamily] Creating user account...");
         await pb.collection("users").create({
           email: data.email.trim(),
           password: data.password,
@@ -115,6 +133,7 @@ export default function JoinFamily() {
           role: "member",
           family_id: family.id,
         });
+        console.log("[JoinFamily] User account created successfully");
       } catch (err) {
         console.error("[JoinFamily] Failed to create user:", err);
         // @ts-expect-error - PocketBase error structure
@@ -143,7 +162,9 @@ export default function JoinFamily() {
 
       // Step 4: Log in
       try {
+        console.log("[JoinFamily] Authenticating user...");
         await pb.collection("users").authWithPassword(data.email.trim(), data.password);
+        console.log("[JoinFamily] Authentication successful, redirecting to app");
       } catch (err) {
         console.error("[JoinFamily] Failed to authenticate:", err);
         methods.setError("root", {

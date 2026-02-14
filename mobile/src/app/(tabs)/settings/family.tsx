@@ -131,7 +131,9 @@ export default function FamilySettings() {
             <Text style={styles.cardTitle}>
               {family.name}
             </Text>
+            <SmallText text={`Family ID: ${family.id}`} />
             <SmallText text={`Invite code: ${family.invite_code}`} />
+            <SmallText text={`Server: ${serverUrl || "Not set"}`} />
             {invitePayload ? (
               <View style={styles.qrContainer}>
                 <QRCode value={invitePayload} size={180} />

@@ -97,13 +97,18 @@ export default function JoinFamily() {
       let family: FamiliesResponse;
       try {
         console.log("[JoinFamily] Fetching family with ID:", data.familyId.trim());
-        // Explicitly request all fields
-        family = await pb.collection("families").getOne<FamiliesResponse>(data.familyId.trim(), {
-          fields: "*",
-        });
+        
+        // Use raw fetch instead of PocketBase SDK for unauthenticated requests
+        // The PocketBase SDK has an issue returning empty objects for unauthenticated getOne() calls
+        const rawUrl = `${pb.baseUrl}/api/collections/families/records/${data.familyId.trim()}`;
+        const rawResponse = await fetch(rawUrl);
+        
+        if (!rawResponse.ok) {
+          throw new Error(`HTTP ${rawResponse.status}: ${rawResponse.statusText}`);
+        }
+        
+        family = await rawResponse.json() as FamiliesResponse;
         console.log("[JoinFamily] Family found:", family.name, family.id);
-        console.log("[JoinFamily] Full family object:", JSON.stringify(family, null, 2));
-        console.log("[JoinFamily] Family keys:", Object.keys(family));
       } catch (err) {
         console.error("[JoinFamily] Failed to fetch family:", err);
         methods.setError("familyId", {
@@ -142,14 +147,32 @@ export default function JoinFamily() {
       // Step 3: Create user account
       try {
         console.log("[JoinFamily] Creating user account...");
-        await pb.collection("users").create({
+        const userPayload = {
           email: data.email.trim(),
           password: data.password,
           passwordConfirm: data.password,
           name: data.name.trim(),
           role: "member",
           family_id: family.id,
+        };
+        console.log("[JoinFamily] User payload:", JSON.stringify(userPayload, null, 2));
+        
+        const createResponse = await fetch(`${pb.baseUrl}/api/collections/users/records`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userPayload),
         });
+        
+        console.log("[JoinFamily] Create response status:", createResponse.status);
+        const createResult = await createResponse.json();
+        console.log("[JoinFamily] Create result:", JSON.stringify(createResult, null, 2));
+        
+        if (!createResponse.ok) {
+          throw new Error(`Failed to create user: ${JSON.stringify(createResult)}`);
+        }
+        
         console.log("[JoinFamily] User account created successfully");
       } catch (err) {
         console.error("[JoinFamily] Failed to create user:", err);

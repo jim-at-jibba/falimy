@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AppState, type AppStateStatus } from "react-native";
+import { AppState } from "react-native";
+
 import { useAuth } from "@/contexts/AuthContext";
 import { useDatabase } from "@/contexts/DatabaseContext";
 import { sync } from "@/db/sync";
+import { logger } from "@/utils/logger";
 
 /** How often to auto-sync in the background (ms). */
 const SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
@@ -48,7 +50,10 @@ export const useSync = (): SyncState => {
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       setLastError(err);
-      console.warn("[useSync] Sync failed:", err.message);
+      logger.warn("Sync failed, will retry later", {
+        component: "useSync",
+        error: err instanceof Error ? err.message : String(err),
+      });
     } finally {
       setIsSyncing(false);
     }

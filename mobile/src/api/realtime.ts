@@ -3,6 +3,7 @@ import type PocketBase from "pocketbase";
 import type { UnsubscribeFunc } from "pocketbase";
 import { Collections } from "@/types/pocketbase-types";
 import { upsertRecord, deleteRecordByServerId } from "@/db/sync";
+import { logger } from "@/utils/logger";
 
 /** Collections we want to watch for realtime updates. */
 const REALTIME_COLLECTIONS = [
@@ -74,12 +75,21 @@ export class RealtimeManager {
               await upsertRecord(this.database, table, record);
             }
           } catch (error) {
-            console.warn(`[Realtime] Failed to process ${data.action} on ${collection}:`, error);
+            logger.warn(`Failed to process ${data.action} on ${collection}`, {
+              component: "realtime",
+              collection,
+              action: data.action,
+              error: error instanceof Error ? error.message : String(error),
+            });
           }
         });
         this.unsubscribeFns.push(unsubscribe);
       } catch (error) {
-        console.warn(`[Realtime] Failed to subscribe to ${collection}:`, error);
+        logger.warn(`Failed to subscribe to ${collection}`, {
+          component: "realtime",
+          collection,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
 
@@ -94,7 +104,10 @@ export class RealtimeManager {
       try {
         await fn();
       } catch (error) {
-        console.warn("[Realtime] Failed to unsubscribe:", error);
+        logger.warn("Failed to unsubscribe", {
+          component: "realtime",
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     }
     this.unsubscribeFns = [];

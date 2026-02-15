@@ -2,6 +2,7 @@ import React, { Component, ErrorInfo, ReactNode, PureComponent } from "react";
 import { View, Text } from "react-native";
 import { Button } from "@/components/Button";
 import { DefaultText } from "@/components/DefaultText";
+import { logger } from "@/utils/logger";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -23,7 +24,10 @@ export class ErrorBoundary extends PureComponent<ErrorBoundaryProps, ErrorBounda
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("ErrorBoundary caught an error:", error, errorInfo);
+    logger.error("Unhandled error caught by boundary", error, {
+      component: "ErrorBoundary",
+      componentStack: errorInfo.componentStack,
+    });
   }
 
   handleRestart = () => {

@@ -4,6 +4,7 @@ import type PocketBase from "pocketbase";
 
 import { getPocketBase } from "@/api/pocketbase";
 import { Collections } from "@/types/pocketbase-types";
+import { logger } from "@/utils/logger";
 
 /**
  * New sync architecture: PocketBase is the source of truth, WatermelonDB is a
@@ -290,7 +291,11 @@ const pullAll = async (database: Database, pb: PocketBase): Promise<void> => {
         }
       });
     } catch (error) {
-      console.warn(`[Sync] Failed to pull ${collectionName}:`, error);
+      logger.warn(`Failed to pull ${collectionName}`, {
+        component: "sync",
+        collection: collectionName,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   }
 };
@@ -319,17 +324,17 @@ export const sync = async (database: Database): Promise<void> => {
   try {
     const pb = await getPocketBase();
     if (!pb) {
-      console.warn("[Sync] No PocketBase instance (no server URL?)");
+      logger.warn("No PocketBase instance (no server URL?)", { component: "sync" });
       return;
     }
     if (!pb.authStore.isValid) {
-      console.warn("[Sync] Auth not valid, skipping sync");
+      logger.warn("Auth not valid, skipping sync", { component: "sync" });
       return;
     }
 
     await pullAll(database, pb);
   } catch (error) {
-    console.warn("[Sync] Failed:", error);
+    logger.error("Sync failed", error, { component: "sync" });
   } finally {
     syncInProgress = false;
 

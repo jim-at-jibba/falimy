@@ -326,8 +326,12 @@ describe("locationTask", () => {
       });
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "[LocationTask] Error:",
-        "Task error"
+        "[locationTask]",
+        "Background task error",
+        expect.objectContaining({
+          component: "locationTask",
+          error: "Task error",
+        })
       );
       consoleWarnSpy.mockRestore();
     });
@@ -364,7 +368,11 @@ describe("locationTask", () => {
       });
 
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "[LocationTask] No valid PB auth, skipping post"
+        "[locationTask]",
+        "No valid PB auth, skipping location post",
+        expect.objectContaining({
+          component: "locationTask",
+        })
       );
       expect(mockCollection.create).not.toHaveBeenCalled();
       consoleWarnSpy.mockRestore();

@@ -3,6 +3,7 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 
 import { getPocketBase } from "@/api/pocketbase";
+import { logger } from "@/utils/logger";
 
 /**
  * Background location task name.
@@ -26,7 +27,10 @@ let lastPostTimestamp = 0;
 
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   if (error) {
-    console.warn("[LocationTask] Error:", error.message);
+    logger.warn("Background task error", {
+      component: "locationTask",
+      error: error.message,
+    });
     return;
   }
 
@@ -45,7 +49,9 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   try {
     const pb = await getPocketBase();
     if (!pb || !pb.authStore.isValid) {
-      console.warn("[LocationTask] No valid PB auth, skipping post");
+      logger.warn("No valid PB auth, skipping location post", {
+        component: "locationTask",
+      });
       return;
     }
 
@@ -83,7 +89,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 
     lastPostTimestamp = now;
   } catch (err) {
-    console.warn("[LocationTask] Failed to post location:", err);
+    logger.error("Failed to post location", err, { component: "locationTask" });
   }
 });
 
@@ -98,7 +104,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 export const startBackgroundLocationTracking = async (): Promise<void> => {
   const isRegistered = await TaskManager.isTaskRegisteredAsync(LOCATION_TASK_NAME);
   if (isRegistered) {
-    console.log("[LocationTask] Already running, skipping start");
+    logger.debug("Already running, skipping start", { component: "locationTask" });
     return;
   }
 
@@ -117,7 +123,7 @@ export const startBackgroundLocationTracking = async (): Promise<void> => {
     activityType: Location.ActivityType.Other,
   });
 
-  console.log("[LocationTask] Background tracking started");
+  logger.info("Background tracking started", { component: "locationTask" });
 };
 
 /**
@@ -130,7 +136,7 @@ export const stopBackgroundLocationTracking = async (): Promise<void> => {
   }
 
   await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
-  console.log("[LocationTask] Background tracking stopped");
+  logger.info("Background tracking stopped", { component: "locationTask" });
 };
 
 /**

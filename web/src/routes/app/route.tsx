@@ -1,49 +1,54 @@
-import { createFileRoute, Outlet, useNavigate, Link } from '@tanstack/react-router'
-import { useEffect } from 'react'
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarHeader, 
-  SidebarMenu, 
-  SidebarMenuItem, 
-  SidebarMenuButton, 
+import {
+  createFileRoute,
+  Outlet,
+  useNavigate,
+  Link,
+} from "@tanstack/react-router";
+import { useEffect } from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
   SidebarFooter,
-} from '@/components/ui/sidebar'
-import { Home, List, Map, Settings, LogOut } from 'lucide-react'
-import { useAuth } from '@/contexts/AuthContext'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+} from "@/components/ui/sidebar";
+import { Home, List, Map, Settings, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export const Route = createFileRoute('/app')({
+export const Route = createFileRoute("/app")({
   component: AppLayout,
-})
+});
 
 function AppLayout() {
-  const { user, logout, isAuthenticated, isLoading } = useAuth()
-  const navigate = useNavigate()
+  const { user, logout, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      navigate({ to: '/auth/login' })
+      navigate({ to: "/auth/login" });
     }
-  }, [isAuthenticated, isLoading, navigate])
+  }, [isAuthenticated, isLoading, navigate]);
 
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-muted-foreground">Loading...</div>
       </div>
-    )
+    );
   }
 
   if (!isAuthenticated) {
-    return null
+    return null;
   }
 
   const handleLogout = async () => {
-    await logout()
-    navigate({ to: '/' })
-  }
+    await logout();
+    navigate({ to: "/" });
+  };
 
   return (
     <Sidebar>
@@ -54,7 +59,11 @@ function AppLayout() {
           </div>
           <div className="flex flex-col">
             <span className="font-semibold">falimy</span>
-            {user && <span className="text-xs text-muted-foreground">{user.family_id || 'No family'}</span>}
+            {user && (
+              <span className="text-xs text-muted-foreground">
+                {user.family_id || "No family"}
+              </span>
+            )}
           </div>
         </div>
       </SidebarHeader>
@@ -101,7 +110,7 @@ function AppLayout() {
           {user && (
             <Avatar className="size-8">
               <AvatarFallback className="bg-secondary">
-                {user.name?.[0]?.toUpperCase() || '?'}
+                {user.name?.[0]?.toUpperCase() || "?"}
               </AvatarFallback>
             </Avatar>
           )}
@@ -114,8 +123,7 @@ function AppLayout() {
           </button>
         </div>
       </SidebarFooter>
+      <Outlet />
     </Sidebar>
-
-    <Outlet />
-  )
+  );
 }

@@ -34,6 +34,7 @@ export const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
+  shellComponent: RootDocument,
 })
 
 function RootComponent() {
@@ -44,5 +45,30 @@ function RootComponent() {
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>
+  )
+}
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <head>
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <TanStackDevtools
+          config={{
+            position: 'bottom-right',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+          ]}
+        />
+        <Scripts />
+      </body>
+    </html>
   )
 }

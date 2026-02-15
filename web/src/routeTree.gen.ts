@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as DocsRouteRouteImport } from './routes/docs/route'
 import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
@@ -40,6 +41,11 @@ const FeaturesRoute = FeaturesRouteImport.update({
   path: '/features',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsRouteRoute = DocsRouteRouteImport.update({
+  id: '/docs',
+  path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/app',
   path: '/app',
@@ -51,9 +57,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsIndexRoute = DocsIndexRouteImport.update({
-  id: '/docs/',
-  path: '/docs/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
@@ -61,29 +67,29 @@ const AppIndexRoute = AppIndexRouteImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 const DocsTroubleshootingRoute = DocsTroubleshootingRouteImport.update({
-  id: '/docs/troubleshooting',
-  path: '/docs/troubleshooting',
-  getParentRoute: () => rootRouteImport,
+  id: '/troubleshooting',
+  path: '/troubleshooting',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const DocsSelfHostingRoute = DocsSelfHostingRouteImport.update({
-  id: '/docs/self-hosting',
-  path: '/docs/self-hosting',
-  getParentRoute: () => rootRouteImport,
+  id: '/self-hosting',
+  path: '/self-hosting',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const DocsReverseProxyRoute = DocsReverseProxyRouteImport.update({
-  id: '/docs/reverse-proxy',
-  path: '/docs/reverse-proxy',
-  getParentRoute: () => rootRouteImport,
+  id: '/reverse-proxy',
+  path: '/reverse-proxy',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const DocsGettingStartedRoute = DocsGettingStartedRouteImport.update({
-  id: '/docs/getting-started',
-  path: '/docs/getting-started',
-  getParentRoute: () => rootRouteImport,
+  id: '/getting-started',
+  path: '/getting-started',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const DocsFaqRoute = DocsFaqRouteImport.update({
-  id: '/docs/faq',
-  path: '/docs/faq',
-  getParentRoute: () => rootRouteImport,
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const AuthServerUrlRoute = AuthServerUrlRouteImport.update({
   id: '/auth/server-url',
@@ -121,19 +127,19 @@ const AppListsIndexRoute = AppListsIndexRouteImport.update({
   getParentRoute: () => AppRouteRoute,
 } as any)
 const DocsFeaturesLocationRoute = DocsFeaturesLocationRouteImport.update({
-  id: '/docs/features/location',
-  path: '/docs/features/location',
-  getParentRoute: () => rootRouteImport,
+  id: '/features/location',
+  path: '/features/location',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const DocsFeaturesListsRoute = DocsFeaturesListsRouteImport.update({
-  id: '/docs/features/lists',
-  path: '/docs/features/lists',
-  getParentRoute: () => rootRouteImport,
+  id: '/features/lists',
+  path: '/features/lists',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const DocsFeaturesGeofencesRoute = DocsFeaturesGeofencesRouteImport.update({
-  id: '/docs/features/geofences',
-  path: '/docs/features/geofences',
-  getParentRoute: () => rootRouteImport,
+  id: '/features/geofences',
+  path: '/features/geofences',
+  getParentRoute: () => DocsRouteRoute,
 } as any)
 const AppSettingsFamilyRoute = AppSettingsFamilyRouteImport.update({
   id: '/settings/family',
@@ -165,6 +171,7 @@ const AppListsListIdRoute = AppListsListIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
+  '/docs': typeof DocsRouteRouteWithChildren
   '/features': typeof FeaturesRoute
   '/auth/create-family': typeof AuthCreateFamilyRoute
   '/auth/join-family': typeof AuthJoinFamilyRoute
@@ -219,6 +226,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
+  '/docs': typeof DocsRouteRouteWithChildren
   '/features': typeof FeaturesRoute
   '/auth/create-family': typeof AuthCreateFamilyRoute
   '/auth/join-family': typeof AuthJoinFamilyRoute
@@ -248,6 +256,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
+    | '/docs'
     | '/features'
     | '/auth/create-family'
     | '/auth/join-family'
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app'
+    | '/docs'
     | '/features'
     | '/auth/create-family'
     | '/auth/join-family'
@@ -329,20 +339,12 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
+  DocsRouteRoute: typeof DocsRouteRouteWithChildren
   FeaturesRoute: typeof FeaturesRoute
   AuthCreateFamilyRoute: typeof AuthCreateFamilyRoute
   AuthJoinFamilyRoute: typeof AuthJoinFamilyRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthServerUrlRoute: typeof AuthServerUrlRoute
-  DocsFaqRoute: typeof DocsFaqRoute
-  DocsGettingStartedRoute: typeof DocsGettingStartedRoute
-  DocsReverseProxyRoute: typeof DocsReverseProxyRoute
-  DocsSelfHostingRoute: typeof DocsSelfHostingRoute
-  DocsTroubleshootingRoute: typeof DocsTroubleshootingRoute
-  DocsIndexRoute: typeof DocsIndexRoute
-  DocsFeaturesGeofencesRoute: typeof DocsFeaturesGeofencesRoute
-  DocsFeaturesListsRoute: typeof DocsFeaturesListsRoute
-  DocsFeaturesLocationRoute: typeof DocsFeaturesLocationRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -352,6 +354,13 @@ declare module '@tanstack/react-router' {
       path: '/features'
       fullPath: '/features'
       preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -370,10 +379,10 @@ declare module '@tanstack/react-router' {
     }
     '/docs/': {
       id: '/docs/'
-      path: '/docs'
+      path: '/'
       fullPath: '/docs/'
       preLoaderRoute: typeof DocsIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/app/': {
       id: '/app/'
@@ -384,38 +393,38 @@ declare module '@tanstack/react-router' {
     }
     '/docs/troubleshooting': {
       id: '/docs/troubleshooting'
-      path: '/docs/troubleshooting'
+      path: '/troubleshooting'
       fullPath: '/docs/troubleshooting'
       preLoaderRoute: typeof DocsTroubleshootingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/docs/self-hosting': {
       id: '/docs/self-hosting'
-      path: '/docs/self-hosting'
+      path: '/self-hosting'
       fullPath: '/docs/self-hosting'
       preLoaderRoute: typeof DocsSelfHostingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/docs/reverse-proxy': {
       id: '/docs/reverse-proxy'
-      path: '/docs/reverse-proxy'
+      path: '/reverse-proxy'
       fullPath: '/docs/reverse-proxy'
       preLoaderRoute: typeof DocsReverseProxyRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/docs/getting-started': {
       id: '/docs/getting-started'
-      path: '/docs/getting-started'
+      path: '/getting-started'
       fullPath: '/docs/getting-started'
       preLoaderRoute: typeof DocsGettingStartedRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/docs/faq': {
       id: '/docs/faq'
-      path: '/docs/faq'
+      path: '/faq'
       fullPath: '/docs/faq'
       preLoaderRoute: typeof DocsFaqRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/auth/server-url': {
       id: '/auth/server-url'
@@ -468,24 +477,24 @@ declare module '@tanstack/react-router' {
     }
     '/docs/features/location': {
       id: '/docs/features/location'
-      path: '/docs/features/location'
+      path: '/features/location'
       fullPath: '/docs/features/location'
       preLoaderRoute: typeof DocsFeaturesLocationRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/docs/features/lists': {
       id: '/docs/features/lists'
-      path: '/docs/features/lists'
+      path: '/features/lists'
       fullPath: '/docs/features/lists'
       preLoaderRoute: typeof DocsFeaturesListsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/docs/features/geofences': {
       id: '/docs/features/geofences'
-      path: '/docs/features/geofences'
+      path: '/features/geofences'
       fullPath: '/docs/features/geofences'
       preLoaderRoute: typeof DocsFeaturesGeofencesRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof DocsRouteRoute
     }
     '/app/settings/family': {
       id: '/app/settings/family'
@@ -553,14 +562,19 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
   AppRouteRouteChildren,
 )
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AppRouteRoute: AppRouteRouteWithChildren,
-  FeaturesRoute: FeaturesRoute,
-  AuthCreateFamilyRoute: AuthCreateFamilyRoute,
-  AuthJoinFamilyRoute: AuthJoinFamilyRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthServerUrlRoute: AuthServerUrlRoute,
+interface DocsRouteRouteChildren {
+  DocsFaqRoute: typeof DocsFaqRoute
+  DocsGettingStartedRoute: typeof DocsGettingStartedRoute
+  DocsReverseProxyRoute: typeof DocsReverseProxyRoute
+  DocsSelfHostingRoute: typeof DocsSelfHostingRoute
+  DocsTroubleshootingRoute: typeof DocsTroubleshootingRoute
+  DocsIndexRoute: typeof DocsIndexRoute
+  DocsFeaturesGeofencesRoute: typeof DocsFeaturesGeofencesRoute
+  DocsFeaturesListsRoute: typeof DocsFeaturesListsRoute
+  DocsFeaturesLocationRoute: typeof DocsFeaturesLocationRoute
+}
+
+const DocsRouteRouteChildren: DocsRouteRouteChildren = {
   DocsFaqRoute: DocsFaqRoute,
   DocsGettingStartedRoute: DocsGettingStartedRoute,
   DocsReverseProxyRoute: DocsReverseProxyRoute,
@@ -570,6 +584,21 @@ const rootRouteChildren: RootRouteChildren = {
   DocsFeaturesGeofencesRoute: DocsFeaturesGeofencesRoute,
   DocsFeaturesListsRoute: DocsFeaturesListsRoute,
   DocsFeaturesLocationRoute: DocsFeaturesLocationRoute,
+}
+
+const DocsRouteRouteWithChildren = DocsRouteRoute._addFileChildren(
+  DocsRouteRouteChildren,
+)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AppRouteRoute: AppRouteRouteWithChildren,
+  DocsRouteRoute: DocsRouteRouteWithChildren,
+  FeaturesRoute: FeaturesRoute,
+  AuthCreateFamilyRoute: AuthCreateFamilyRoute,
+  AuthJoinFamilyRoute: AuthJoinFamilyRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthServerUrlRoute: AuthServerUrlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

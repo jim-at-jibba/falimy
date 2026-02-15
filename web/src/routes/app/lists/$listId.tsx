@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { ArrowLeft, MoreVertical, Trash2, Archive, Check, Plus } from 'lucide-react'
 import { useListItems } from '@/hooks/useListItems'
 import { useLists } from '@/hooks/useLists'
+import { useListsRealtime, useListItemsRealtime } from '@/hooks/useListsRealtime'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -42,6 +43,10 @@ function ListDetailPage() {
     toggleChecked,
     deleteItem,
   } = useListItems(listId)
+
+  // Enable realtime updates for lists and items
+  useListsRealtime()
+  useListItemsRealtime(listId)
 
   const [newItemName, setNewItemName] = useState('')
   const [newItemQuantity, setNewItemQuantity] = useState('')

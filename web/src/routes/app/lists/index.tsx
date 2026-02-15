@@ -2,6 +2,8 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Plus, ShoppingBag, CheckSquare, Briefcase, FileText, Archive, CheckCircle } from 'lucide-react'
 import { useLists } from '@/hooks/useLists'
+import { useListsRealtime } from '@/hooks/useListsRealtime'
+import { useListItemCounts } from '@/hooks/useListItemCounts'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -30,6 +32,13 @@ export const Route = createFileRoute('/app/lists/')({
 
 function ListsPage() {
   const { lists, isLoading, createList, isCreating } = useLists()
+  
+  // Enable realtime updates for lists
+  useListsRealtime()
+  
+  // Get item counts for all lists
+  const itemCounts = useListItemCounts(lists.map((l) => l.id))
+  
   const [filter, setFilter] = useState<ListsStatusOptions | 'all'>('active' as ListsStatusOptions)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
   const [newListName, setNewListName] = useState('')
@@ -261,7 +270,9 @@ function ListsPage() {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <CheckCircle className="h-4 w-4" />
-                      <span>0 / 0 items</span>
+                      <span>
+                        {itemCounts.get(list.id)?.checked ?? 0} / {itemCounts.get(list.id)?.total ?? 0} items
+                      </span>
                     </div>
                     <div>
                       <span className="capitalize">{list.type}</span>

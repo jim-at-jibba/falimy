@@ -4,7 +4,8 @@ import List from "./List";
 import ListItem from "./ListItem";
 import LocationHistory from "./LocationHistory";
 import Member from "./Member";
+import Recipe from "./Recipe";
 
-export const modelClasses = [Family, Member, List, ListItem, LocationHistory, Geofence];
+export const modelClasses = [Family, Member, List, ListItem, LocationHistory, Geofence, Recipe];
 
-export { Family, Member, List, ListItem, LocationHistory, Geofence };
+export { Family, Member, List, ListItem, LocationHistory, Geofence, Recipe };

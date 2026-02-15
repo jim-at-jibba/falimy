@@ -127,6 +127,9 @@ const pbRecordToLocal = (
       (key.endsWith("_at") || key === "timestamp" || key === "location_sharing_until")
     ) {
       local[wmdbKey] = pbDateToTimestamp(value);
+    } else if (value !== null && typeof value === "object") {
+      // JSON fields come from PB as parsed objects/arrays — WMDB needs strings
+      local[wmdbKey] = JSON.stringify(value);
     } else {
       local[wmdbKey] = value ?? null;
     }

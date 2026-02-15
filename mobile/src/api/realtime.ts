@@ -13,6 +13,7 @@ const REALTIME_COLLECTIONS = [
   Collections.Users,
   Collections.LocationHistory,
   Collections.Geofences,
+  Collections.Recipes,
 ];
 
 /**
@@ -26,6 +27,7 @@ const COLLECTION_TO_TABLE: Record<string, string> = {
   [Collections.ListItems]: "list_items",
   [Collections.LocationHistory]: "location_history",
   [Collections.Geofences]: "geofences",
+  [Collections.Recipes]: "recipes",
 };
 
 /**

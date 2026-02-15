@@ -16,6 +16,7 @@ export enum Collections {
 	ListItems = "list_items",
 	Lists = "lists",
 	LocationHistory = "location_history",
+	Recipes = "recipes",
 	Users = "users",
 }
 
@@ -178,6 +179,26 @@ export type LocationHistoryRecord = {
 	user_id: RecordIdString
 }
 
+export type RecipesRecord = {
+	cook_time?: number
+	created: IsoAutoDateString
+	created_by: RecordIdString
+	description?: string
+	family_id: RecordIdString
+	id: string
+	image?: FileNameString
+	ingredients: { text: string; group?: string }[]
+	notes?: string
+	prep_time?: number
+	servings?: string
+	source_url?: string
+	steps: { text: string; position: number }[]
+	tags?: string[]
+	title: string
+	total_time?: number
+	updated: IsoAutoDateString
+}
+
 export enum UsersRoleOptions {
 	"admin" = "admin",
 	"member" = "member",
@@ -221,6 +242,7 @@ export type GeofencesResponse<Texpand = unknown> = Required<GeofencesRecord> & B
 export type ListItemsResponse<Texpand = unknown> = Required<ListItemsRecord> & BaseSystemFields<Texpand>
 export type ListsResponse<Texpand = unknown> = Required<ListsRecord> & BaseSystemFields<Texpand>
 export type LocationHistoryResponse<Texpand = unknown> = Required<LocationHistoryRecord> & BaseSystemFields<Texpand>
+export type RecipesResponse<Texpand = unknown> = Required<RecipesRecord> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -235,7 +257,8 @@ export type CollectionRecords = {
 	geofences: GeofencesRecord
 	list_items: ListItemsRecord
 	lists: ListsRecord
-	location_history: LocationHistoryRecord
+	location_history: LocationHistoryRecord,
+	recipes: RecipesRecord
 	users: UsersRecord
 }
 
@@ -249,7 +272,8 @@ export type CollectionResponses = {
 	geofences: GeofencesResponse
 	list_items: ListItemsResponse
 	lists: ListsResponse
-	location_history: LocationHistoryResponse
+	location_history: LocationHistoryResponse,
+	recipes: RecipesResponse
 	users: UsersResponse
 }
 

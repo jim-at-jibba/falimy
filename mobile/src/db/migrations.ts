@@ -53,5 +53,33 @@ export const migrations = schemaMigrations({
         unsafeExecuteSql("CREATE INDEX IF NOT EXISTS index_geofences_server_id ON geofences(server_id);"),
       ],
     },
+    {
+      toVersion: 4,
+      steps: [
+        createTable({
+          name: "recipes",
+          columns: [
+            { name: "server_id", type: "string", isIndexed: true },
+            { name: "title", type: "string" },
+            { name: "description", type: "string", isOptional: true },
+            { name: "image", type: "string", isOptional: true },
+            { name: "ingredients", type: "string" },
+            { name: "steps", type: "string" },
+            { name: "prep_time", type: "number", isOptional: true },
+            { name: "cook_time", type: "number", isOptional: true },
+            { name: "total_time", type: "number", isOptional: true },
+            { name: "servings", type: "string", isOptional: true },
+            { name: "source_url", type: "string", isOptional: true },
+            { name: "notes", type: "string", isOptional: true },
+            { name: "tags", type: "string", isOptional: true },
+            { name: "family_id", type: "string", isIndexed: true },
+            { name: "created_by_id", type: "string", isOptional: true },
+            { name: "created_at", type: "number" },
+            { name: "updated_at", type: "number" },
+          ],
+        }),
+        unsafeExecuteSql("CREATE INDEX IF NOT EXISTS index_recipes_server_id ON recipes(server_id);"),
+      ],
+    },
   ],
 });

@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export const schema = appSchema({
-  version: 3,
+  version: 4,
   tables: [
     tableSchema({
       name: "families",
@@ -91,6 +91,28 @@ export const schema = appSchema({
         { name: "watch_user_id", type: "string", isOptional: true, isIndexed: true },
         { name: "trigger_on", type: "string", isOptional: true },
         { name: "is_enabled", type: "boolean" },
+        { name: "created_at", type: "number" },
+        { name: "updated_at", type: "number" },
+      ],
+    }),
+    tableSchema({
+      name: "recipes",
+      columns: [
+        { name: "server_id", type: "string", isIndexed: true },
+        { name: "title", type: "string" },
+        { name: "description", type: "string", isOptional: true },
+        { name: "image", type: "string", isOptional: true },
+        { name: "ingredients", type: "string" },
+        { name: "steps", type: "string" },
+        { name: "prep_time", type: "number", isOptional: true },
+        { name: "cook_time", type: "number", isOptional: true },
+        { name: "total_time", type: "number", isOptional: true },
+        { name: "servings", type: "string", isOptional: true },
+        { name: "source_url", type: "string", isOptional: true },
+        { name: "notes", type: "string", isOptional: true },
+        { name: "tags", type: "string", isOptional: true },
+        { name: "family_id", type: "string", isIndexed: true },
+        { name: "created_by_id", type: "string", isOptional: true },
         { name: "created_at", type: "number" },
         { name: "updated_at", type: "number" },
       ],

@@ -1,5 +1,5 @@
 import { Tabs } from "expo-router";
-import { House, List, MapPin, Settings } from "lucide-react-native";
+import { CookingPot, House, List, MapPin, Settings } from "lucide-react-native";
 import { useEffect } from "react";
 import CustomTabBar from "@/components/CustomTabBar";
 import { useAuth } from "@/contexts/AuthContext";
@@ -46,6 +46,15 @@ export default function TabsLayout() {
           tabBarLabel: "Lists",
           headerShown: false,
           tabBarIcon: ({ color, size }) => <List size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="recipes"
+        options={{
+          title: "Recipes",
+          tabBarLabel: "Recipes",
+          headerShown: false,
+          tabBarIcon: ({ color, size }) => <CookingPot size={size} color={color} />,
         }}
       />
       <Tabs.Screen

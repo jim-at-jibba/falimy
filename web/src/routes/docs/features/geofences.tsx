@@ -1,31 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { Radio, MapPin, Bell, CheckCircle, Shield } from 'lucide-react'
+import { Radio, CheckCircle, Shield } from 'lucide-react'
 
 export const Route = createFileRoute('/docs/features/geofences')({
   component: GeofencesFeaturePage,
 })
 
 function GeofencesFeaturePage() {
-  const triggerTypes = [
-    {
-      name: 'Enter',
-      description: 'Notified when the watched family member enters the geofence zone',
-      icon: <MapPin className="h-5 w-5 text-success" />,
-    },
-    {
-      name: 'Exit',
-      description: 'Notified when the watched family member leaves the geofence zone',
-      icon: <Bell className="h-5 w-5 text-info" />,
-    },
-    {
-      name: 'Both',
-      description: 'Notified for both entry and exit events',
-      icon: <Radio className="h-5 w-5 text-primary" />,
-    },
-  ]
-
   const commonGeofences = [
     {
       name: 'Home',
@@ -106,25 +88,8 @@ function GeofencesFeaturePage() {
                 </ul>
               </div>
             </div>
-          </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Trigger Types</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {triggerTypes.map((type) => (
-                <div key={type.name} className="p-4 bg-card rounded-lg border">
-                  <div className="flex items-start gap-3 mb-2">
-                    {type.icon}
-                    <h3 className="text-lg font-semibold">{type.name}</h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm">{type.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Common Geofence Ideas</h2>
+            <h2 className="text-2xl font-bold mb-6 mt-8">Common Geofences</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {commonGeofences.map((fence) => (
                 <div key={fence.name} className="p-4 bg-card rounded-lg border">
@@ -144,9 +109,9 @@ function GeofencesFeaturePage() {
               <div>
                 <h3 className="text-lg font-semibold mb-3">On Mobile</h3>
                 <ol className="list-decimal ml-6 space-y-2 text-muted-foreground">
-                  <li>Go to Location > Geofences</li>
+                  <li>Go to Location → Geofences</li>
                   <li>Tap "Create Geofence"</li>
-                  <li>Interact with the map to set the center point</li>
+                  <li>Interact with the map to set a center point</li>
                   <li>Choose a radius (100m to 2km)</li>
                   <li>Select which family member to watch</li>
                   <li>Set trigger type (enter, exit, or both)</li>

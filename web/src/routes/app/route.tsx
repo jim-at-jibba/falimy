@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect } from "react";
 import {
+  SidebarProvider,
   Sidebar,
   SidebarContent,
   SidebarHeader,
@@ -51,79 +52,81 @@ function AppLayout() {
   };
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-3 px-3 py-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-            f
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarHeader>
+          <div className="flex items-center gap-3 px-3 py-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
+              f
+            </div>
+            <div className="flex flex-col">
+              <span className="font-semibold">falimy</span>
+              {user && (
+                <span className="text-xs text-muted-foreground">
+                  {user.family_id || "No family"}
+                </span>
+              )}
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="font-semibold">falimy</span>
+        </SidebarHeader>
+
+        <SidebarContent>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/app" className="flex items-center gap-2">
+                  <Home className="size-4" />
+                  <span>Home</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/app/lists" className="flex items-center gap-2">
+                  <List className="size-4" />
+                  <span>Lists</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/app/location" className="flex items-center gap-2">
+                  <Map className="size-4" />
+                  <span>Location</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/app/settings" className="flex items-center gap-2">
+                  <Settings className="size-4" />
+                  <span>Settings</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarContent>
+
+        <SidebarFooter>
+          <div className="flex items-center gap-3 px-3 py-2">
             {user && (
-              <span className="text-xs text-muted-foreground">
-                {user.family_id || "No family"}
-              </span>
+              <Avatar className="size-8">
+                <AvatarFallback className="bg-secondary">
+                  {user.name?.[0]?.toUpperCase() || "?"}
+                </AvatarFallback>
+              </Avatar>
             )}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <LogOut className="size-4" />
+              <span>Logout</span>
+            </button>
           </div>
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/app" className="flex items-center gap-2">
-                <Home className="size-4" />
-                <span>Home</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/app/lists" className="flex items-center gap-2">
-                <List className="size-4" />
-                <span>Lists</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/app/location" className="flex items-center gap-2">
-                <Map className="size-4" />
-                <span>Location</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/app/settings" className="flex items-center gap-2">
-                <Settings className="size-4" />
-                <span>Settings</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarContent>
-
-      <SidebarFooter>
-        <div className="flex items-center gap-3 px-3 py-2">
-          {user && (
-            <Avatar className="size-8">
-              <AvatarFallback className="bg-secondary">
-                {user.name?.[0]?.toUpperCase() || "?"}
-              </AvatarFallback>
-            </Avatar>
-          )}
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LogOut className="size-4" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </SidebarFooter>
+        </SidebarFooter>
+      </Sidebar>
       <Outlet />
-    </Sidebar>
+    </SidebarProvider>
   );
 }

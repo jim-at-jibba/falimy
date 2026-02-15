@@ -114,6 +114,11 @@ jest.mock("@nozbe/watermelondb", () => ({
     and: jest.fn(),
     or: jest.fn(),
     on: jest.fn(),
+    oneOf: jest.fn(),
+    notEq: jest.fn(),
+    sortBy: jest.fn(),
+    asc: "asc",
+    desc: "desc",
   },
   tableSchema: jest.fn((schema) => schema),
   appSchema: jest.fn((schema) => schema),
@@ -140,3 +145,82 @@ jest.mock("react-native-maps", () => {
     PROVIDER_GOOGLE: "google",
   };
 });
+
+// Mock react-native-unistyles
+jest.mock("react-native-unistyles", () => ({
+  StyleSheet: {
+    create: (stylesOrFn) => {
+      if (typeof stylesOrFn === "function") {
+        return stylesOrFn({
+          colors: {
+            primary: "#2BCCBD",
+            white: "#fff",
+            typography: "#000",
+            grey: "#999",
+            greyBackground: "#f5f5f5",
+            greyDark: "#666",
+            error: "#ff0000",
+            background: "#fff",
+            backgroundAccent: "#f0f0f0",
+          },
+          gap: 8,
+          borderRadiusSm: 8,
+          borderRadiusMd: 12,
+          buttonHeight: 48,
+          fontSizes: { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 },
+          fontFamily: { regular: "System", semiBold: "System", bold: "System" },
+          spacing: { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20 },
+        });
+      }
+      return stylesOrFn;
+    },
+    configure: jest.fn(),
+  },
+  UnistylesRuntime: {
+    themeName: "light",
+    setTheme: jest.fn(),
+    setRootViewBackgroundColor: jest.fn(),
+  },
+  useUnistyles: jest.fn(() => ({
+    theme: {
+      colors: {
+        primary: "#2BCCBD",
+        white: "#fff",
+        typography: "#000",
+        grey: "#999",
+        error: "#ff0000",
+        background: "#fff",
+        backgroundAccent: "#f0f0f0",
+        greyBackground: "#f5f5f5",
+        greyDark: "#666",
+      },
+      gap: 8,
+      borderRadiusSm: 8,
+      borderRadiusMd: 12,
+      buttonHeight: 48,
+      fontSizes: { xs: 12, sm: 14, md: 16, lg: 18, xl: 20 },
+      fontFamily: { regular: "System", semiBold: "System", bold: "System" },
+      spacing: { 1: 4, 2: 8, 3: 12, 4: 16, 5: 20 },
+    },
+  })),
+  mq: jest.fn(),
+}));
+
+// Mock lucide-react-native
+jest.mock("lucide-react-native", () => ({
+  AlertTriangle: "AlertTriangle",
+  ChevronLeft: "ChevronLeft",
+  ChevronRight: "ChevronRight",
+  Check: "Check",
+}));
+
+// Mock expo-haptics with ImpactFeedbackStyle
+jest.mock("expo-haptics", () => ({
+  impactAsync: jest.fn(() => Promise.resolve()),
+  ImpactFeedbackStyle: { Light: "light", Medium: "medium", Heavy: "heavy" },
+  NotificationFeedbackType: {
+    Success: "success",
+    Warning: "warning",
+    Error: "error",
+  },
+}));

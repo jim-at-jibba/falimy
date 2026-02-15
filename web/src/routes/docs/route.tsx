@@ -1,13 +1,12 @@
 import { createFileRoute, Outlet, Link, useLocation } from '@tanstack/react-router'
 import {
-  Layout,
-  LayoutContent,
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from '@/components/ui/sidebar'
 import { Home, BookOpen, LifeBuoy, HelpCircle, Wrench } from 'lucide-react'
 
@@ -23,9 +22,8 @@ function DocsLayout() {
   }
 
   return (
-    <Layout variant="left">
-      <Sidebar>
-        <SidebarHeader>
+    <Sidebar>
+      <SidebarHeader>
           <Link to="/" className="flex items-center gap-2 hover:text-primary transition-colors">
             <Home className="size-4" />
             <span className="font-semibold">falimy</span>
@@ -104,9 +102,10 @@ function DocsLayout() {
         </SidebarContent>
       </Sidebar>
 
-      <LayoutContent>
-        <Outlet />
-      </LayoutContent>
-    </Layout>
+      <SidebarFooter />
+      <Sidebar />
+
+      <Outlet />
+    </Sidebar>
   )
 }

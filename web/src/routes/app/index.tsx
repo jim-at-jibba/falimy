@@ -41,9 +41,7 @@ function DashboardPage() {
             </CardHeader>
           </Card>
         </Link>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Link to="/app/settings/family">
           <Card className="cursor-pointer transition-colors hover:bg-accent">
             <CardHeader>

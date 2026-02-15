@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/app/location/')({
   component: LocationPage,
@@ -6,8 +6,9 @@ export const Route = createFileRoute('/app/location/')({
 
 function LocationPage() {
   return (
-    <div className="min-h-screen">
-      <h1>Location Map - Coming Soon</h1>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-4">Location - Coming Soon</h1>
+      <p className="text-muted-foreground">Location feature will be implemented in Phase 6.</p>
     </div>
   )
 }

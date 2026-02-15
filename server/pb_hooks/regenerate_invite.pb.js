@@ -10,14 +10,14 @@
  */
 
 // Rate limiting state (in-memory, resets on server restart)
-const rateLimits = new Map()
-const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 5
+const regenerateInvite_rateLimits = new Map()
+const regenerateInvite_RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute
+const regenerateInvite_MAX_REQUESTS_PER_WINDOW = 5
 
 /**
  * Generate a secure random invite code
  */
-function generateInviteCode() {
+function regenerateInvite_generateInviteCode() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789' // Removed ambiguous chars
   const length = 8
   let code = ''
@@ -33,25 +33,25 @@ function generateInviteCode() {
 /**
  * Check rate limit for user
  */
-function checkRateLimit(userId) {
+function regenerateInvite_checkRateLimit(userId) {
   const now = Date.now()
   const userKey = `regenerate:${userId}`
   
-  if (!rateLimits.has(userKey)) {
-    rateLimits.set(userKey, { count: 1, resetAt: now + RATE_LIMIT_WINDOW })
+  if (!regenerateInvite_rateLimits.has(userKey)) {
+    regenerateInvite_rateLimits.set(userKey, { count: 1, resetAt: now + regenerateInvite_RATE_LIMIT_WINDOW })
     return true
   }
   
-  const limit = rateLimits.get(userKey)
+  const limit = regenerateInvite_rateLimits.get(userKey)
   
   // Reset if window expired
   if (now > limit.resetAt) {
-    rateLimits.set(userKey, { count: 1, resetAt: now + RATE_LIMIT_WINDOW })
+    regenerateInvite_rateLimits.set(userKey, { count: 1, resetAt: now + regenerateInvite_RATE_LIMIT_WINDOW })
     return true
   }
   
   // Check if under limit
-  if (limit.count < MAX_REQUESTS_PER_WINDOW) {
+  if (limit.count < regenerateInvite_MAX_REQUESTS_PER_WINDOW) {
     limit.count++
     return true
   }
@@ -67,7 +67,7 @@ routerAdd('POST', '/api/falimy/regenerate-invite', (e) => {
   }
   
   // Check rate limit
-  if (!checkRateLimit(authRecord.id)) {
+  if (!regenerateInvite_checkRateLimit(authRecord.id)) {
     throw new BadRequestError('Too many requests. Please try again later.')
   }
   
@@ -94,7 +94,7 @@ routerAdd('POST', '/api/falimy/regenerate-invite', (e) => {
     
     // Keep trying until we get a unique code
     while (attempts < maxAttempts) {
-      newInviteCode = generateInviteCode()
+      newInviteCode = regenerateInvite_generateInviteCode()
       
       // Check if code already exists
       try {

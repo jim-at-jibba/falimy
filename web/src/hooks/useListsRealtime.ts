@@ -35,6 +35,9 @@ export function useListsRealtime() {
 
             switch (event.action) {
               case 'create':
+                if (oldData.some((list) => list.id === event.record.id)) {
+                  return oldData
+                }
                 return [event.record, ...oldData]
 
               case 'update':

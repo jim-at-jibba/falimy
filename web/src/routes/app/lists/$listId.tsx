@@ -171,15 +171,17 @@ function ListDetailPage() {
               }}
               className="flex-1"
             />
-            <Input
-              placeholder="Qty (optional)"
-              value={newItemQuantity}
-              onChange={(e) => setNewItemQuantity(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleAddItem()
-              }}
-              className="w-32"
-            />
+            {list.type === 'shopping' && (
+              <Input
+                placeholder="Qty (optional)"
+                value={newItemQuantity}
+                onChange={(e) => setNewItemQuantity(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleAddItem()
+                }}
+                className="w-32"
+              />
+            )}
             <Button onClick={handleAddItem} disabled={isCreating || !newItemName.trim()}>
               <Plus className="h-4 w-4" />
             </Button>
@@ -208,7 +210,7 @@ function ListDetailPage() {
                     />
                     <div className="flex-1">
                       <div className="font-medium">{item.name}</div>
-                      {item.quantity && (
+                      {list.type === 'shopping' && item.quantity && (
                         <div className="text-sm text-muted-foreground">{item.quantity}</div>
                       )}
                     </div>
@@ -251,7 +253,7 @@ function ListDetailPage() {
                     />
                     <div className="flex-1">
                       <div className="font-medium line-through">{item.name}</div>
-                      {item.quantity && (
+                      {list.type === 'shopping' && item.quantity && (
                         <div className="text-sm text-muted-foreground line-through">
                           {item.quantity}
                         </div>

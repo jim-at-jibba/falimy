@@ -24,10 +24,12 @@ import { useSync } from "@/hooks/useSync";
 /** Swipeable item row with check toggle and delete. */
 function ItemRow({
   item,
+  listType,
   onToggle,
   onDelete,
 }: {
   item: ListItem;
+  listType: string;
   onToggle: (item: ListItem) => void;
   onDelete: (item: ListItem) => void;
 }) {
@@ -90,8 +92,8 @@ function ItemRow({
                 : undefined
             }
           />
-          {(item.quantity || item.note) && (
-            <SmallText text={[item.quantity, item.note].filter(Boolean).join(" - ")} />
+          {((listType === "shopping" && item.quantity) || item.note) && (
+            <SmallText text={[listType === "shopping" ? item.quantity : null, item.note].filter(Boolean).join(" - ")} />
           )}
         </View>
       </Pressable>
@@ -310,16 +312,18 @@ export default function ListDetailScreen() {
               returnKeyType="done"
               blurOnSubmit={false}
             />
-            <TextInput
-              style={styles.addItemQuantity}
-              placeholder="Qty"
-              placeholderTextColor={theme.colors.grey}
-              value={newItemQuantity}
-              onChangeText={setNewItemQuantity}
-              onSubmitEditing={handleAddItem}
-              returnKeyType="done"
-              keyboardType="default"
-            />
+            {list.listType === "shopping" && (
+              <TextInput
+                style={styles.addItemQuantity}
+                placeholder="Qty"
+                placeholderTextColor={theme.colors.grey}
+                value={newItemQuantity}
+                onChangeText={setNewItemQuantity}
+                onSubmitEditing={handleAddItem}
+                returnKeyType="done"
+                keyboardType="default"
+              />
+            )}
           </View>
         </View>
 
@@ -327,7 +331,7 @@ export default function ListDetailScreen() {
         {uncheckedItems.length > 0 && (
           <View style={styles.section}>
             {uncheckedItems.map((item) => (
-              <ItemRow key={item.id} item={item} onToggle={handleToggle} onDelete={handleDelete} />
+              <ItemRow key={item.id} item={item} listType={list.listType} onToggle={handleToggle} onDelete={handleDelete} />
             ))}
           </View>
         )}
@@ -337,7 +341,7 @@ export default function ListDetailScreen() {
           <View style={styles.section}>
             <SmallText text={`Checked (${checkedItems.length})`} />
             {checkedItems.map((item) => (
-              <ItemRow key={item.id} item={item} onToggle={handleToggle} onDelete={handleDelete} />
+              <ItemRow key={item.id} item={item} listType={list.listType} onToggle={handleToggle} onDelete={handleDelete} />
             ))}
           </View>
         )}

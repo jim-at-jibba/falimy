@@ -1,8 +1,5 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, Marker, Circle, useMapEvents } from 'react-leaflet'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { ArrowLeft } from 'lucide-react'
 import { useGeofences } from '@/hooks/useGeofences'
 import { useFamilyMembers } from '@/hooks/useFamilyMembers'
@@ -20,33 +17,13 @@ import {
 } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { toast } from 'sonner'
+import { ClientOnly } from '@/components/ClientOnly'
+import { GeofenceCreateMap } from '@/components/maps/GeofenceCreateMap'
 import type { GeofencesTriggerOnOptions } from '@/types/pocketbase-types'
-
-// Fix Leaflet default marker icon issue
-delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
-})
 
 export const Route = createFileRoute('/app/location/create-geofence')({
   component: CreateGeofencePage,
 })
-
-// Component to handle map clicks
-function MapClickHandler({
-  onLocationSelect,
-}: {
-  onLocationSelect: (lat: number, lng: number) => void
-}) {
-  useMapEvents({
-    click: (e) => {
-      onLocationSelect(e.latlng.lat, e.latlng.lng)
-    },
-  })
-  return null
-}
 
 function CreateGeofencePage() {
   const navigate = useNavigate()
@@ -63,7 +40,6 @@ function CreateGeofencePage() {
   const [notifyUserId, setNotifyUserId] = useState('')
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
 
-  // Get user's current location for initial map center
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -142,7 +118,6 @@ function CreateGeofencePage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Map */}
         <Card>
           <CardHeader>
             <CardTitle>Location</CardTitle>
@@ -152,38 +127,19 @@ function CreateGeofencePage() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="h-[400px] rounded-b-lg overflow-hidden">
-              <MapContainer
-                center={defaultCenter}
-                zoom={14}
-                className="h-full w-full"
-                style={{ cursor: 'crosshair' }}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              <ClientOnly fallback={<div className="h-full w-full bg-muted flex items-center justify-center">Loading map...</div>}>
+                <GeofenceCreateMap
+                  lat={lat}
+                  lng={lng}
+                  radius={radius}
+                  onLocationSelect={handleLocationSelect}
+                  center={defaultCenter}
                 />
-                <MapClickHandler onLocationSelect={handleLocationSelect} />
-                
-                {lat !== null && lng !== null && (
-                  <>
-                    <Marker position={[lat, lng]} />
-                    <Circle
-                      center={[lat, lng]}
-                      radius={radius}
-                      pathOptions={{
-                        color: '#b4dbfa',
-                        fillColor: '#b4dbfa',
-                        fillOpacity: 0.3,
-                      }}
-                    />
-                  </>
-                )}
-              </MapContainer>
+              </ClientOnly>
             </div>
           </CardContent>
         </Card>
 
-        {/* Form */}
         <div className="space-y-4">
           <Card>
             <CardHeader>

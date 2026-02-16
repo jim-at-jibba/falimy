@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { MapPin, Navigation, Settings2, Shield, X } from "lucide-react-native";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, View } from "react-native";
+import { ActivityIndicator, Pressable, RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
 import MapView, { Circle, Marker, type Region } from "react-native-maps";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -226,9 +226,14 @@ export default function MapScreen() {
         {/* Selected member detail card */}
         {selectedMember && (
           <View style={styles.memberCard}>
-            <Pressable style={styles.memberCardClose} onPress={() => setSelectedMember(null)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <TouchableOpacity 
+              style={styles.memberCardClose} 
+              onPress={() => setSelectedMember(null)} 
+              activeOpacity={0.7}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
               <X size={18} color={theme.colors.grey} />
-            </Pressable>
+            </TouchableOpacity>
             <View style={styles.memberCardRow}>
               <View style={styles.memberAvatar}>
                 <DefaultText
@@ -346,6 +351,7 @@ const styles = StyleSheet.create((theme) => ({
     height: 32,
     justifyContent: "center",
     alignItems: "center",
+    zIndex: 1,
   },
   memberCardRow: {
     flexDirection: "row",

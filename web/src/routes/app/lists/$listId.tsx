@@ -24,7 +24,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { toast } from 'sonner'
 
 export const Route = createFileRoute('/app/lists/$listId')({
   component: ListDetailPage,
@@ -33,7 +32,7 @@ export const Route = createFileRoute('/app/lists/$listId')({
 function ListDetailPage() {
   const { listId } = Route.useParams()
   const navigate = useNavigate()
-  const { lists } = useLists()
+  const { lists, archiveList, deleteList } = useLists()
   const {
     uncheckedItems,
     checkedItems,
@@ -53,6 +52,7 @@ function ListDetailPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<string | null>(null)
   const [archiveDialogOpen, setArchiveDialogOpen] = useState(false)
+  const [deleteListDialogOpen, setDeleteListDialogOpen] = useState(false)
 
   // Find the current list
   const list = lists.find((l) => l.id === listId)
@@ -89,10 +89,21 @@ function ListDetailPage() {
   }
 
   const handleArchiveList = () => {
-    // TODO: Implement archiveList mutation
-    toast.success('List archived')
-    setArchiveDialogOpen(false)
-    navigate({ to: '/app/lists' })
+    archiveList(listId, {
+      onSuccess: () => {
+        setArchiveDialogOpen(false)
+        navigate({ to: '/app/lists' })
+      },
+    })
+  }
+
+  const handleDeleteList = () => {
+    deleteList(listId, {
+      onSuccess: () => {
+        setDeleteListDialogOpen(false)
+        navigate({ to: '/app/lists' })
+      },
+    })
   }
 
   if (isLoading) {
@@ -147,7 +158,7 @@ function ListDetailPage() {
               Archive List
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem className="text-destructive" onClick={() => setDeleteListDialogOpen(true)}>
               <Trash2 className="h-4 w-4 mr-2" />
               Delete List
             </DropdownMenuItem>
@@ -325,6 +336,26 @@ function ListDetailPage() {
               Cancel
             </Button>
             <Button onClick={handleArchiveList}>Archive</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete list dialog */}
+      <Dialog open={deleteListDialogOpen} onOpenChange={setDeleteListDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete List</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this list? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteListDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteList}>
+              Delete
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

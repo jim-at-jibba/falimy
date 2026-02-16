@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
+  SidebarInset,
 } from "@/components/ui/sidebar";
 import { Home, List, Map, Settings, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
@@ -126,7 +127,9 @@ function AppLayout() {
           </div>
         </SidebarFooter>
       </Sidebar>
-      <Outlet />
+      <SidebarInset>
+        <Outlet />
+      </SidebarInset>
     </SidebarProvider>
   );
 }

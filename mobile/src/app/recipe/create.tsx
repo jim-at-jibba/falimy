@@ -24,16 +24,16 @@ export default function CreateRecipeScreen() {
   const { recipes, createRecipe, updateRecipe, extractRecipeFromUrl } = useRecipes();
 
   const existingRecipe = useMemo(
-    () => (isEditing ? recipes.find((r) => r.serverId === id) ?? null : null),
+    () => (isEditing ? (recipes.find((r) => r.serverId === id) ?? null) : null),
     [recipes, id, isEditing],
   );
 
   // Form state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [ingredients, setIngredients] = useState<{ quantity?: string; name?: string; group?: string }[]>([
-    { quantity: "", name: "" },
-  ]);
+  const [ingredients, setIngredients] = useState<
+    { quantity?: string; name?: string; group?: string }[]
+  >([{ quantity: "", name: "" }]);
   const [steps, setSteps] = useState<{ text: string; position: number }[]>([
     { text: "", position: 1 },
   ]);
@@ -54,12 +54,12 @@ export default function CreateRecipeScreen() {
       setTitle(existingRecipe.title);
       setDescription(existingRecipe.description ?? "");
       setIngredients(
-        existingRecipe.ingredients.length > 0 ? existingRecipe.ingredients : [{ quantity: "", name: "" }],
+        existingRecipe.ingredients.length > 0
+          ? existingRecipe.ingredients
+          : [{ quantity: "", name: "" }],
       );
       setSteps(
-        existingRecipe.steps.length > 0
-          ? existingRecipe.steps
-          : [{ text: "", position: 1 }],
+        existingRecipe.steps.length > 0 ? existingRecipe.steps : [{ text: "", position: 1 }],
       );
       setPrepTime(existingRecipe.prepTime ? String(existingRecipe.prepTime) : "");
       setCookTime(existingRecipe.cookTime ? String(existingRecipe.cookTime) : "");
@@ -82,7 +82,9 @@ export default function CreateRecipeScreen() {
         // Parse extracted ingredients (which come as "text" field) into quantity + name
         const parsed = data.ingredients.map((ing) => {
           // Try to split "2 cups flour" into quantity="2 cups" name="flour"
-          const match = ing.text.match(/^([\d\s\/\-.,]+(?:\s+(?:cup|cups|tsp|tbsp|teaspoon|tablespoon|oz|lb|g|kg|ml|l|piece|pieces|clove|cloves))?)\s+(.+)$/i);
+          const match = ing.text.match(
+            /^([\d\s\/\-.,]+(?:\s+(?:cup|cups|tsp|tbsp|teaspoon|tablespoon|oz|lb|g|kg|ml|l|piece|pieces|clove|cloves))?)\s+(.+)$/i,
+          );
           if (match) {
             return { quantity: match[1].trim(), name: match[2].trim(), group: ing.group };
           }
@@ -179,8 +181,7 @@ export default function CreateRecipeScreen() {
     }
   };
 
-  const addStep = () =>
-    setSteps([...steps, { text: "", position: steps.length + 1 }]);
+  const addStep = () => setSteps([...steps, { text: "", position: steps.length + 1 }]);
   const updateStep = (text: string, index: number) => {
     const updated = [...steps];
     updated[index] = { ...updated[index], text };
@@ -188,9 +189,7 @@ export default function CreateRecipeScreen() {
   };
   const removeStep = (index: number) => {
     if (steps.length > 1) {
-      setSteps(
-        steps.filter((_, i) => i !== index).map((s, i) => ({ ...s, position: i + 1 })),
-      );
+      setSteps(steps.filter((_, i) => i !== index).map((s, i) => ({ ...s, position: i + 1 })));
     } else {
       updateStep("", 0);
     }
@@ -206,29 +205,19 @@ export default function CreateRecipeScreen() {
 
   return (
     <View style={styles.outerContainer}>
-      <Header
-        title={isEditing ? "Edit Recipe" : "New Recipe"}
-        showBack
-        backgroundColor="#b2ecca"
-      />
+      <Header title={isEditing ? "Edit Recipe" : "New Recipe"} showBack backgroundColor="#b2ecca" />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
-        <ScrollView
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           {/* URL Import - Temporarily disabled while debugging server extraction endpoint */}
-          {false && !isEditing && (
+          {!isEditing && (
             <View style={styles.card}>
               <View style={styles.cardHeader}>
                 <Link2 size={18} color={theme.colors.typography} />
-                <DefaultText
-                  text="Import from URL"
-                  additionalStyles={{ fontWeight: "600" }}
-                />
+                <DefaultText text="Import from URL" additionalStyles={{ fontWeight: "600" }} />
               </View>
               <View style={styles.importRow}>
                 <TextInput
@@ -312,10 +301,7 @@ export default function CreateRecipeScreen() {
                   value={ing.name || ""}
                   onChangeText={(name) => updateIngredientField(index, "name", name)}
                 />
-                <Pressable
-                  style={styles.removeButton}
-                  onPress={() => removeIngredient(index)}
-                >
+                <Pressable style={styles.removeButton} onPress={() => removeIngredient(index)}>
                   <X size={18} color={theme.colors.grey} />
                 </Pressable>
               </View>
@@ -346,10 +332,7 @@ export default function CreateRecipeScreen() {
                   multiline
                   textAlignVertical="top"
                 />
-                <Pressable
-                  style={styles.removeButton}
-                  onPress={() => removeStep(index)}
-                >
+                <Pressable style={styles.removeButton} onPress={() => removeStep(index)}>
                   <X size={18} color={theme.colors.grey} />
                 </Pressable>
               </View>

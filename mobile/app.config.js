@@ -1,0 +1,96 @@
+export default ({ config }) => ({
+  ...config,
+  expo: {
+    name: "falimy",
+    slug: "falimy",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/icon.png",
+    userInterfaceStyle: "light",
+    newArchEnabled: true,
+    splash: {
+      image: "./assets/splash-icon.png",
+      resizeMode: "contain",
+      backgroundColor: "#ffffff",
+    },
+    ios: {
+      supportsTablet: true,
+      infoPlist: {
+        NSCameraUsageDescription: "Scan family invite QR codes.",
+        NSLocationWhenInUseUsageDescription:
+          "Falimy uses your location to share it with your family members on the map.",
+        NSLocationAlwaysAndWhenInUseUsageDescription:
+          "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+        NSLocationAlwaysUsageDescription:
+          "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+        UIBackgroundModes: ["location", "fetch"],
+      },
+      bundleIdentifier: "com.jimatjibba.falimy",
+    },
+    android: {
+      config: {
+        googleMaps: {
+          apiKey: process.env.GOOGLE_MAPS_API_KEY,
+        },
+      },
+      adaptiveIcon: {
+        foregroundImage: "./assets/adaptive-icon.png",
+        backgroundColor: "#ffffff",
+      },
+      edgeToEdgeEnabled: true,
+      predictiveBackGestureEnabled: false,
+      permissions: [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION",
+      ],
+      package: "com.jimatjibba.falimy",
+    },
+    web: {
+      favicon: "./assets/favicon.png",
+    },
+    plugins: [
+      "expo-router",
+      "expo-camera",
+      [
+        "expo-location",
+        {
+          locationAlwaysAndWhenInUsePermission:
+            "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+          locationAlwaysPermission:
+            "Falimy uses your location in the background to keep your family updated on your whereabouts.",
+          locationWhenInUsePermission:
+            "Falimy uses your location to share it with your family members on the map.",
+          isIosBackgroundLocationEnabled: true,
+          isAndroidBackgroundLocationEnabled: true,
+          isAndroidForegroundServiceEnabled: true,
+        },
+      ],
+      [
+        "expo-font",
+        {
+          fonts: [
+            "node_modules/@expo-google-fonts/montserrat/600SemiBold/Montserrat_600SemiBold.ttf",
+            "node_modules/@expo-google-fonts/montserrat/700Bold/Montserrat_700Bold.ttf",
+            "node_modules/@expo-google-fonts/montserrat/500Medium/Montserrat_500Medium.ttf",
+            "node_modules/@expo-google-fonts/montserrat/400Regular/Montserrat_400Regular.ttf",
+          ],
+        },
+      ],
+    ],
+    experiments: {
+      typedRoutes: true,
+    },
+    extra: {
+      router: {},
+      eas: {
+        projectId: "dda021c5-96ea-4a64-b122-a635824fd891",
+      },
+    },
+    owner: "jim-at-jibba",
+  },
+});

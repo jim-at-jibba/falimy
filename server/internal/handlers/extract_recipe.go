@@ -167,7 +167,7 @@ type rawRecipe struct {
 }
 
 func findJSONLDRecipe(html string) *rawRecipe {
-	re := regexp.MustCompile(`<script\s+type\s*=\s*["']application/ld\+json["'][^>]*>([\s\S]*?)</script>`)
+	re := regexp.MustCompile(`<script[^>]*type\s*=\s*["']application/ld\+json["'][^>]*>([\s\S]*?)</script>`)
 	matches := re.FindAllStringSubmatch(html, -1)
 
 	for _, match := range matches {

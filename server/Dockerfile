@@ -20,7 +20,7 @@ WORKDIR /
 RUN apk add --no-cache ca-certificates tzdata
 
 COPY --from=builder /pocketbase /pocketbase
-COPY pb_migrations /pb_migrations
+COPY pb_migrations /pb_data/pb_migrations
 
 EXPOSE 8090
 

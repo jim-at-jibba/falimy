@@ -78,6 +78,17 @@ function DocsLayout() {
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Link
+                  to="/docs/fly-io"
+                  className={`flex items-center gap-2 ${isActive("/fly-io") ? "bg-accent" : ""}`}
+                >
+                  <Wrench className="size-4" />
+                  <span>Fly.io Deployment</span>
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link
                   to="/docs/reverse-proxy"
                   className={`flex items-center gap-2 ${isActive("/reverse-proxy") ? "bg-accent" : ""}`}
                 >

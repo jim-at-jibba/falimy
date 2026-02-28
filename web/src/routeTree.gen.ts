@@ -19,6 +19,7 @@ import { Route as DocsTroubleshootingRouteImport } from './routes/docs/troublesh
 import { Route as DocsSelfHostingRouteImport } from './routes/docs/self-hosting'
 import { Route as DocsReverseProxyRouteImport } from './routes/docs/reverse-proxy'
 import { Route as DocsGettingStartedRouteImport } from './routes/docs/getting-started'
+import { Route as DocsFlyIoRouteImport } from './routes/docs/fly-io'
 import { Route as DocsFaqRouteImport } from './routes/docs/faq'
 import { Route as AuthServerUrlRouteImport } from './routes/auth/server-url'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -84,6 +85,11 @@ const DocsReverseProxyRoute = DocsReverseProxyRouteImport.update({
 const DocsGettingStartedRoute = DocsGettingStartedRouteImport.update({
   id: '/getting-started',
   path: '/getting-started',
+  getParentRoute: () => DocsRouteRoute,
+} as any)
+const DocsFlyIoRoute = DocsFlyIoRouteImport.update({
+  id: '/fly-io',
+  path: '/fly-io',
   getParentRoute: () => DocsRouteRoute,
 } as any)
 const DocsFaqRoute = DocsFaqRouteImport.update({
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/server-url': typeof AuthServerUrlRoute
   '/docs/faq': typeof DocsFaqRoute
+  '/docs/fly-io': typeof DocsFlyIoRoute
   '/docs/getting-started': typeof DocsGettingStartedRoute
   '/docs/reverse-proxy': typeof DocsReverseProxyRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
@@ -204,6 +211,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/server-url': typeof AuthServerUrlRoute
   '/docs/faq': typeof DocsFaqRoute
+  '/docs/fly-io': typeof DocsFlyIoRoute
   '/docs/getting-started': typeof DocsGettingStartedRoute
   '/docs/reverse-proxy': typeof DocsReverseProxyRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/server-url': typeof AuthServerUrlRoute
   '/docs/faq': typeof DocsFaqRoute
+  '/docs/fly-io': typeof DocsFlyIoRoute
   '/docs/getting-started': typeof DocsGettingStartedRoute
   '/docs/reverse-proxy': typeof DocsReverseProxyRoute
   '/docs/self-hosting': typeof DocsSelfHostingRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/server-url'
     | '/docs/faq'
+    | '/docs/fly-io'
     | '/docs/getting-started'
     | '/docs/reverse-proxy'
     | '/docs/self-hosting'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/server-url'
     | '/docs/faq'
+    | '/docs/fly-io'
     | '/docs/getting-started'
     | '/docs/reverse-proxy'
     | '/docs/self-hosting'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/server-url'
     | '/docs/faq'
+    | '/docs/fly-io'
     | '/docs/getting-started'
     | '/docs/reverse-proxy'
     | '/docs/self-hosting'
@@ -417,6 +429,13 @@ declare module '@tanstack/react-router' {
       path: '/getting-started'
       fullPath: '/docs/getting-started'
       preLoaderRoute: typeof DocsGettingStartedRouteImport
+      parentRoute: typeof DocsRouteRoute
+    }
+    '/docs/fly-io': {
+      id: '/docs/fly-io'
+      path: '/fly-io'
+      fullPath: '/docs/fly-io'
+      preLoaderRoute: typeof DocsFlyIoRouteImport
       parentRoute: typeof DocsRouteRoute
     }
     '/docs/faq': {
@@ -564,6 +583,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 
 interface DocsRouteRouteChildren {
   DocsFaqRoute: typeof DocsFaqRoute
+  DocsFlyIoRoute: typeof DocsFlyIoRoute
   DocsGettingStartedRoute: typeof DocsGettingStartedRoute
   DocsReverseProxyRoute: typeof DocsReverseProxyRoute
   DocsSelfHostingRoute: typeof DocsSelfHostingRoute
@@ -576,6 +596,7 @@ interface DocsRouteRouteChildren {
 
 const DocsRouteRouteChildren: DocsRouteRouteChildren = {
   DocsFaqRoute: DocsFaqRoute,
+  DocsFlyIoRoute: DocsFlyIoRoute,
   DocsGettingStartedRoute: DocsGettingStartedRoute,
   DocsReverseProxyRoute: DocsReverseProxyRoute,
   DocsSelfHostingRoute: DocsSelfHostingRoute,

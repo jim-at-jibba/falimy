@@ -6,10 +6,14 @@
 app = 'falimy'
 primary_region = 'lhr'
 
+[mounts]
+  destination = "/pb/pb_data"
+  source = "pb_data"
+
 [build]
 
 [http_service]
-  internal_port = 8080
+  internal_port = 8090
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true

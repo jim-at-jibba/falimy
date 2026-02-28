@@ -159,14 +159,14 @@ export const upsertRecord = async (
   const local = pbRecordToLocal(table, pbRecord);
   const serverId = local.server_id as string;
 
-  const collection = database.get(table);
-
-  // Find existing record by server_id
-  const existing = await collection
-    .query(Q.where("server_id", serverId))
-    .fetch();
-
   await database.write(async () => {
+    const collection = database.get(table);
+
+    // Find existing record by server_id — inside write() to prevent race conditions
+    const existing = await collection
+      .query(Q.where("server_id", serverId))
+      .fetch();
+
     if (existing.length > 0) {
       // Update existing record
       const record = existing[0];
@@ -203,16 +203,99 @@ export const deleteRecordByServerId = async (
   table: string,
   serverId: string,
 ): Promise<void> => {
-  const collection = database.get(table);
-  const existing = await collection
-    .query(Q.where("server_id", serverId))
-    .fetch();
+  await database.write(async () => {
+    const collection = database.get(table);
+    const existing = await collection
+      .query(Q.where("server_id", serverId))
+      .fetch();
 
-  if (existing.length > 0) {
-    await database.write(async () => {
+    if (existing.length > 0) {
       await existing[0].destroyPermanently();
-    });
+    }
+  });
+};
+
+// ---------------------------------------------------------------------------
+// Deduplication — clean up duplicates caused by past race conditions
+// ---------------------------------------------------------------------------
+
+/** All tables that have a server_id column (includes recipes which is not in SYNC_TABLES). */
+const ALL_TABLES_WITH_SERVER_ID = [
+  ...SYNC_TABLES,
+  "recipes",
+];
+
+/**
+ * Find and remove duplicate records that share the same `server_id` within
+ * each table. Keeps the record with the highest `updated_at` (newest) and
+ * destroys the rest.
+ *
+ * Returns the total number of duplicate records removed.
+ */
+export const deduplicateRecords = async (
+  database: Database,
+): Promise<number> => {
+  let totalRemoved = 0;
+
+  for (const table of ALL_TABLES_WITH_SERVER_ID) {
+    try {
+      const allRecords = await database.get(table).query().fetch();
+
+      // Group records by server_id
+      const byServerId = new Map<string, typeof allRecords>();
+      for (const rec of allRecords) {
+        const sid = (rec._raw as Record<string, unknown>).server_id as string;
+        if (!sid) continue;
+        const group = byServerId.get(sid);
+        if (group) {
+          group.push(rec);
+        } else {
+          byServerId.set(sid, [rec]);
+        }
+      }
+
+      // Collect duplicates to remove
+      const toDestroy: typeof allRecords = [];
+      for (const [, group] of byServerId) {
+        if (group.length <= 1) continue;
+
+        // Sort descending by updated_at — keep the first (newest)
+        group.sort((a, b) => {
+          const aTime = (a._raw as Record<string, unknown>).updated_at as number ?? 0;
+          const bTime = (b._raw as Record<string, unknown>).updated_at as number ?? 0;
+          return bTime - aTime;
+        });
+
+        // Everything after the first is a duplicate
+        for (let i = 1; i < group.length; i++) {
+          toDestroy.push(group[i]);
+        }
+      }
+
+      if (toDestroy.length > 0) {
+        await database.write(async () => {
+          for (const rec of toDestroy) {
+            await rec.destroyPermanently();
+          }
+        });
+        totalRemoved += toDestroy.length;
+        logger.info(`Removed ${toDestroy.length} duplicate(s) from ${table}`, {
+          component: "sync",
+        });
+      }
+    } catch (error) {
+      logger.warn(`Dedup failed for ${table}`, {
+        component: "sync",
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
+
+  logger.info(`Deduplication complete: ${totalRemoved} duplicate(s) removed`, {
+    component: "sync",
+  });
+
+  return totalRemoved;
 };
 
 // ---------------------------------------------------------------------------

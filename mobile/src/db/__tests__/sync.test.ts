@@ -1,8 +1,16 @@
-import { upsertRecord, deleteRecordByServerId, sync } from "../sync";
+import { upsertRecord, deleteRecordByServerId, deduplicateRecords, sync } from "../sync";
 
 // Mock dependencies
 jest.mock("@/api/pocketbase", () => ({
   getPocketBase: jest.fn(),
+}));
+
+jest.mock("@/utils/logger", () => ({
+  logger: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+  },
 }));
 
 jest.mock("@/types/pocketbase-types", () => ({
@@ -200,7 +208,60 @@ describe("deleteRecordByServerId", () => {
       deleteRecordByServerId(mockDb as any, "families", "non-existent"),
     ).resolves.not.toThrow();
 
-    // write should NOT be called when there's nothing to delete
+    // write is called (query now runs inside it) but no destroy happens
+    expect(mockDb.write).toHaveBeenCalled();
+  });
+});
+
+describe("deduplicateRecords", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("removes duplicates keeping the newest by updated_at", async () => {
+    const older = createMockRecord({ server_id: "dup-1", updated_at: 1000 });
+    const newer = createMockRecord({ server_id: "dup-1", updated_at: 2000 });
+    const unique = createMockRecord({ server_id: "unique-1", updated_at: 1500 });
+
+    const mockDb = createMockDatabase({
+      families: [older, newer, unique],
+      members: [],
+      lists: [],
+      list_items: [],
+      location_history: [],
+      geofences: [],
+      recipes: [],
+    });
+
+    const removed = await deduplicateRecords(mockDb as any);
+
+    expect(removed).toBe(1);
+    // The older duplicate should be destroyed
+    expect(older.destroyPermanently).toHaveBeenCalled();
+    // The newer one and the unique record should not be destroyed
+    expect(newer.destroyPermanently).not.toHaveBeenCalled();
+    expect(unique.destroyPermanently).not.toHaveBeenCalled();
+  });
+
+  it("returns 0 when there are no duplicates", async () => {
+    const rec1 = createMockRecord({ server_id: "a", updated_at: 1000 });
+    const rec2 = createMockRecord({ server_id: "b", updated_at: 2000 });
+
+    const mockDb = createMockDatabase({
+      families: [rec1, rec2],
+      members: [],
+      lists: [],
+      list_items: [],
+      location_history: [],
+      geofences: [],
+      recipes: [],
+    });
+
+    const removed = await deduplicateRecords(mockDb as any);
+
+    expect(removed).toBe(0);
+    expect(rec1.destroyPermanently).not.toHaveBeenCalled();
+    expect(rec2.destroyPermanently).not.toHaveBeenCalled();
     expect(mockDb.write).not.toHaveBeenCalled();
   });
 });

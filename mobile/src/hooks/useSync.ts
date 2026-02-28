@@ -3,8 +3,11 @@ import { AppState } from "react-native";
 
 import { useAuth } from "@/contexts/AuthContext";
 import { useDatabase } from "@/contexts/DatabaseContext";
-import { sync } from "@/db/sync";
+import { deduplicateRecords, sync } from "@/db/sync";
 import { logger } from "@/utils/logger";
+
+/** Module-level flag so dedup runs at most once per app session. */
+let hasRunDedup = false;
 
 /** How often to auto-sync in the background (ms). */
 const SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
@@ -45,6 +48,19 @@ export const useSync = (): SyncState => {
     setLastError(null);
 
     try {
+      // Run dedup once per app session before the first sync
+      if (!hasRunDedup) {
+        hasRunDedup = true;
+        try {
+          await deduplicateRecords(database);
+        } catch (dedupError) {
+          logger.warn("Dedup failed, continuing with sync", {
+            component: "useSync",
+            error: dedupError instanceof Error ? dedupError.message : String(dedupError),
+          });
+        }
+      }
+
       await sync(database);
       setLastSyncedAt(Date.now());
     } catch (error) {

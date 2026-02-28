@@ -108,17 +108,15 @@ export const useLists = (statusFilter: ListStatus[] = ["active", "completed"]): 
     await deleteRecordByServerId(database, "lists", serverId);
     // Also delete local list items for this list
     // (PB cascade-deletes them, but we need to clean up locally)
-    const localItems = await database
-      .get("list_items")
-      .query(Q.where("list_id", serverId))
-      .fetch();
-    if (localItems.length > 0) {
-      await database.write(async () => {
-        for (const item of localItems) {
-          await item.destroyPermanently();
-        }
-      });
-    }
+    await database.write(async () => {
+      const localItems = await database
+        .get("list_items")
+        .query(Q.where("list_id", serverId))
+        .fetch();
+      for (const item of localItems) {
+        await item.destroyPermanently();
+      }
+    });
   };
 
   const renameList = async (serverId: string, newName: string): Promise<void> => {

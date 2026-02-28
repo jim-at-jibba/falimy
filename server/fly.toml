@@ -7,7 +7,7 @@ app = 'falimy'
 primary_region = 'lhr'
 
 [mounts]
-  destination = "/pb/pb_data"
+  destination = "/pb_data"
   source = "pb_data"
 
 [build]

@@ -1,5 +1,5 @@
 import * as Location from "expo-location";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Linking, Platform } from "react-native";
 
 import { useAuth } from "@/contexts/AuthContext";
@@ -94,6 +94,38 @@ export const useLocation = (): UseLocationResult => {
     };
     loadMode();
   }, [pb, user?.id]);
+
+  // Foreground polling: post location every 5 minutes while tracking
+  const FOREGROUND_POLL_INTERVAL_MS = 5 * 60 * 1000;
+  const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!isTracking) {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+      return;
+    }
+
+    // Post immediately, then every 5 minutes
+    postCurrentLocation().catch((err) =>
+      console.warn("[useLocation] Foreground poll failed:", err),
+    );
+
+    pollTimerRef.current = setInterval(() => {
+      postCurrentLocation().catch((err) =>
+        console.warn("[useLocation] Foreground poll failed:", err),
+      );
+    }, FOREGROUND_POLL_INTERVAL_MS);
+
+    return () => {
+      if (pollTimerRef.current) {
+        clearInterval(pollTimerRef.current);
+        pollTimerRef.current = null;
+      }
+    };
+  }, [isTracking]);
 
   const requestForegroundPermission = useCallback(async (): Promise<boolean> => {
     const { status, canAskAgain } = await Location.requestForegroundPermissionsAsync();

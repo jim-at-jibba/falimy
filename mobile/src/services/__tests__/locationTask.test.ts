@@ -49,6 +49,14 @@ jest.mock("expo-battery", () => ({
   getBatteryLevelAsync: jest.fn().mockResolvedValue(0.85),
 }));
 
+jest.mock("@/db", () => ({
+  database: {},
+}));
+
+jest.mock("@/db/sync", () => ({
+  upsertRecord: jest.fn().mockResolvedValue(undefined),
+}));
+
 describe("locationTask", () => {
   const mockLocation = {
     coords: {
@@ -308,10 +316,6 @@ describe("locationTask", () => {
         },
       };
       (getPocketBase as jest.Mock).mockResolvedValue(mockPb);
-
-      // Reset module-level debounce timestamp
-      // Note: This is a limitation - we can't easily reset module-level state
-      // In production code, this could be improved by exporting a reset function
     });
 
     it("handles error in callback", async () => {

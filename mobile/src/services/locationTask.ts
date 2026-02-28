@@ -3,6 +3,8 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 
 import { getPocketBase } from "@/api/pocketbase";
+import { database } from "@/db";
+import { upsertRecord } from "@/db/sync";
 import { logger } from "@/utils/logger";
 
 /**
@@ -12,14 +14,8 @@ import { logger } from "@/utils/logger";
  */
 export const LOCATION_TASK_NAME = "falimy-background-location";
 
-/**
- * Minimum interval between location posts to PocketBase (ms).
- * The background task may fire more frequently; we debounce on the client side.
- */
-const MIN_POST_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
-
-/** Tracks the last time we posted a location update. */
-let lastPostTimestamp = 0;
+/** Interval for OS-level location updates (ms). */
+const LOCATION_UPDATE_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
 
 // ---------------------------------------------------------------------------
 // Background task definition
@@ -39,12 +35,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 
   // Use the most recent location
   const location = locations[locations.length - 1];
-  const now = Date.now();
-
-  // Debounce: skip if we posted recently
-  if (now - lastPostTimestamp < MIN_POST_INTERVAL_MS) {
-    return;
-  }
 
   try {
     const pb = await getPocketBase();
@@ -81,13 +71,14 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     });
 
     // Update user's last-known location fields
-    await pb.collection("users").update(userId, {
+    const updatedUser = await pb.collection("users").update(userId, {
       last_lat: location.coords.latitude,
       last_lng: location.coords.longitude,
       last_location_at: new Date(location.timestamp).toISOString(),
     });
 
-    lastPostTimestamp = now;
+    // Upsert locally so the UI reflects changes immediately
+    await upsertRecord(database, "members", updatedUser as unknown as Record<string, unknown>);
   } catch (err) {
     logger.error("Failed to post location", err, { component: "locationTask" });
   }
@@ -110,16 +101,16 @@ export const startBackgroundLocationTracking = async (): Promise<void> => {
 
   await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
     accuracy: Location.Accuracy.Balanced,
-    distanceInterval: 100, // metres — minimum displacement before update
-    timeInterval: MIN_POST_INTERVAL_MS,
-    deferredUpdatesInterval: MIN_POST_INTERVAL_MS,
+    distanceInterval: 0, // fire on time alone, no displacement requirement
+    timeInterval: LOCATION_UPDATE_INTERVAL_MS,
+    deferredUpdatesInterval: LOCATION_UPDATE_INTERVAL_MS,
     showsBackgroundLocationIndicator: true, // iOS: blue status bar
     foregroundService: {
       notificationTitle: "Falimy",
       notificationBody: "Sharing your location with family",
       notificationColor: "#2BCCBD",
     },
-    pausesUpdatesAutomatically: true, // iOS: pause when stationary
+    pausesUpdatesAutomatically: false, // keep updating even when stationary
     activityType: Location.ActivityType.Other,
   });
 
@@ -186,9 +177,12 @@ export const postCurrentLocation = async (): Promise<void> => {
     timestamp: new Date(location.timestamp).toISOString(),
   });
 
-  await pb.collection("users").update(userId, {
+  const updatedUser = await pb.collection("users").update(userId, {
     last_lat: location.coords.latitude,
     last_lng: location.coords.longitude,
     last_location_at: new Date(location.timestamp).toISOString(),
   });
+
+  // Upsert locally so the UI reflects changes immediately
+  await upsertRecord(database, "members", updatedUser as unknown as Record<string, unknown>);
 };

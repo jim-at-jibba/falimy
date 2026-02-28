@@ -495,6 +495,8 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
   cardHeader: {
     flexDirection: "row",
@@ -518,6 +520,8 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 2,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
   input: {
     fontSize: theme.fontSizes.md,
@@ -604,5 +608,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
 }));

@@ -239,6 +239,8 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
   geofenceRow: {
     flexDirection: "row",

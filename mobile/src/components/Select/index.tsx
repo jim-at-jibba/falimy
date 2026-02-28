@@ -129,6 +129,8 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   }),
   disabled: {
     opacity: 0.5,
@@ -167,6 +169,8 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
   optionItem: {
     paddingVertical: theme.spacing[3],

@@ -234,6 +234,8 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
   statusRow: {
     flexDirection: "row",
@@ -255,7 +257,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowRadius: 0,
     elevation: 4,
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: theme.colors.black,
   },
   modeCardSelected: {
     borderColor: theme.colors.primary,
@@ -301,6 +303,8 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
   timedOption: {
     flexDirection: "row",

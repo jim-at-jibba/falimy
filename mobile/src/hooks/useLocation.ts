@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+import { useFocusEffect } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Linking, Platform } from "react-native";
 
@@ -65,35 +66,39 @@ export const useLocation = (): UseLocationResult => {
     check();
   }, []);
 
-  // Load the current sharing mode from PocketBase user record
-  useEffect(() => {
-    if (!pb || !user?.id) return;
+  // Load the current sharing mode from PocketBase user record.
+  // Uses useFocusEffect so the state refreshes when navigating back
+  // (e.g. returning from the settings screen after changing mode).
+  useFocusEffect(
+    useCallback(() => {
+      if (!pb || !user?.id) return;
 
-    const loadMode = async () => {
-      try {
-        const record = await pb.collection("users").getOne(user.id);
-        setSharingModeState((record.location_sharing_mode as LocationSharingMode) || "off");
+      const loadMode = async () => {
+        try {
+          const record = await pb.collection("users").getOne(user.id);
+          setSharingModeState((record.location_sharing_mode as LocationSharingMode) || "off");
 
-        // Check timed mode expiry
-        if (record.location_sharing_mode === "timed" && record.location_sharing_until) {
-          const until = new Date(record.location_sharing_until);
-          if (until <= new Date()) {
-            // Timer expired — turn off
-            await pb.collection("users").update(user.id, {
-              location_sharing_mode: "off",
-              location_sharing_until: "",
-            });
-            setSharingModeState("off");
-            await stopBackgroundLocationTracking();
-            setIsTracking(false);
+          // Check timed mode expiry
+          if (record.location_sharing_mode === "timed" && record.location_sharing_until) {
+            const until = new Date(record.location_sharing_until);
+            if (until <= new Date()) {
+              // Timer expired — turn off
+              await pb.collection("users").update(user.id, {
+                location_sharing_mode: "off",
+                location_sharing_until: "",
+              });
+              setSharingModeState("off");
+              await stopBackgroundLocationTracking();
+              setIsTracking(false);
+            }
           }
+        } catch (err) {
+          console.warn("[useLocation] Failed to load sharing mode:", err);
         }
-      } catch (err) {
-        console.warn("[useLocation] Failed to load sharing mode:", err);
-      }
-    };
-    loadMode();
-  }, [pb, user?.id]);
+      };
+      loadMode();
+    }, [pb, user?.id]),
+  );
 
   // Foreground polling: post location every 5 minutes while tracking
   const FOREGROUND_POLL_INTERVAL_MS = 5 * 60 * 1000;

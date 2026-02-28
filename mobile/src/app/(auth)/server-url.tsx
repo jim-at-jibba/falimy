@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { ActivityIndicator, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";
@@ -11,7 +11,7 @@ import { DefaultText } from "@/components/DefaultText";
 import { FormError } from "@/components/Form/FormError";
 import { FormInputText } from "@/components/Form/FormInputText";
 import { Header } from "@/components/Navigation/Header";
-import { setServerUrl } from "@/utils/config";
+import { getServerUrl, setServerUrl } from "@/utils/config";
 
 const schema = z.object({
   serverUrl: z.string().min(1, "Enter your PocketBase server URL."),
@@ -26,6 +26,12 @@ export default function ServerUrl() {
     resolver: zodResolver(schema),
     defaultValues: { serverUrl: "" },
   });
+
+  useEffect(() => {
+    getServerUrl().then((url) => {
+      if (url) methods.setValue("serverUrl", url);
+    });
+  }, [methods]);
 
   const onSubmit = async (data: Schema) => {
     setLoading(true);

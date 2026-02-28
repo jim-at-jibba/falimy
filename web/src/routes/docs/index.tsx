@@ -24,6 +24,7 @@ function DocsIndexPage() {
       description: 'Server setup and configuration guides.',
       icon: <Wrench className="h-8 w-8" />,
       links: [
+        { title: 'Fly.io Deployment', href: '/docs/fly-io' },
         { title: 'Reverse Proxy Setup', href: '/docs/reverse-proxy' },
       ],
     },

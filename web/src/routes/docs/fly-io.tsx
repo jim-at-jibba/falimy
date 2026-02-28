@@ -62,13 +62,13 @@ function FlyIoPage() {
       <Navbar />
       
       <div className="flex-1">
-        <div className="container mx-auto px-4 py-12 max-w-4xl">
+        <div className="container mx-auto px-4 py-8 sm:py-12 max-w-4xl">
           <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Cloud className="h-10 w-10 text-primary" />
-              <h1 className="text-4xl font-bold">Deploy to Fly.io</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
+              <Cloud className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Deploy to Fly.io</h1>
             </div>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base sm:text-lg text-muted-foreground">
               Deploy falimy to Fly.io for a fully managed cloud hosting solution with automatic HTTPS and persistent storage.
             </p>
           </div>
@@ -87,10 +87,10 @@ function FlyIoPage() {
             </div>
           </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Step 1: Create the Dockerfile</h2>
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 1: Create the Dockerfile</h2>
             <p className="text-muted-foreground mb-4">
-              Create a <code className="bg-muted/50 px-2 py-1 rounded text-sm">Dockerfile</code> in your project root:
+              Create a <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">Dockerfile</code> in your project root:
             </p>
             <Card className="bg-muted/30">
               <CardHeader className="flex flex-row items-center justify-between">
@@ -104,15 +104,15 @@ function FlyIoPage() {
                 </Button>
               </CardHeader>
               <CardContent className="pt-2">
-                <pre className="p-4 bg-background rounded-md text-xs font-mono overflow-x-auto">
+                <pre className="p-3 sm:p-4 bg-background rounded-md text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all sm:whitespace-pre sm:break-normal">
                   {dockerfile}
                 </pre>
               </CardContent>
             </Card>
           </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Step 2: Install Flyctl</h2>
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 2: Install Flyctl</h2>
             <p className="text-muted-foreground mb-4">
               Follow the installation instructions from the Fly.io documentation:
             </p>
@@ -140,8 +140,8 @@ function FlyIoPage() {
             </div>
           </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Step 3: Launch Your App</h2>
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 3: Launch Your App</h2>
             <p className="text-muted-foreground mb-4">
               Navigate to your project directory and run:
             </p>
@@ -159,8 +159,8 @@ function FlyIoPage() {
             </div>
           </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Step 4: Create Persistent Volume</h2>
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 4: Create Persistent Volume</h2>
             <p className="text-muted-foreground mb-4">
               Create a 1GB persistent volume for your PocketBase data:
             </p>
@@ -174,10 +174,10 @@ function FlyIoPage() {
             </p>
           </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Step 5: Configure fly.toml</h2>
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 5: Configure fly.toml</h2>
             <p className="text-muted-foreground mb-4">
-              Update your <code className="bg-muted/50 px-2 py-1 rounded text-sm">fly.toml</code> file to include the volume mount:
+              Update your <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">fly.toml</code> file to include the volume mount:
             </p>
             <Card className="bg-muted/30">
               <CardHeader className="flex flex-row items-center justify-between">
@@ -191,15 +191,15 @@ function FlyIoPage() {
                 </Button>
               </CardHeader>
               <CardContent className="pt-2">
-                <pre className="p-4 bg-background rounded-md text-xs font-mono overflow-x-auto">
+                <pre className="p-3 sm:p-4 bg-background rounded-md text-xs font-mono overflow-x-auto whitespace-pre-wrap break-all sm:whitespace-pre sm:break-normal">
                   {flyToml}
                 </pre>
               </CardContent>
             </Card>
           </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Step 6: Deploy</h2>
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 6: Deploy</h2>
             <Card className="bg-muted/30">
               <CardContent className="pt-6">
                 <code className="block text-sm font-mono">flyctl deploy</code>
@@ -207,13 +207,13 @@ function FlyIoPage() {
             </Card>
             <p className="text-muted-foreground mt-4">
               Your PocketBase instance will be available at:{' '}
-              <code className="bg-muted/50 px-2 py-1 rounded text-sm">https://YOUR_APP_NAME.fly.dev/_/</code>
+              <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm break-all">https://YOUR_APP_NAME.fly.dev/_/</code>
             </p>
           </div>
 
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <CheckCircle className="text-primary" />
+          <div className="mb-10 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+              <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
               First-Time Setup
             </h2>
             <div className="space-y-4 text-muted-foreground">
@@ -226,21 +226,21 @@ function FlyIoPage() {
                 </CardContent>
               </Card>
               <p>
-                Look for a URL containing <code className="bg-muted/50 px-2 py-1 rounded text-sm">/_/</code> and replace 
-                <code className="bg-muted/50 px-2 py-1 rounded text-sm">localhost</code> with your Fly.io app URL.
+                Look for a URL containing <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">/_/</code> and replace 
+                <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">localhost</code> with your Fly.io app URL.
               </p>
             </div>
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <AlertCircle className="text-warning" />
+          <div className="mb-8 sm:mb-10">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+              <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-warning flex-shrink-0" />
               Backup &amp; Data Management
             </h2>
             <div className="space-y-4">
               <p className="text-muted-foreground">
                 Fly.io automatically creates daily snapshots of your volume (kept for 5 days). 
-                To download a local copy of your <code className="bg-muted/50 px-2 py-1 rounded text-sm">pb_data</code>:
+                To download a local copy of your <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">pb_data</code>:
               </p>
               <div className="space-y-2">
                 <Card className="bg-muted/30">
@@ -266,19 +266,19 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <AlertCircle className="text-warning" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+              <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-warning flex-shrink-0" />
               Important Notes
             </h2>
             <div className="space-y-4 text-muted-foreground">
-              <div className="flex items-start gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3">
                 <div className="font-semibold">Idle Timeout:</div>
                 <div>
                   Fly.io has a 60s timeout for idle connections. You may see periodic errors in the console 
                   when using realtime features. These can be safely ignored as the SDK handles reconnection automatically.
                 </div>
               </div>
-              <div className="flex items-start gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3">
                 <div className="font-semibold">Free Tier:</div>
                 <div>
                   Fly.io offers a free tier with limited resources. Check the{' '}
@@ -293,12 +293,12 @@ function FlyIoPage() {
                   for current allowances.
                 </div>
               </div>
-              <div className="flex items-start gap-3">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-1 sm:gap-3">
                 <div className="font-semibold">Updates:</div>
                 <div>
-                  To update PocketBase, change the <code className="bg-muted/50 px-2 py-1 rounded text-sm">PB_VERSION</code> in 
-                  your Dockerfile or <code className="bg-muted/50 px-2 py-1 rounded text-sm">fly.toml</code> and run 
-                  <code className="bg-muted/50 px-2 py-1 rounded text-sm">flyctl deploy</code> again.
+                  To update PocketBase, change the <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">PB_VERSION</code> in 
+                  your Dockerfile or <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">fly.toml</code> and run 
+                  <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">flyctl deploy</code> again.
                 </div>
               </div>
             </div>

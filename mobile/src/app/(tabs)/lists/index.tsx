@@ -277,7 +277,7 @@ const styles = StyleSheet.create((theme) => ({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: theme.colors.accentLight,
+    backgroundColor: theme.colors.primary,
     justifyContent: "center",
     alignItems: "center",
   },

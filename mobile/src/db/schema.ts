@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from "@nozbe/watermelondb";
 
 export const schema = appSchema({
-  version: 4,
+  version: 5,
   tables: [
     tableSchema({
       name: "families",
@@ -29,6 +29,7 @@ export const schema = appSchema({
         { name: "last_lat", type: "number", isOptional: true },
         { name: "last_lng", type: "number", isOptional: true },
         { name: "last_location_at", type: "number", isOptional: true },
+        { name: "location_history_retention_days", type: "number", isOptional: true },
         { name: "created_at", type: "number" },
         { name: "updated_at", type: "number" },
       ],

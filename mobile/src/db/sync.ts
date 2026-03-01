@@ -43,6 +43,7 @@ const PB_TO_WMDB_FIELDS: Record<string, Record<string, string>> = {
     last_lat: "last_lat",
     last_lng: "last_lng",
     last_location_at: "last_location_at",
+    location_history_retention_days: "location_history_retention_days",
   },
   list_items: {
     checked: "is_checked",
@@ -312,14 +313,25 @@ export const deduplicateRecords = async (
  * reconciliation step if needed).
  */
 const pullAll = async (database: Database, pb: PocketBase): Promise<void> => {
+  // Read retention setting from the PB auth record (synced across devices)
+  const retentionDays = (pb.authStore.record as Record<string, unknown> | null)?.location_history_retention_days as number | undefined ?? 30;
+
   for (const table of SYNC_TABLES) {
     const collectionName = TABLE_TO_COLLECTION[table];
     if (!collectionName) continue;
 
     try {
-      const records = await pb.collection(collectionName).getFullList({
-        sort: "-updated",
-      });
+      // For location_history, apply retention filter if not "never" (0)
+      const fetchOptions: { sort: string; filter?: string } = { sort: "-updated" };
+      let cutoffISO: string | null = null;
+
+      if (table === "location_history" && retentionDays > 0) {
+        const cutoff = new Date(Date.now() - retentionDays * 24 * 60 * 60 * 1000);
+        cutoffISO = cutoff.toISOString().replace("T", " ");
+        fetchOptions.filter = `timestamp >= "${cutoffISO}"`;
+      }
+
+      const records = await pb.collection(collectionName).getFullList(fetchOptions);
 
       // Build a map of existing server_ids for this table to batch-check
       const existingRecords = await database.get(table).query().fetch();
@@ -376,12 +388,37 @@ const pullAll = async (database: Database, pb: PocketBase): Promise<void> => {
           }
         }
       });
+
+      // Prune old location_history records from the server
+      if (table === "location_history" && cutoffISO) {
+        try {
+          const stale = await pb.collection(collectionName).getFullList({
+            filter: `timestamp < "${cutoffISO}"`,
+          });
+          for (const rec of stale) {
+            await pb.collection(collectionName).delete(rec.id);
+          }
+          if (stale.length > 0) {
+            logger.info(`Pruned ${stale.length} old location_history record(s) from server`, {
+              component: "sync",
+            });
+          }
+        } catch (pruneErr) {
+          logger.warn("Failed to prune old location_history from server", {
+            component: "sync",
+            error: pruneErr instanceof Error ? pruneErr.message : String(pruneErr),
+          });
+        }
+      }
     } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
       logger.warn(`Failed to pull ${collectionName}`, {
         component: "sync",
         collection: collectionName,
-        error: error instanceof Error ? error.message : String(error),
+        error: msg,
       });
+      // Surface sync failures visibly during development so they aren't silently swallowed
+      console.warn(`[sync] Pull failed for ${collectionName}: ${msg}`);
     }
   }
 };

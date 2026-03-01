@@ -1,7 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 
 const SERVER_URL_KEY = "falimy.serverUrl";
-
 export const getServerUrl = async (): Promise<string | null> => {
   return SecureStore.getItemAsync(SERVER_URL_KEY);
 };

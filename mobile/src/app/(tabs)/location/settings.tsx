@@ -1,12 +1,15 @@
-import { Clock, type MapPin, Radio, Shield, Wifi, WifiOff } from "lucide-react-native";
-import { useCallback, useState } from "react";
+import { Clock, History, type MapPin, Radio, Shield, Wifi, WifiOff } from "lucide-react-native";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Pressable, ScrollView, View } from "react-native";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { DefaultText } from "@/components/DefaultText";
 import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
+import { useAuth } from "@/contexts/AuthContext";
+import { useDatabase } from "@/contexts/DatabaseContext";
 import type { LocationSharingMode } from "@/db/models/Member";
+import { upsertRecord } from "@/db/sync";
 import { useLocation } from "@/hooks/useLocation";
 
 const SHARING_MODES: {
@@ -41,6 +44,15 @@ const SHARING_MODES: {
   },
 ];
 
+const RETENTION_OPTIONS = [
+  { days: 7, label: "7 days" },
+  { days: 14, label: "14 days" },
+  { days: 30, label: "30 days" },
+  { days: 90, label: "90 days" },
+  { days: 180, label: "180 days" },
+  { days: 0, label: "Never" },
+];
+
 const TIMED_OPTIONS = [
   { label: "15 minutes", minutes: 15 },
   { label: "30 minutes", minutes: 30 },
@@ -53,7 +65,29 @@ const TIMED_OPTIONS = [
 export default function LocationSettingsScreen() {
   const { theme } = useUnistyles();
   const { sharingMode, isTracking, isUpdating, permissionStatus, setSharingMode } = useLocation();
+  const { user, pb } = useAuth();
+  const database = useDatabase();
   const [showTimedOptions, setShowTimedOptions] = useState(false);
+  const [retentionDays, setRetentionDays] = useState(30);
+
+  useEffect(() => {
+    const stored = (pb?.authStore.record as Record<string, unknown> | null)?.location_history_retention_days as number | undefined;
+    setRetentionDays(stored ?? 30);
+  }, [pb]);
+
+  const handleRetentionSelect = useCallback(async (days: number) => {
+    if (!pb || !user?.id) return;
+    setRetentionDays(days);
+    try {
+      const pbRecord = await pb.collection("users").update(user.id, {
+        location_history_retention_days: days,
+      });
+      await upsertRecord(database, "members", pbRecord as unknown as Record<string, unknown>);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to update retention setting.";
+      Alert.alert("Error", message);
+    }
+  }, [pb, user?.id, database]);
 
   const handleModeSelect = useCallback(
     async (mode: LocationSharingMode) => {
@@ -196,7 +230,7 @@ export default function LocationSettingsScreen() {
 
       {/* Privacy notice */}
       <View style={styles.privacyCard}>
-        <Shield size={20} color={theme.colors.primary} />
+        <Shield size={20} color="#d6336c" />
         <View style={styles.privacyText}>
           <DefaultText
             text="Your Privacy"
@@ -205,6 +239,54 @@ export default function LocationSettingsScreen() {
           <SmallText text="Location data is stored only on your family's self-hosted server. No third parties can access it. You can turn off sharing at any time." />
         </View>
         </View>
+
+      {/* History retention */}
+      <DefaultText
+        text="History Retention"
+        additionalStyles={{
+          fontWeight: "600",
+          marginTop: theme.spacing[4],
+          marginBottom: theme.spacing[1],
+        }}
+      />
+      <SmallText
+        text="Choose how long location history is kept. Older records are automatically deleted during sync."
+        additionalStyles={{ marginBottom: theme.spacing[2] }}
+      />
+
+      {RETENTION_OPTIONS.map(({ days, label }) => {
+        const isSelected = retentionDays === days;
+        return (
+          <Pressable
+            key={days}
+            style={[styles.modeCard, isSelected && styles.modeCardSelected]}
+            onPress={() => handleRetentionSelect(days)}
+          >
+            <View style={styles.modeCardRow}>
+              <View
+                style={[
+                  styles.modeIcon,
+                  {
+                    backgroundColor: isSelected
+                      ? theme.colors.primary
+                      : theme.colors.backgroundAccent,
+                  },
+                ]}
+              >
+                <History size={20} color={isSelected ? theme.colors.white : theme.colors.grey} />
+              </View>
+              <View style={styles.modeCardText}>
+                <DefaultText text={label} additionalStyles={{ fontWeight: "600" }} />
+              </View>
+              {isSelected && (
+                <View style={styles.selectedIndicator}>
+                  <View style={styles.selectedDot} />
+                </View>
+              )}
+            </View>
+          </Pressable>
+        );
+      })}
       </ScrollView>
     </View>
   );
@@ -320,11 +402,18 @@ const styles = StyleSheet.create((theme) => ({
   },
   privacyCard: {
     flexDirection: "row",
-    backgroundColor: theme.colors.backgroundAccent,
+    backgroundColor: "#f5c2d4",
     borderRadius: theme.borderRadiusSm,
     padding: theme.spacing[4],
     gap: theme.spacing[3],
     marginTop: theme.spacing[4],
+    shadowColor: "#000",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
+    borderWidth: 2,
+    borderColor: theme.colors.black,
   },
   privacyText: {
     flex: 1,

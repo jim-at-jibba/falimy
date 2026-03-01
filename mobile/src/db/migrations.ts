@@ -81,5 +81,11 @@ export const migrations = schemaMigrations({
         unsafeExecuteSql("CREATE INDEX IF NOT EXISTS index_recipes_server_id ON recipes(server_id);"),
       ],
     },
+    {
+      toVersion: 5,
+      steps: [
+        unsafeExecuteSql("ALTER TABLE members ADD COLUMN location_history_retention_days NUMBER;"),
+      ],
+    },
   ],
 });

@@ -23,6 +23,7 @@ export default class Member extends Model {
   @field("last_lat") lastLat!: number | null;
   @field("last_lng") lastLng!: number | null;
   @date("last_location_at") lastLocationAt!: Date | null;
+  @field("location_history_retention_days") locationHistoryRetentionDays!: number | null;
   @date("created_at") createdAt!: Date;
   @date("updated_at") updatedAt!: Date;
 

@@ -38,7 +38,7 @@ function AppLayout() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-muted-foreground">Loading...</div>
+        <div className="text-muted-foreground font-semibold">Loading...</div>
       </div>
     );
   }
@@ -57,13 +57,13 @@ function AppLayout() {
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-3 px-3 py-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl border-2 border-black bg-primary font-extrabold dark:border-white/25">
               f
             </div>
             <div className="flex flex-col">
-              <span className="font-semibold">falimy</span>
+              <span className="font-bold">falimy</span>
               {user && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground font-medium">
                   {user.family_id || "No family"}
                 </span>
               )}
@@ -75,7 +75,7 @@ function AppLayout() {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link to="/app" className="flex items-center gap-2">
+                <Link to="/app" className="flex items-center gap-2 font-semibold">
                   <Home className="size-4" />
                   <span>Home</span>
                 </Link>
@@ -83,7 +83,7 @@ function AppLayout() {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link to="/app/lists" className="flex items-center gap-2">
+                <Link to="/app/lists" className="flex items-center gap-2 font-semibold">
                   <List className="size-4" />
                   <span>Lists</span>
                 </Link>
@@ -91,7 +91,7 @@ function AppLayout() {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link to="/app/location" className="flex items-center gap-2">
+                <Link to="/app/location" className="flex items-center gap-2 font-semibold">
                   <Map className="size-4" />
                   <span>Location</span>
                 </Link>
@@ -99,7 +99,7 @@ function AppLayout() {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link to="/app/settings" className="flex items-center gap-2">
+                <Link to="/app/settings" className="flex items-center gap-2 font-semibold">
                   <Settings className="size-4" />
                   <span>Settings</span>
                 </Link>
@@ -111,15 +111,15 @@ function AppLayout() {
         <SidebarFooter>
           <div className="flex items-center gap-3 px-3 py-2">
             {user && (
-              <Avatar className="size-8">
-                <AvatarFallback className="bg-secondary">
+              <Avatar className="size-8 border-2 border-black dark:border-white/25">
+                <AvatarFallback className="bg-secondary font-bold">
                   {user.name?.[0]?.toUpperCase() || "?"}
                 </AvatarFallback>
               </Avatar>
             )}
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
             >
               <LogOut className="size-4" />
               <span>Logout</span>

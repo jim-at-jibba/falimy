@@ -64,28 +64,32 @@ function GeofencesPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link to="/app/location">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-5 w-5" />
+    <div>
+      <div className="bg-[#b2ecca] border-b-2 border-black px-6 py-6 dark:border-white/25">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/app/location">
+              <Button variant="ghost" size="icon" className="border-transparent">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-3xl font-extrabold text-black">Geofences</h1>
+              <p className="text-black/60 font-medium">
+                Get notified when family members enter or leave areas
+              </p>
+            </div>
+          </div>
+          <Link to="/app/location/create-geofence">
+            <Button className="bg-black text-white border-black hover:bg-black/80">
+              <Plus className="h-4 w-4 mr-2" />
+              New Geofence
             </Button>
           </Link>
-          <div>
-            <h1 className="text-3xl font-bold">Geofences</h1>
-            <p className="text-muted-foreground">
-              Get notified when family members enter or leave areas
-            </p>
-          </div>
         </div>
-        <Link to="/app/location/create-geofence">
-          <Button>
-            <Plus className="h-4 w-4 mr-2" />
-            New Geofence
-          </Button>
-        </Link>
       </div>
+
+      <div className="p-6 space-y-6 max-w-4xl">
 
       {geofences.length === 0 ? (
         <Card>
@@ -223,6 +227,7 @@ function GeofencesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   )
 }

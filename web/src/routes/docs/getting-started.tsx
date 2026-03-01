@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import { PageHeader } from '@/components/layout/PageHeader'
 import { CheckCircle, ArrowRight } from 'lucide-react'
 
 export const Route = createFileRoute('/docs/getting-started')({
   component: GettingStartedPage,
 })
+
+const stepColors = ['#b4dbfa', '#dad4fc', '#fadeaf', '#f8d5f4']
 
 const steps = [
   {
@@ -50,77 +52,72 @@ function GettingStartedPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
+      <PageHeader
+        title="Getting Started"
+        description="Get your family set up and running in a few simple steps."
+        color="blue"
+      />
+
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Getting Started</h1>
-            <p className="text-lg text-muted-foreground">
-              Get your family set up and running in a few simple steps.
-            </p>
-          </div>
-
           <div className="space-y-6">
             {steps.map((step, index) => (
-              <Card key={step.title}>
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl mb-2">{step.title}</CardTitle>
-                      <CardDescription className="text-base">{step.description}</CardDescription>
-                    </div>
+              <div
+                key={step.title}
+                className="rounded-2xl border-2 border-black p-6 dark:border-white/25"
+                style={{ backgroundColor: stepColors[index] }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold text-lg">
+                    {index + 1}
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {step.details.map((detail, idx) => (
-                      <li key={idx} className="flex items-start gap-2">
-                        <CheckCircle className="size-4 text-primary mt-0.5 flex-shrink-0" />
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-black mb-1">{step.title}</h3>
+                    <p className="text-black/60 text-base font-medium mb-3">{step.description}</p>
+                    <ul className="space-y-2">
+                      {step.details.map((detail, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <CheckCircle className="size-4 text-black mt-0.5 flex-shrink-0" />
+                          <span className="text-black/70 font-medium">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
 
-          <Card className="bg-muted/30">
-            <CardHeader>
-              <CardTitle className="text-xl">What's Next?</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4 text-muted-foreground">
-                After setting up your family, you can explore these features:
-              </p>
-              <div className="flex flex-col gap-3">
-                <Link
-                  to="/docs/features/lists"
-                  className="flex items-center gap-2 text-primary font-medium hover:underline"
-                >
-                  <span>Learn about Lists</span>
-                  <ArrowRight className="size-4" />
-                </Link>
-                <Link
-                  to="/docs/features/location"
-                  className="flex items-center gap-2 text-primary font-medium hover:underline"
-                >
-                  <span>Learn about Location Sharing</span>
-                  <ArrowRight className="size-4" />
-                </Link>
-                <Link
-                  to="/docs/features/geofences"
-                  className="flex items-center gap-2 text-primary font-medium hover:underline"
-                >
-                  <span>Learn about Geofences</span>
-                  <ArrowRight className="size-4" />
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="mt-8 rounded-2xl border-2 border-black bg-[#b2ecca] p-6 dark:border-white/25">
+            <h3 className="text-xl font-bold text-black mb-4">What's Next?</h3>
+            <p className="mb-4 text-black/60 font-medium">
+              After setting up your family, you can explore these features:
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/docs/features/lists"
+                className="flex items-center gap-2 text-black font-semibold hover:opacity-70 transition-opacity"
+              >
+                <span>Learn about Lists</span>
+                <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                to="/docs/features/location"
+                className="flex items-center gap-2 text-black font-semibold hover:opacity-70 transition-opacity"
+              >
+                <span>Learn about Location Sharing</span>
+                <ArrowRight className="size-4" />
+              </Link>
+              <Link
+                to="/docs/features/geofences"
+                className="flex items-center gap-2 text-black font-semibold hover:opacity-70 transition-opacity"
+              >
+                <span>Learn about Geofences</span>
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
 

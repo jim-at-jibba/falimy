@@ -62,18 +62,22 @@ function LocationSettingsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-2xl">
-      <div className="flex items-center gap-4">
-        <Link to="/app/location">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-bold">Location Settings</h1>
-          <p className="text-muted-foreground">Manage your location sharing preferences</p>
+    <div>
+      <div className="bg-[#b2ecca] border-b-2 border-black px-6 py-6 dark:border-white/25">
+        <div className="flex items-center gap-4">
+          <Link to="/app/location">
+            <Button variant="ghost" size="icon" className="border-transparent">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-extrabold text-black">Location Settings</h1>
+            <p className="text-black/60 font-medium">Manage your location sharing preferences</p>
+          </div>
         </div>
       </div>
+
+      <div className="p-6 space-y-6 max-w-2xl">
 
       {/* Current Status */}
       <Card>
@@ -118,7 +122,7 @@ function LocationSettingsPage() {
             disabled={isUpdatingSharingMode}
           >
             <div className="space-y-4">
-              <div className="flex items-start gap-3 p-3 border rounded-lg">
+              <div className="flex items-start gap-3 p-3 border-2 border-black rounded-2xl dark:border-white/25">
                 <RadioGroupItem value="off" id="off" />
                 <div className="flex-1">
                   <Label htmlFor="off" className="font-semibold">
@@ -130,7 +134,7 @@ function LocationSettingsPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 border rounded-lg">
+              <div className="flex items-start gap-3 p-3 border-2 border-black rounded-2xl dark:border-white/25">
                 <RadioGroupItem value="always" id="always" />
                 <div className="flex-1">
                   <Label htmlFor="always" className="font-semibold">
@@ -146,7 +150,7 @@ function LocationSettingsPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 border rounded-lg">
+              <div className="flex items-start gap-3 p-3 border-2 border-black rounded-2xl dark:border-white/25">
                 <RadioGroupItem value="timed" id="timed" />
                 <div className="flex-1">
                   <Label htmlFor="timed" className="font-semibold">
@@ -173,7 +177,7 @@ function LocationSettingsPage() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-3 border rounded-lg">
+              <div className="flex items-start gap-3 p-3 border-2 border-black rounded-2xl dark:border-white/25">
                 <RadioGroupItem value="on_request" id="on_request" />
                 <div className="flex-1">
                   <Label htmlFor="on_request" className="font-semibold">
@@ -233,6 +237,7 @@ function LocationSettingsPage() {
           </ul>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

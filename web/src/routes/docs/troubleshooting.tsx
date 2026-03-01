@@ -158,7 +158,7 @@ function TroubleshootingPage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-5xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Troubleshooting</h1>
+            <h1 className="text-4xl font-extrabold mb-4">Troubleshooting</h1>
             <p className="text-lg text-muted-foreground">
               Common issues and solutions for falimy setup and usage.
             </p>
@@ -167,20 +167,20 @@ function TroubleshootingPage() {
           <div className="space-y-8">
             {issues.map((category, catIndex) => (
               <div key={catIndex}>
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                <h2 className="text-2xl font-extrabold mb-6 flex items-center gap-3">
                   {category.icon}
                   {category.category}
                 </h2>
                 <div className="space-y-4">
                   {category.problems.map((problem, probIndex) => (
                     <details key={probIndex} className="group">
-                      <summary className="list-none cursor-pointer p-4 bg-card rounded-lg border hover:border-primary/50 transition-colors">
+                      <summary className="list-none cursor-pointer p-4 bg-card rounded-2xl border-2 border-black hover:bg-muted/30 transition-colors dark:border-white/25">
                         <div className="flex items-center gap-3">
                           <AlertTriangle className="text-warning" />
-                          <h3 className="text-lg font-semibold">{problem.title}</h3>
+                          <h3 className="text-lg font-bold">{problem.title}</h3>
                         </div>
                       </summary>
-                      <div className="px-4 py-4 bg-muted/30">
+                      <div className="px-4 py-4">
                         <ul className="space-y-2">
                           {problem.solution.map((sol, idx) => (
                             <li key={idx} className="flex items-start gap-2">
@@ -197,7 +197,7 @@ function TroubleshootingPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-extrabold mb-6 flex items-center gap-3">
               <AlertCircle className="text-destructive" />
               Still Need Help?
             </h2>

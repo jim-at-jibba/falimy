@@ -99,7 +99,7 @@ function CreateFamilyPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#dad4fc]">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl">Create a Family</CardTitle>

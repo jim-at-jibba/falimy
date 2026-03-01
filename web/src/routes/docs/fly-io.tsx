@@ -66,14 +66,14 @@ function FlyIoPage() {
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
               <Cloud className="h-8 w-8 sm:h-10 sm:w-10 text-primary" />
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">Deploy to Fly.io</h1>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold">Deploy to Fly.io</h1>
             </div>
             <p className="text-base sm:text-lg text-muted-foreground">
               Deploy falimy to Fly.io for a fully managed cloud hosting solution with automatic HTTPS and persistent storage.
             </p>
           </div>
 
-          <div className="mb-8 p-4 bg-muted/30 rounded-lg border">
+          <div className="mb-8 p-4 bg-[#fadeaf] rounded-2xl border-2 border-black dark:border-white/25">
             <div className="flex items-start gap-3">
               <AlertCircle className="text-warning mt-0.5" />
               <div>
@@ -88,7 +88,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 1: Create the Dockerfile</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6">Step 1: Create the Dockerfile</h2>
             <p className="text-muted-foreground mb-4">
               Create a <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">Dockerfile</code> in your project root:
             </p>
@@ -112,7 +112,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 2: Install Flyctl</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6">Step 2: Install Flyctl</h2>
             <p className="text-muted-foreground mb-4">
               Follow the installation instructions from the Fly.io documentation:
             </p>
@@ -141,7 +141,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 3: Launch Your App</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6">Step 3: Launch Your App</h2>
             <p className="text-muted-foreground mb-4">
               Navigate to your project directory and run:
             </p>
@@ -160,7 +160,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 4: Create Persistent Volume</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6">Step 4: Create Persistent Volume</h2>
             <p className="text-muted-foreground mb-4">
               Create a 1GB persistent volume for your PocketBase data:
             </p>
@@ -175,7 +175,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 5: Configure fly.toml</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6">Step 5: Configure fly.toml</h2>
             <p className="text-muted-foreground mb-4">
               Update your <code className="bg-muted/50 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm">fly.toml</code> file to include the volume mount:
             </p>
@@ -199,7 +199,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Step 6: Deploy</h2>
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6">Step 6: Deploy</h2>
             <Card className="bg-muted/30">
               <CardContent className="pt-6">
                 <code className="block text-sm font-mono">flyctl deploy</code>
@@ -212,7 +212,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-10 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
               <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-primary flex-shrink-0" />
               First-Time Setup
             </h2>
@@ -233,7 +233,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-8 sm:mb-10">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
               <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-warning flex-shrink-0" />
               Backup &amp; Data Management
             </h2>
@@ -266,7 +266,7 @@ function FlyIoPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
+            <h2 className="text-xl sm:text-2xl font-extrabold mb-4 sm:mb-6 flex items-center gap-2 sm:gap-3">
               <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6 text-warning flex-shrink-0" />
               Important Notes
             </h2>

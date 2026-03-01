@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { LifeBuoy, BookOpen, Wrench, HelpCircle, ShoppingCart, MapPin, Radio } from 'lucide-react'
+import { PageHeader } from '@/components/layout/PageHeader'
+import { LifeBuoy, BookOpen, Wrench, HelpCircle, ArrowRight } from 'lucide-react'
 
 export const Route = createFileRoute('/docs/')({
   component: DocsIndexPage,
@@ -13,7 +13,8 @@ function DocsIndexPage() {
     {
       title: 'Getting Started',
       description: 'Quick setup guide to get your family running.',
-      icon: <LifeBuoy className="h-8 w-8" />,
+      icon: <LifeBuoy className="h-7 w-7" />,
+      color: '#b4dbfa',
       links: [
         { title: 'Getting Started', href: '/docs/getting-started' },
         { title: 'Self-Hosting Guide', href: '/docs/self-hosting' },
@@ -22,7 +23,8 @@ function DocsIndexPage() {
     {
       title: 'Setup & Configuration',
       description: 'Server setup and configuration guides.',
-      icon: <Wrench className="h-8 w-8" />,
+      icon: <Wrench className="h-7 w-7" />,
+      color: '#fadeaf',
       links: [
         { title: 'Fly.io Deployment', href: '/docs/fly-io' },
         { title: 'Reverse Proxy Setup', href: '/docs/reverse-proxy' },
@@ -31,7 +33,8 @@ function DocsIndexPage() {
     {
       title: 'Feature Guides',
       description: 'Learn how to use falimy features.',
-      icon: <BookOpen className="h-8 w-8" />,
+      icon: <BookOpen className="h-7 w-7" />,
+      color: '#dad4fc',
       links: [
         { title: 'Shared Lists', href: '/docs/features/lists' },
         { title: 'Location Sharing', href: '/docs/features/location' },
@@ -41,7 +44,8 @@ function DocsIndexPage() {
     {
       title: 'Support',
       description: 'Get help with common questions.',
-      icon: <HelpCircle className="h-8 w-8" />,
+      icon: <HelpCircle className="h-7 w-7" />,
+      color: '#b2ecca',
       links: [
         { title: 'FAQ', href: '/docs/faq' },
         { title: 'Troubleshooting', href: '/docs/troubleshooting' },
@@ -52,44 +56,43 @@ function DocsIndexPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
+      <PageHeader
+        title="Documentation"
+        description="Everything you need to set up and use falimy, your privacy-first family hub."
+        color="orange"
+      />
+
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-5xl">
-          <h1 className="text-4xl font-bold mb-4">Documentation</h1>
-          <p className="text-lg text-muted-foreground mb-8">
-            Everything you need to set up and use falimy, your privacy-first family hub.
-          </p>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {docsSections.map((section) => (
-              <Card key={section.title}>
-                <CardHeader>
-                  <div className="flex items-start gap-4">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      {section.icon}
-                    </div>
-                    <div>
-                      <CardTitle className="text-xl mb-2">{section.title}</CardTitle>
-                      <CardDescription>{section.description}</CardDescription>
-                    </div>
+              <div
+                key={section.title}
+                className="rounded-2xl border-2 border-black p-6 dark:border-white/25"
+                style={{ backgroundColor: section.color }}
+              >
+                <div className="flex items-start gap-3 mb-4">
+                  <div>{section.icon}</div>
+                  <div>
+                    <h3 className="text-xl font-bold text-black">{section.title}</h3>
+                    <p className="text-black/60 font-medium text-sm">{section.description}</p>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-2">
-                    {section.links.map((link) => (
-                      <li key={link.href}>
-                        <Link
-                          to={link.href}
-                          className="flex items-center gap-2 text-primary hover:underline font-medium"
-                        >
-                          <ShoppingCart className="size-4" />
-                          {link.title}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                </div>
+                <ul className="space-y-2">
+                  {section.links.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        to={link.href}
+                        className="flex items-center gap-2 text-black font-semibold hover:opacity-70 transition-opacity"
+                      >
+                        <ArrowRight className="size-4" />
+                        {link.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>

@@ -93,11 +93,13 @@ function FamilySettingsPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl">
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Family Management</h1>
-        <p className="text-muted-foreground">Manage your family members and invite settings</p>
+    <div>
+      <div className="bg-[#fadeaf] border-b-2 border-black px-6 py-8 dark:border-white/25">
+        <h1 className="text-3xl font-extrabold text-black">Family Management</h1>
+        <p className="text-black/60 font-medium mt-1">Manage your family members and invite settings</p>
       </div>
+
+      <div className="p-6 space-y-6 max-w-4xl">
 
       {/* Family Info Card */}
       <Card>
@@ -217,7 +219,7 @@ function FamilySettingsPage() {
             {members.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-3 border rounded-lg"
+                className="flex items-center justify-between p-3 border-2 border-black rounded-2xl dark:border-white/25"
               >
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -289,6 +291,7 @@ function FamilySettingsPage() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

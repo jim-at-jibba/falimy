@@ -61,40 +61,40 @@ code {
 }
 
 :root {
-  --radius: 0.5rem;
-  /* Falimy color palette (matching mobile) */
+  --radius: 0.75rem;
+  /* Falimy color palette (matching mobile brutalist design) */
   --background: #ffffff;
   --foreground: #000000;
   --card: #ffffff;
-  --card-foreground: #2C2C2C;
+  --card-foreground: #000000;
   --popover: #ffffff;
-  --popover-foreground: #2C2C2C;
+  --popover-foreground: #000000;
   --primary: #b4dbfa;
-  --primary-foreground: #2C2C2C;
+  --primary-foreground: #000000;
   --secondary: #EDF0F2;
-  --secondary-foreground: #2C2C2C;
+  --secondary-foreground: #000000;
   --muted: #F7F7F7;
-  --muted-foreground: #B1B8BE;
+  --muted-foreground: #6B7280;
   --accent: #dad4fc;
-  --accent-foreground: #2C2C2C;
+  --accent-foreground: #000000;
   --destructive: #FF0000;
   --destructive-foreground: #ffffff;
-  --border: #D2D9DE;
-  --input: #EDF0F2;
-  --ring: #b4dbfa;
+  --border: #000000;
+  --input: #000000;
+  --ring: #000000;
   --chart-1: #b4dbfa;
   --chart-2: #dad4fc;
   --chart-3: #fadeaf;
   --chart-4: #f8d5f4;
   --chart-5: #b2ecca;
   --sidebar: #F7F7F7;
-  --sidebar-foreground: #2C2C2C;
+  --sidebar-foreground: #000000;
   --sidebar-primary: #b4dbfa;
-  --sidebar-primary-foreground: #2C2C2C;
+  --sidebar-primary-foreground: #000000;
   --sidebar-accent: #dad4fc;
-  --sidebar-accent-foreground: #2C2C2C;
-  --sidebar-border: #D2D9DE;
-  --sidebar-ring: #b4dbfa;
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: #000000;
+  --sidebar-ring: #000000;
 
   /* Falimy brand colors */
   --blue: #b4dbfa;
@@ -114,45 +114,43 @@ code {
 .dark {
   --background: #0D0D0D;
   --foreground: #ffffff;
-  --card: #2C2C2C;
+  --card: #1A1A1A;
   --card-foreground: #ffffff;
-  --popover: #2C2C2C;
+  --popover: #1A1A1A;
   --popover-foreground: #ffffff;
   --primary: #b4dbfa;
-  --primary-foreground: #2C2C2C;
-  --secondary: #4C4C4C;
+  --primary-foreground: #000000;
+  --secondary: #2C2C2C;
   --secondary-foreground: #ffffff;
   --muted: #2C2C2C;
-  --muted-foreground: #B1B8BE;
+  --muted-foreground: #9CA3AF;
   --accent: #dad4fc;
-  --accent-foreground: #2C2C2C;
+  --accent-foreground: #000000;
   --destructive: #FF0000;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.1);
-  --input: rgba(255, 255, 255, 0.15);
+  --border: rgba(255, 255, 255, 0.25);
+  --input: rgba(255, 255, 255, 0.25);
   --ring: #b4dbfa;
   --chart-1: #b4dbfa;
   --chart-2: #dad4fc;
   --chart-3: #fadeaf;
   --chart-4: #f8d5f4;
   --chart-5: #b2ecca;
-  --sidebar: #2C2C2C;
+  --sidebar: #1A1A1A;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #b4dbfa;
-  --sidebar-primary-foreground: #2C2C2C;
+  --sidebar-primary-foreground: #000000;
   --sidebar-accent: #dad4fc;
-  --sidebar-accent-foreground: #2C2C2C;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-accent-foreground: #000000;
+  --sidebar-border: rgba(255, 255, 255, 0.25);
   --sidebar-ring: #b4dbfa;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
     @apply bg-background text-foreground;
   }
 }

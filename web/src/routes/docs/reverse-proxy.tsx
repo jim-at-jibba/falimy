@@ -41,7 +41,7 @@ function ReverseProxyPage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Reverse Proxy Setup</h1>
+            <h1 className="text-4xl font-extrabold mb-4">Reverse Proxy Setup</h1>
             <p className="text-lg text-muted-foreground">
               Set up HTTPS and secure access to your PocketBase server using a reverse proxy.
             </p>
@@ -63,7 +63,7 @@ function ReverseProxyPage() {
           </Card>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Choose Your Proxy Server</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Choose Your Proxy Server</h2>
             <p className="text-muted-foreground mb-8">
               We recommend using Caddy for automatic HTTPS, but Nginx is also supported.
             </p>

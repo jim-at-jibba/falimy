@@ -83,11 +83,11 @@ function LocationPage() {
 
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col">
-      <div className="p-4 border-b bg-background">
+      <div className="px-4 py-4 border-b-2 border-black bg-[#b2ecca] dark:border-white/25">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Family Map</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-2xl font-extrabold text-black">Family Map</h1>
+            <p className="text-sm text-black/60 font-medium">
               See where your family members are
             </p>
           </div>
@@ -124,9 +124,9 @@ function LocationPage() {
           </ClientOnly>
         </div>
 
-        <div className="w-80 border-l bg-background overflow-y-auto">
+        <div className="w-80 border-l-2 border-black bg-background overflow-y-auto dark:border-white/25">
           <div className="p-4">
-            <h2 className="font-semibold mb-3 flex items-center gap-2">
+            <h2 className="font-bold mb-3 flex items-center gap-2">
               <Users className="h-4 w-4" />
               Family Members
             </h2>

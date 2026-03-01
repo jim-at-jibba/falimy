@@ -38,20 +38,20 @@ function LocationFeaturePage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Location Sharing</h1>
+            <h1 className="text-4xl font-extrabold mb-4">Location Sharing</h1>
             <p className="text-lg text-muted-foreground">
               Opt-in location sharing that respects privacy and keeps family connected.
             </p>
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Privacy-First Approach</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Privacy-First Approach</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
                 falimy's location sharing is designed around consent and privacy. All location data stays on your family's 
                 PocketBase server - no third-party tracking or cloud services.
               </p>
-              <div className="bg-muted/30 p-6 rounded-lg">
+              <div className="bg-[#b2ecca] p-6 rounded-2xl border-2 border-black dark:border-white/25">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Shield className="text-primary" />
                   Key Privacy Principles
@@ -75,10 +75,10 @@ function LocationFeaturePage() {
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Sharing Modes</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Sharing Modes</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {privacyModes.map((mode) => (
-                <div key={mode.name} className="p-4 bg-card rounded-lg border">
+                <div key={mode.name} className="p-4 bg-card rounded-2xl border-2 border-black dark:border-white/25">
                   <div className="flex items-start gap-3 mb-3">
                     {mode.icon}
                     <h3 className="text-lg font-semibold">{mode.name}</h3>
@@ -90,7 +90,7 @@ function LocationFeaturePage() {
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">How It Works</h2>
+            <h2 className="text-2xl font-extrabold mb-6">How It Works</h2>
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-3">On Mobile</h3>
@@ -105,7 +105,7 @@ function LocationFeaturePage() {
 
               <div>
                 <h3 className="text-lg font-semibold mb-3">On Web</h3>
-                <div className="bg-muted/30 p-4 rounded-lg">
+                <div className="bg-[#fadeaf] p-4 rounded-2xl border-2 border-black dark:border-white/25">
                   <div className="flex items-start gap-3 mb-3">
                     <Smartphone className="text-warning" />
                     <div>
@@ -123,7 +123,7 @@ function LocationFeaturePage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">Family Map</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Family Map</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
                 The family map shows all members who have location sharing enabled. Members are color-coded by how recently 

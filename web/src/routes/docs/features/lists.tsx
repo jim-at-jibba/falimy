@@ -66,14 +66,14 @@ function ListsFeaturePage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Shared Lists</h1>
+            <h1 className="text-4xl font-extrabold mb-4">Shared Lists</h1>
             <p className="text-lg text-muted-foreground">
               Keep your family organized with shared lists that sync in real-time across all devices.
             </p>
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Key Features</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Key Features</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {features.map((feature) => (
                 <div key={feature.title} className="space-y-2">
@@ -88,7 +88,7 @@ function ListsFeaturePage() {
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">List Types</h2>
+            <h2 className="text-2xl font-extrabold mb-6">List Types</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {listTypes.map((type) => (
                 <div key={type.name} className="space-y-2">
@@ -106,7 +106,7 @@ function ListsFeaturePage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">How to Use</h2>
+            <h2 className="text-2xl font-extrabold mb-6">How to Use</h2>
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-3">Creating Lists</h3>
@@ -140,7 +140,7 @@ function ListsFeaturePage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">Tips</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Tips</h2>
             <div className="space-y-3 text-muted-foreground">
               <div className="flex items-start gap-3">
                 <div className="font-semibold">•</div>

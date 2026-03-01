@@ -38,20 +38,20 @@ function GeofencesFeaturePage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Geofences</h1>
+            <h1 className="text-4xl font-extrabold mb-4">Geofences</h1>
             <p className="text-lg text-muted-foreground">
               Define geographic zones and receive notifications when family members enter or leave them.
             </p>
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">What Are Geofences?</h2>
+            <h2 className="text-2xl font-extrabold mb-6">What Are Geofences?</h2>
             <div className="space-y-4 text-muted-foreground">
               <p>
                 A geofence is a virtual perimeter around a specific location. When a family member you're watching crosses 
                 that boundary (enters or leaves), you receive a notification.
               </p>
-              <div className="bg-muted/30 p-6 rounded-lg">
+              <div className="bg-[#dad4fc] p-6 rounded-2xl border-2 border-black dark:border-white/25">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Radio className="text-primary" />
                   How It Works
@@ -89,10 +89,10 @@ function GeofencesFeaturePage() {
               </div>
             </div>
 
-            <h2 className="text-2xl font-bold mb-6 mt-8">Common Geofences</h2>
+            <h2 className="text-2xl font-extrabold mb-6 mt-8">Common Geofences</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {commonGeofences.map((fence) => (
-                <div key={fence.name} className="p-4 bg-card rounded-lg border">
+                <div key={fence.name} className="p-4 bg-card rounded-2xl border-2 border-black dark:border-white/25">
                   <div className="flex items-start gap-3 mb-2">
                     <div className="text-2xl">{fence.icon}</div>
                     <h3 className="text-lg font-semibold">{fence.name}</h3>
@@ -104,7 +104,7 @@ function GeofencesFeaturePage() {
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Creating Geofences</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Creating Geofences</h2>
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold mb-3">On Mobile</h3>
@@ -121,7 +121,7 @@ function GeofencesFeaturePage() {
 
               <div>
                 <h3 className="text-lg font-semibold mb-3">Privacy & Battery</h3>
-                <div className="bg-muted/30 p-4 rounded-lg">
+                <div className="bg-[#fadeaf] p-4 rounded-2xl border-2 border-black dark:border-white/25">
                   <div className="flex items-start gap-3 mb-3">
                     <Shield className="text-primary" />
                     <div>
@@ -142,7 +142,7 @@ function GeofencesFeaturePage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">Tips</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Tips</h2>
             <div className="space-y-3 text-muted-foreground">
               <div className="flex items-start gap-3">
                 <div className="font-semibold">•</div>

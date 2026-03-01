@@ -123,28 +123,29 @@ function ListDetailPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate({ to: '/app/lists' })}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">{list.name}</h1>
-            <div className="flex items-center gap-2 mt-1">
-              <Badge variant="outline" className="capitalize">
-                {list.type}
-              </Badge>
-              <Badge
-                variant={list.status === 'active' ? 'default' : 'secondary'}
-                className="capitalize"
-              >
-                {list.status}
-              </Badge>
+    <div>
+      {/* Colored header */}
+      <div className="bg-[#dad4fc] border-b-2 border-black px-6 py-6 dark:border-white/25">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate({ to: '/app/lists' })} className="border-transparent">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <div>
+              <h1 className="text-3xl font-extrabold text-black">{list.name}</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <Badge variant="outline" className="capitalize">
+                  {list.type}
+                </Badge>
+                <Badge
+                  variant={list.status === 'active' ? 'default' : 'secondary'}
+                  className="capitalize"
+                >
+                  {list.status}
+                </Badge>
+              </div>
             </div>
           </div>
-        </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -164,8 +165,10 @@ function ListDetailPage() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
 
+      <div className="p-6 space-y-6 max-w-4xl">
       {/* Add item form */}
       <Card>
         <CardHeader>
@@ -359,6 +362,7 @@ function ListDetailPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   )
 }

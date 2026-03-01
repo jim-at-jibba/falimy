@@ -64,14 +64,14 @@ function SelfHostingPage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Self-Hosting Guide</h1>
-            <p className="text-lg text-muted-foreground">
+            <h1 className="text-4xl font-extrabold mb-4">Self-Hosting Guide</h1>
+            <p className="text-lg text-muted-foreground font-medium">
               Deploy your own PocketBase server and take complete control of your family's data.
             </p>
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-extrabold mb-6 flex items-center gap-3">
               <CheckCircle className="text-primary" />
               Prerequisites
             </h2>
@@ -93,10 +93,10 @@ function SelfHostingPage() {
           </div>
 
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-6">Quick Start</h2>
+            <h2 className="text-2xl font-extrabold mb-6">Quick Start</h2>
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold mb-3">1. Get the falimy Repository</h3>
+                <h3 className="text-lg font-bold mb-3">1. Get the falimy Repository</h3>
                 <p className="text-muted-foreground mb-3">
                   Clone or download the falimy repository from GitHub:
                 </p>
@@ -110,7 +110,7 @@ function SelfHostingPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-3">2. Run the Docker Container</h3>
+                <h3 className="text-lg font-bold mb-3">2. Run the Docker Container</h3>
                 <p className="text-muted-foreground mb-3">
                   Navigate to the repository directory and start PocketBase with Docker Compose:
                 </p>
@@ -156,7 +156,7 @@ function SelfHostingPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-3">3. Access PocketBase</h3>
+                <h3 className="text-lg font-bold mb-3">3. Access PocketBase</h3>
                 <p className="text-muted-foreground mb-3">
                   Your PocketBase server is now running at:
                 </p>
@@ -173,7 +173,7 @@ function SelfHostingPage() {
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
+            <h2 className="text-2xl font-extrabold mb-6 flex items-center gap-3">
               <AlertCircle className="text-warning" />
               Important Notes
             </h2>

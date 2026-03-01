@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { List, Map, Settings, Users } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const Route = createFileRoute('/app/')({
   component: DashboardPage,
@@ -10,57 +9,64 @@ export const Route = createFileRoute('/app/')({
 function DashboardPage() {
   const { user } = useAuth()
 
+  const cards = [
+    {
+      to: '/app/lists',
+      icon: <List className="h-8 w-8" />,
+      title: 'Lists',
+      description: 'Manage shopping, todo, and packing lists',
+      color: '#b4dbfa',
+    },
+    {
+      to: '/app/location',
+      icon: <Map className="h-8 w-8" />,
+      title: 'Location',
+      description: 'View family members and manage location sharing',
+      color: '#b2ecca',
+    },
+    {
+      to: '/app/settings/family',
+      icon: <Users className="h-8 w-8" />,
+      title: 'Family Settings',
+      description: 'Manage family members, invite codes, and roles',
+      color: '#fadeaf',
+    },
+    {
+      to: '/app/settings',
+      icon: <Settings className="h-8 w-8" />,
+      title: 'Account Settings',
+      description: 'Change server URL, manage your account',
+      color: '#dad4fc',
+    },
+  ]
+
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-2">
+    <div>
+      {/* Colored header */}
+      <div className="bg-[#b4dbfa] border-b-2 border-black px-6 py-8 dark:border-white/25">
+        <h2 className="text-3xl font-extrabold text-black">
           Welcome{user && `, ${user.name}`}!
         </h2>
-        <p className="text-muted-foreground">
+        <p className="text-black/60 font-medium mt-1">
           Here's an overview of your family's falimy hub.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Link to="/app/lists">
-          <Card className="cursor-pointer transition-colors hover:bg-accent">
-            <CardHeader>
-              <List className="h-8 w-8 mb-2" style={{ color: '#b4dbfa' }} />
-              <CardTitle>Lists</CardTitle>
-              <CardDescription>Manage shopping, todo, and packing lists</CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
-
-        <Link to="/app/location">
-          <Card className="cursor-pointer transition-colors hover:bg-accent">
-            <CardHeader>
-              <Map className="h-8 w-8 mb-2" style={{ color: '#dad4fc' }} />
-              <CardTitle>Location</CardTitle>
-              <CardDescription>View family members and manage location sharing</CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
-
-        <Link to="/app/settings/family">
-          <Card className="cursor-pointer transition-colors hover:bg-accent">
-            <CardHeader>
-              <Users className="h-8 w-8 mb-2" style={{ color: '#fadeaf' }} />
-              <CardTitle>Family Settings</CardTitle>
-              <CardDescription>Manage family members, invite codes, and roles</CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
-
-        <Link to="/app/settings">
-          <Card className="cursor-pointer transition-colors hover:bg-accent">
-            <CardHeader>
-              <Settings className="h-8 w-8 mb-2" style={{ color: '#f8d5f4' }} />
-              <CardTitle>Account Settings</CardTitle>
-              <CardDescription>Change server URL, manage your account</CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
+      <div className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {cards.map((card) => (
+            <Link key={card.to} to={card.to}>
+              <div
+                className="rounded-2xl border-2 border-black p-6 cursor-pointer hover:opacity-80 transition-opacity dark:border-white/25"
+                style={{ backgroundColor: card.color }}
+              >
+                <div className="mb-3">{card.icon}</div>
+                <h3 className="text-lg font-bold text-black">{card.title}</h3>
+                <p className="text-black/60 font-medium text-sm">{card.description}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   )

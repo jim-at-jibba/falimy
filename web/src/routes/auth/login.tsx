@@ -63,11 +63,11 @@ function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/30">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#b4dbfa]">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your falimy account</CardDescription>
+          <CardTitle className="text-2xl font-extrabold">Welcome back</CardTitle>
+          <CardDescription className="font-medium">Sign in to your falimy account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

@@ -102,21 +102,24 @@ function CreateGeofencePage() {
     : [0, 0]
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex items-center gap-4">
-        <Link to="/app/location/geofences">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-bold">Create Geofence</h1>
-          <p className="text-muted-foreground">
-            Click on the map to set the center point
-          </p>
+    <div>
+      <div className="bg-[#b2ecca] border-b-2 border-black px-6 py-6 dark:border-white/25">
+        <div className="flex items-center gap-4">
+          <Link to="/app/location/geofences">
+            <Button variant="ghost" size="icon" className="border-transparent">
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-extrabold text-black">Create Geofence</h1>
+            <p className="text-black/60 font-medium">
+              Click on the map to set the center point
+            </p>
+          </div>
         </div>
       </div>
 
+      <div className="p-6 space-y-6 max-w-6xl">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -262,6 +265,7 @@ function CreateGeofencePage() {
             </Button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

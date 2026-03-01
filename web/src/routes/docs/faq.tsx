@@ -57,8 +57,8 @@ function FAQPage() {
       <div className="flex-1">
         <div className="container mx-auto px-4 py-12 max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-            <p className="text-lg text-muted-foreground">
+            <h1 className="text-4xl font-extrabold mb-4">Frequently Asked Questions</h1>
+            <p className="text-lg text-muted-foreground font-medium">
               Common questions about falimy, privacy, and self-hosting.
             </p>
           </div>
@@ -66,13 +66,13 @@ function FAQPage() {
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <details key={index} className="group">
-                <summary className="list-none flex cursor-pointer items-start gap-3 p-4 bg-card rounded-lg border hover:border-primary/50 transition-colors">
-                  <div className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <summary className="list-none flex cursor-pointer items-start gap-3 p-4 bg-card rounded-2xl border-2 border-black hover:bg-muted/30 transition-colors dark:border-white/25">
+                  <div className="flex items-center gap-2 text-lg font-bold text-foreground">
                     <span className="group-open:rotate-90 transition-transform">▶</span>
                     {faq.question}
                   </div>
                 </summary>
-                <div className="px-4 py-4 bg-muted/30 text-muted-foreground">
+                <div className="px-4 py-4 text-muted-foreground font-medium">
                   <p>{faq.answer}</p>
                 </div>
               </details>

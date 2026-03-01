@@ -33,10 +33,10 @@ function DocsLayout() {
         <SidebarHeader>
           <Link
             to="/"
-            className="flex items-center gap-2 hover:text-primary transition-colors"
+            className="flex items-center gap-2 hover:opacity-70 transition-opacity"
           >
             <Home className="size-4" />
-            <span className="font-semibold">falimy</span>
+            <span className="font-bold">falimy</span>
           </Link>
         </SidebarHeader>
 
@@ -46,7 +46,7 @@ function DocsLayout() {
               <SidebarMenuButton asChild>
                 <Link
                   to="/docs"
-                  className={`flex items-center gap-2 ${isActive("/") ? "bg-accent" : ""}`}
+                  className={`flex items-center gap-2 font-semibold ${isActive("/") ? "bg-[#dad4fc]" : ""}`}
                 >
                   <BookOpen className="size-4" />
                   <span>Overview</span>
@@ -57,7 +57,7 @@ function DocsLayout() {
               <SidebarMenuButton asChild>
                 <Link
                   to="/docs/getting-started"
-                  className={`flex items-center gap-2 ${isActive("/getting-started") ? "bg-accent" : ""}`}
+                  className={`flex items-center gap-2 font-semibold ${isActive("/getting-started") ? "bg-[#b4dbfa]" : ""}`}
                 >
                   <LifeBuoy className="size-4" />
                   <span>Getting Started</span>
@@ -68,7 +68,7 @@ function DocsLayout() {
               <SidebarMenuButton asChild>
                 <Link
                   to="/docs/self-hosting"
-                  className={`flex items-center gap-2 ${isActive("/self-hosting") ? "bg-accent" : ""}`}
+                  className={`flex items-center gap-2 font-semibold ${isActive("/self-hosting") ? "bg-[#fadeaf]" : ""}`}
                 >
                   <Wrench className="size-4" />
                   <span>Self-Hosting</span>
@@ -79,7 +79,7 @@ function DocsLayout() {
               <SidebarMenuButton asChild>
                 <Link
                   to="/docs/fly-io"
-                  className={`flex items-center gap-2 ${isActive("/fly-io") ? "bg-accent" : ""}`}
+                  className={`flex items-center gap-2 font-semibold ${isActive("/fly-io") ? "bg-[#fadeaf]" : ""}`}
                 >
                   <Wrench className="size-4" />
                   <span>Fly.io Deployment</span>
@@ -90,7 +90,7 @@ function DocsLayout() {
               <SidebarMenuButton asChild>
                 <Link
                   to="/docs/reverse-proxy"
-                  className={`flex items-center gap-2 ${isActive("/reverse-proxy") ? "bg-accent" : ""}`}
+                  className={`flex items-center gap-2 font-semibold ${isActive("/reverse-proxy") ? "bg-[#fadeaf]" : ""}`}
                 >
                   <Wrench className="size-4" />
                   <span>Reverse Proxy</span>
@@ -101,7 +101,7 @@ function DocsLayout() {
               <SidebarMenuButton asChild>
                 <Link
                   to="/docs/faq"
-                  className={`flex items-center gap-2 ${isActive("/faq") ? "bg-accent" : ""}`}
+                  className={`flex items-center gap-2 font-semibold ${isActive("/faq") ? "bg-[#b2ecca]" : ""}`}
                 >
                   <HelpCircle className="size-4" />
                   <span>FAQ</span>
@@ -112,7 +112,7 @@ function DocsLayout() {
               <SidebarMenuButton asChild>
                 <Link
                   to="/docs/troubleshooting"
-                  className={`flex items-center gap-2 ${isActive("/troubleshooting") ? "bg-accent" : ""}`}
+                  className={`flex items-center gap-2 font-semibold ${isActive("/troubleshooting") ? "bg-[#f8d5f4]" : ""}`}
                 >
                   <Wrench className="size-4" />
                   <span>Troubleshooting</span>

@@ -8,6 +8,10 @@ export const Route = createFileRoute('/docs/faq')({
 
 const faqs = [
   {
+    question: 'Why the name falimy?',
+    answer: 'My daughter Una couldn\'t pronounce "family" and instead said "falimy" — and it stuck.',
+  },
+  {
     question: 'What makes falimy different from other family apps?',
     answer: 'falimy is privacy-first and self-hosted. Your family\'s data stays on your own PocketBase server - no cloud services, no third-party tracking, no data mining. You have complete control over your data.',
   },

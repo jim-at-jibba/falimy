@@ -8,6 +8,7 @@ import {
 } from "react-hook-form";
 import {
   type KeyboardTypeOptions,
+  Platform,
   type ReturnKeyTypeOptions,
   TextInput,
   type TextInputProps,
@@ -121,7 +122,7 @@ const styles = StyleSheet.create((theme) => ({
     borderRadius: theme.borderRadiusXs,
     backgroundColor: theme.colors.greyBackground,
     overflow: "hidden",
-    borderWidth: hasErrors || hasFocus ? 3 : 2,
+    borderWidth: hasErrors || hasFocus ? 3 : Platform.select({ android: 4, default: 2 }),
     borderColor: hasErrors ? theme.colors.error : hasFocus ? theme.colors.primary : theme.colors.black,
     shadowColor: "#000",
     shadowOffset: { width: 2, height: 2 },

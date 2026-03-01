@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Platform, ScrollView, Text, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 import { getPocketBase } from "@/api/pocketbase";
@@ -207,7 +207,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: 2,
+    borderWidth: Platform.select({ android: 4, default: 2 }),
     borderColor: theme.colors.black,
   },
   cardTitle: {

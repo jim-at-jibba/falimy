@@ -3,6 +3,7 @@ import { CookingPot, Clock, Plus, Search } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -229,7 +230,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: 2,
+    borderWidth: Platform.select({ android: 4, default: 2 }),
     borderColor: theme.colors.black,
   },
   searchInput: {
@@ -256,7 +257,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   tagChipActive: {
     backgroundColor: "#b2ecca",
-    borderWidth: 2,
+    borderWidth: Platform.select({ android: 4, default: 2 }),
     borderColor: theme.colors.black,
   },
   emptyState: {
@@ -273,7 +274,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: 2,
+    borderWidth: Platform.select({ android: 4, default: 2 }),
     borderColor: theme.colors.black,
   },
   cardContent: {

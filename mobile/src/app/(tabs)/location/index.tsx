@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import { Clock, MapPin, Navigation, Settings2, Shield, X } from "lucide-react-native";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
 import MapView, { Circle, Marker, Polyline, type Region } from "react-native-maps";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
@@ -310,7 +310,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: 2,
+    borderWidth: Platform.select({ android: 4, default: 2 }),
     borderColor: theme.colors.black,
   },
   settingsButton: {
@@ -336,7 +336,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: 2,
+    borderWidth: Platform.select({ android: 4, default: 2 }),
     borderColor: theme.colors.black,
   },
   memberCardClose: {

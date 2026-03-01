@@ -9,13 +9,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80 active:translate-y-px",
+        default: "bg-primary text-primary-foreground hover:bg-primary/80 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[3px] active:shadow-none dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.25)]",
         destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive text-white hover:bg-destructive/90 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[3px] active:shadow-none focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.25)]",
         outline:
-          "bg-background hover:bg-muted active:translate-y-px",
+          "bg-background hover:bg-muted shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[3px] active:shadow-none dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.25)]",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 active:translate-y-px",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-[3px] active:shadow-none dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.25)]",
         ghost:
           "border-transparent hover:bg-accent hover:text-accent-foreground hover:border-transparent dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline border-transparent",

@@ -51,7 +51,7 @@ function LocationFeaturePage() {
                 falimy's location sharing is designed around consent and privacy. All location data stays on your family's 
                 PocketBase server - no third-party tracking or cloud services.
               </p>
-              <div className="bg-[#b2ecca] p-6 rounded-2xl border-2 border-black dark:border-white/25">
+              <div className="bg-[#b2ecca] p-6 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Shield className="text-primary" />
                   Key Privacy Principles
@@ -78,7 +78,7 @@ function LocationFeaturePage() {
             <h2 className="text-2xl font-extrabold mb-6">Sharing Modes</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {privacyModes.map((mode) => (
-                <div key={mode.name} className="p-4 bg-card rounded-2xl border-2 border-black dark:border-white/25">
+                <div key={mode.name} className="p-4 bg-card rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                   <div className="flex items-start gap-3 mb-3">
                     {mode.icon}
                     <h3 className="text-lg font-semibold">{mode.name}</h3>
@@ -105,7 +105,7 @@ function LocationFeaturePage() {
 
               <div>
                 <h3 className="text-lg font-semibold mb-3">On Web</h3>
-                <div className="bg-[#fadeaf] p-4 rounded-2xl border-2 border-black dark:border-white/25">
+                <div className="bg-[#fadeaf] p-4 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                   <div className="flex items-start gap-3 mb-3">
                     <Smartphone className="text-warning" />
                     <div>

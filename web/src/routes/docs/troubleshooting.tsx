@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { AlertTriangle, RefreshCw, Wifi, AlertCircle, Server } from 'lucide-react'
+import { AlertTriangle, RefreshCw, Wifi, AlertCircle, Server, MapPin } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/docs/troubleshooting')({
@@ -174,7 +174,7 @@ function TroubleshootingPage() {
                 <div className="space-y-4">
                   {category.problems.map((problem, probIndex) => (
                     <details key={probIndex} className="group">
-                      <summary className="list-none cursor-pointer p-4 bg-card rounded-2xl border-2 border-black hover:bg-muted/30 transition-colors dark:border-white/25">
+                      <summary className="list-none cursor-pointer p-4 bg-card rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-muted/30 transition-colors dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                         <div className="flex items-center gap-3">
                           <AlertTriangle className="text-warning" />
                           <h3 className="text-lg font-bold">{problem.title}</h3>

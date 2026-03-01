@@ -237,7 +237,7 @@ function ListsPage() {
 
         {/* Lists grid */}
         {filteredLists.length === 0 ? (
-          <div className="rounded-2xl border-2 border-black p-12 flex flex-col items-center justify-center dark:border-white/25">
+          <div className="rounded-2xl border-2 border-black p-12 flex flex-col items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
             <FileText className="h-12 w-12 text-muted-foreground mb-4" />
             <p className="text-muted-foreground text-center font-medium">
               {filter === 'active'
@@ -250,7 +250,7 @@ function ListsPage() {
             {filteredLists.map((list) => (
               <Link key={list.id} to={`/app/lists/${list.id}`}>
                 <div
-                  className="rounded-2xl border-2 border-black p-5 cursor-pointer hover:opacity-80 transition-opacity dark:border-white/25"
+                  className="rounded-2xl border-2 border-black p-5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-pointer hover:opacity-80 transition-opacity dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]"
                   style={{ backgroundColor: getTypeColor(list.type) }}
                 >
                   <div className="flex items-start justify-between mb-3">

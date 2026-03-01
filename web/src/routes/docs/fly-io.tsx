@@ -73,7 +73,7 @@ function FlyIoPage() {
             </p>
           </div>
 
-          <div className="mb-8 p-4 bg-[#fadeaf] rounded-2xl border-2 border-black dark:border-white/25">
+          <div className="mb-8 p-4 bg-[#fadeaf] rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
             <div className="flex items-start gap-3">
               <AlertCircle className="text-warning mt-0.5" />
               <div>

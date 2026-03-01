@@ -115,7 +115,7 @@ function FeaturesPage() {
             {coreFeatures.map((feature, index) => (
               <div
                 key={index}
-                className="rounded-2xl border-2 border-black p-6 md:p-8 dark:border-white/25"
+                className="rounded-2xl border-2 border-black p-6 md:p-8 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]"
                 style={{ backgroundColor: feature.color }}
               >
                 <div className="flex items-start gap-4">
@@ -149,7 +149,7 @@ function FeaturesPage() {
             {privacyFeatures.map((feature, index) => (
               <div
                 key={index}
-                className="text-center rounded-2xl border-2 border-black bg-white p-6 dark:border-white/25 dark:bg-card"
+                className="text-center rounded-2xl border-2 border-black bg-white p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:bg-card dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]"
               >
                 <div className="flex justify-center mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-bold mb-2">{feature.title}</h3>

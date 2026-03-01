@@ -51,7 +51,7 @@ function GeofencesFeaturePage() {
                 A geofence is a virtual perimeter around a specific location. When a family member you're watching crosses 
                 that boundary (enters or leaves), you receive a notification.
               </p>
-              <div className="bg-[#dad4fc] p-6 rounded-2xl border-2 border-black dark:border-white/25">
+              <div className="bg-[#dad4fc] p-6 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                   <Radio className="text-primary" />
                   How It Works
@@ -92,7 +92,7 @@ function GeofencesFeaturePage() {
             <h2 className="text-2xl font-extrabold mb-6 mt-8">Common Geofences</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {commonGeofences.map((fence) => (
-                <div key={fence.name} className="p-4 bg-card rounded-2xl border-2 border-black dark:border-white/25">
+                <div key={fence.name} className="p-4 bg-card rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                   <div className="flex items-start gap-3 mb-2">
                     <div className="text-2xl">{fence.icon}</div>
                     <h3 className="text-lg font-semibold">{fence.name}</h3>
@@ -121,7 +121,7 @@ function GeofencesFeaturePage() {
 
               <div>
                 <h3 className="text-lg font-semibold mb-3">Privacy & Battery</h3>
-                <div className="bg-[#fadeaf] p-4 rounded-2xl border-2 border-black dark:border-white/25">
+                <div className="bg-[#fadeaf] p-4 rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                   <div className="flex items-start gap-3 mb-3">
                     <Shield className="text-primary" />
                     <div>

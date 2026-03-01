@@ -66,7 +66,7 @@ function FAQPage() {
           <div className="space-y-4">
             {faqs.map((faq, index) => (
               <details key={index} className="group">
-                <summary className="list-none flex cursor-pointer items-start gap-3 p-4 bg-card rounded-2xl border-2 border-black hover:bg-muted/30 transition-colors dark:border-white/25">
+                <summary className="list-none flex cursor-pointer items-start gap-3 p-4 bg-card rounded-2xl border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:bg-muted/30 transition-colors dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
                   <div className="flex items-center gap-2 text-lg font-bold text-foreground">
                     <span className="group-open:rotate-90 transition-transform">▶</span>
                     {faq.question}

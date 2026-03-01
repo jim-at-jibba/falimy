@@ -65,7 +65,7 @@ function GettingStartedPage() {
             {steps.map((step, index) => (
               <div
                 key={step.title}
-                className="rounded-2xl border-2 border-black p-6 dark:border-white/25"
+                className="rounded-2xl border-2 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]"
                 style={{ backgroundColor: stepColors[index] }}
               >
                 <div className="flex items-start gap-4">
@@ -89,7 +89,7 @@ function GettingStartedPage() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-2xl border-2 border-black bg-[#b2ecca] p-6 dark:border-white/25">
+          <div className="mt-8 rounded-2xl border-2 border-black bg-[#b2ecca] p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
             <h3 className="text-xl font-bold text-black mb-4">What's Next?</h3>
             <p className="mb-4 text-black/60 font-medium">
               After setting up your family, you can explore these features:

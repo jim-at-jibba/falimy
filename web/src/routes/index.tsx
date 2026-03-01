@@ -74,7 +74,7 @@ function HomePage() {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="rounded-2xl border-2 border-black p-6 dark:border-white/25"
+                className="rounded-2xl border-2 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]"
                 style={{ backgroundColor: feature.color }}
               >
                 <div className="mb-4">{feature.icon}</div>

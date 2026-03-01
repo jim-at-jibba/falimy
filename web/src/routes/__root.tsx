@@ -25,11 +25,69 @@ export const Route = createRootRoute({
         name: 'description',
         content: 'A privacy-first family app where all data stays on your self-hosted backend. Share lists, locations, and stay connected.',
       },
+      {
+        property: 'og:title',
+        content: 'falimy - Privacy-First Family Hub',
+      },
+      {
+        property: 'og:description',
+        content: 'A privacy-first family app where all data stays on your self-hosted backend. Share lists, locations, and stay connected.',
+      },
+      {
+        property: 'og:image',
+        content: 'https://falimy.jamesbest.uk/og.png',
+      },
+      {
+        property: 'og:url',
+        content: 'https://falimy.jamesbest.uk',
+      },
+      {
+        property: 'og:type',
+        content: 'website',
+      },
+      {
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
+      {
+        name: 'twitter:title',
+        content: 'falimy - Privacy-First Family Hub',
+      },
+      {
+        name: 'twitter:description',
+        content: 'A privacy-first family app where all data stays on your self-hosted backend. Share lists, locations, and stay connected.',
+      },
+      {
+        name: 'twitter:image',
+        content: 'https://falimy.jamesbest.uk/og.png',
+      },
+      {
+        name: 'theme-color',
+        content: '#dad4fc',
+      },
     ],
     links: [
       {
         rel: 'stylesheet',
         href: appCss,
+      },
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: '/favicon.svg',
+      },
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: '/favicon.ico',
+      },
+      {
+        rel: 'apple-touch-icon',
+        href: '/apple-touch-icon.png',
+      },
+      {
+        rel: 'manifest',
+        href: '/manifest.json',
       },
     ],
   }),

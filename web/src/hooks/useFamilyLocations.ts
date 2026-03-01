@@ -95,6 +95,26 @@ export function useFamilyLocations() {
     },
   })
 
+  // Update location history retention
+  const updateRetentionDays = useMutation({
+    mutationFn: async (days: number) => {
+      if (!pb || !user) {
+        throw new Error('Not authenticated')
+      }
+
+      await pb.collection('users').update(user.id, {
+        location_history_retention_days: days,
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['family-locations'] })
+      toast.success('History retention updated')
+    },
+    onError: (error) => {
+      toast.error('Failed to update retention setting: ' + String(error))
+    },
+  })
+
   return {
     members: members || [],
     isLoading,
@@ -103,5 +123,7 @@ export function useFamilyLocations() {
     isUpdatingLocation: updateLocation.isPending,
     updateSharingMode: updateSharingMode.mutate,
     isUpdatingSharingMode: updateSharingMode.isPending,
+    updateRetentionDays: updateRetentionDays.mutate,
+    isUpdatingRetentionDays: updateRetentionDays.isPending,
   }
 }

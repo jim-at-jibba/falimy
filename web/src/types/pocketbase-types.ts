@@ -200,6 +200,7 @@ export type UsersRecord = {
 	last_lat?: number
 	last_lng?: number
 	last_location_at?: IsoDateString
+	location_history_retention_days?: number
 	location_sharing_mode?: UsersLocationSharingModeOptions
 	location_sharing_until?: IsoDateString
 	name?: string

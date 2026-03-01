@@ -14,6 +14,13 @@ migrate(
     );
 
     app.save(users);
+
+    // Set default retention to 30 days for all existing users
+    const records = app.findAllRecords("users");
+    for (const record of records) {
+      record.set("location_history_retention_days", 30);
+      app.save(record);
+    }
   },
   (app) => {
     const users = app.findCollectionByNameOrId("users");

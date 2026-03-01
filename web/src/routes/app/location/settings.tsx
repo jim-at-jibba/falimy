@@ -21,7 +21,7 @@ export const Route = createFileRoute('/app/location/settings')({
 
 function LocationSettingsPage() {
   const { user } = useAuth()
-  const { members, updateSharingMode, isUpdatingSharingMode } = useFamilyLocations()
+  const { members, updateSharingMode, isUpdatingSharingMode, updateRetentionDays, isUpdatingRetentionDays } = useFamilyLocations()
 
   // Find current user's settings
   const currentUser = members.find((m) => m.id === user?.id)
@@ -186,6 +186,35 @@ function LocationSettingsPage() {
               </div>
             </div>
           </RadioGroup>
+        </CardContent>
+      </Card>
+
+      {/* History Retention */}
+      <Card>
+        <CardHeader>
+          <CardTitle>History Retention</CardTitle>
+          <CardDescription>
+            Choose how long location history is kept. Older records are automatically deleted during sync.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Select
+            value={String(currentUser?.location_history_retention_days ?? 30)}
+            onValueChange={(value) => updateRetentionDays(Number(value))}
+            disabled={isUpdatingRetentionDays}
+          >
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Select retention" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7">7 days</SelectItem>
+              <SelectItem value="14">14 days</SelectItem>
+              <SelectItem value="30">30 days</SelectItem>
+              <SelectItem value="90">90 days</SelectItem>
+              <SelectItem value="180">180 days</SelectItem>
+              <SelectItem value="0">Forever</SelectItem>
+            </SelectContent>
+          </Select>
         </CardContent>
       </Card>
 

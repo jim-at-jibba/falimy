@@ -26,6 +26,12 @@ export function Navbar() {
             >
               Docs
             </Link>
+            <Link
+              to="/managed-hosting"
+              className="text-sm font-semibold text-foreground/70 hover:text-foreground transition-colors"
+            >
+              Managed Hosting
+            </Link>
           </div>
         </div>
 
@@ -56,6 +62,12 @@ export function Navbar() {
                 className="text-lg font-bold hover:opacity-70 transition-opacity"
               >
                 Docs
+              </Link>
+              <Link
+                to="/managed-hosting"
+                className="text-lg font-bold hover:opacity-70 transition-opacity"
+              >
+                Managed Hosting
               </Link>
               <Link to="/auth/login">
                 <Button className="w-full">Admin Login</Button>

@@ -40,7 +40,7 @@ function DocsLayout() {
           </Link>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="px-2">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>

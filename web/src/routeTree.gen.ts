@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ManagedHostingRouteImport } from './routes/managed-hosting'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as DocsRouteRouteImport } from './routes/docs/route'
 import { Route as AppRouteRouteImport } from './routes/app/route'
@@ -37,6 +38,11 @@ import { Route as AppLocationGeofencesRouteImport } from './routes/app/location/
 import { Route as AppLocationCreateGeofenceRouteImport } from './routes/app/location/create-geofence'
 import { Route as AppListsListIdRouteImport } from './routes/app/lists/$listId'
 
+const ManagedHostingRoute = ManagedHostingRouteImport.update({
+  id: '/managed-hosting',
+  path: '/managed-hosting',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeaturesRoute = FeaturesRouteImport.update({
   id: '/features',
   path: '/features',
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/app': typeof AppRouteRouteWithChildren
   '/docs': typeof DocsRouteRouteWithChildren
   '/features': typeof FeaturesRoute
+  '/managed-hosting': typeof ManagedHostingRoute
   '/auth/create-family': typeof AuthCreateFamilyRoute
   '/auth/join-family': typeof AuthJoinFamilyRoute
   '/auth/login': typeof AuthLoginRoute
@@ -206,6 +213,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/features': typeof FeaturesRoute
+  '/managed-hosting': typeof ManagedHostingRoute
   '/auth/create-family': typeof AuthCreateFamilyRoute
   '/auth/join-family': typeof AuthJoinFamilyRoute
   '/auth/login': typeof AuthLoginRoute
@@ -236,6 +244,7 @@ export interface FileRoutesById {
   '/app': typeof AppRouteRouteWithChildren
   '/docs': typeof DocsRouteRouteWithChildren
   '/features': typeof FeaturesRoute
+  '/managed-hosting': typeof ManagedHostingRoute
   '/auth/create-family': typeof AuthCreateFamilyRoute
   '/auth/join-family': typeof AuthJoinFamilyRoute
   '/auth/login': typeof AuthLoginRoute
@@ -267,6 +276,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/docs'
     | '/features'
+    | '/managed-hosting'
     | '/auth/create-family'
     | '/auth/join-family'
     | '/auth/login'
@@ -294,6 +304,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/features'
+    | '/managed-hosting'
     | '/auth/create-family'
     | '/auth/join-family'
     | '/auth/login'
@@ -323,6 +334,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/docs'
     | '/features'
+    | '/managed-hosting'
     | '/auth/create-family'
     | '/auth/join-family'
     | '/auth/login'
@@ -353,6 +365,7 @@ export interface RootRouteChildren {
   AppRouteRoute: typeof AppRouteRouteWithChildren
   DocsRouteRoute: typeof DocsRouteRouteWithChildren
   FeaturesRoute: typeof FeaturesRoute
+  ManagedHostingRoute: typeof ManagedHostingRoute
   AuthCreateFamilyRoute: typeof AuthCreateFamilyRoute
   AuthJoinFamilyRoute: typeof AuthJoinFamilyRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -361,6 +374,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/managed-hosting': {
+      id: '/managed-hosting'
+      path: '/managed-hosting'
+      fullPath: '/managed-hosting'
+      preLoaderRoute: typeof ManagedHostingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/features': {
       id: '/features'
       path: '/features'
@@ -616,6 +636,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppRouteRoute: AppRouteRouteWithChildren,
   DocsRouteRoute: DocsRouteRouteWithChildren,
   FeaturesRoute: FeaturesRoute,
+  ManagedHostingRoute: ManagedHostingRoute,
   AuthCreateFamilyRoute: AuthCreateFamilyRoute,
   AuthJoinFamilyRoute: AuthJoinFamilyRoute,
   AuthLoginRoute: AuthLoginRoute,

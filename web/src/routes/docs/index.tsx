@@ -18,6 +18,7 @@ function DocsIndexPage() {
       links: [
         { title: 'Getting Started', href: '/docs/getting-started' },
         { title: 'Self-Hosting Guide', href: '/docs/self-hosting' },
+        { title: 'Managed Hosting', href: '/managed-hosting' },
       ],
     },
     {

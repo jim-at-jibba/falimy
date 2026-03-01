@@ -6,7 +6,8 @@ import {
   Server,
   Users,
   Lock,
-  Radio
+  Radio,
+  Cloud,
 } from 'lucide-react'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
@@ -89,6 +90,12 @@ function FeaturesPage() {
       title: 'Self-Hosted',
       description: 'Run PocketBase on your own server or cloud. Full control over your family\'s data.',
       color: '#fadeaf',
+    },
+    {
+      icon: <Cloud className="w-8 h-8" />,
+      title: 'Managed Hosting',
+      description: 'Don\'t want to self-host? We\'ll run a dedicated server for you — same privacy, zero setup.',
+      color: '#f8d5f4',
     },
     {
       icon: <Lock className="w-8 h-8" />,

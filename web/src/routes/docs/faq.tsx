@@ -12,6 +12,10 @@ const faqs = [
     answer: 'My daughter Una couldn\'t pronounce "family" and instead said "falimy" — and it stuck.',
   },
   {
+    question: 'Do I need to self-host?',
+    answer: 'No! While self-hosting gives you maximum control, we also offer managed hosting where we run a dedicated PocketBase server for your family. You get the same privacy and features without any technical setup. Visit the managed hosting page to learn more and register your interest.',
+  },
+  {
     question: 'What makes falimy different from other family apps?',
     answer: 'falimy is privacy-first and self-hosted. Your family\'s data stays on your own PocketBase server - no cloud services, no third-party tracking, no data mining. You have complete control over your data.',
   },

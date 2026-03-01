@@ -101,9 +101,9 @@ function HomePage() {
                 View Self-Hosting Guide
               </Button>
             </Link>
-            <Link to="/auth/login">
+            <Link to="/managed-hosting">
               <Button size="lg" variant="outline" className="text-base px-8 bg-white">
-                Admin Login
+                Managed Hosting
               </Button>
             </Link>
           </div>

@@ -25,6 +25,11 @@ export function Footer() {
                   Documentation
                 </Link>
               </li>
+              <li>
+                <Link to="/managed-hosting" className="text-muted-foreground hover:text-foreground transition-colors font-medium">
+                  Managed Hosting
+                </Link>
+              </li>
             </ul>
           </div>
 

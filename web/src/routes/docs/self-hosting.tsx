@@ -1,7 +1,7 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
-import { Code, Copy, CheckCircle, AlertCircle } from 'lucide-react'
+import { Code, Copy, CheckCircle, AlertCircle, Cloud } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
@@ -47,6 +47,21 @@ function SelfHostingPage() {
             <p className="text-lg text-muted-foreground font-medium">
               Deploy your own PocketBase server and take complete control of your family's data.
             </p>
+          </div>
+
+          <div className="mb-8 rounded-2xl border-2 border-black bg-[#f8d5f4] p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] dark:border-white/25 dark:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.25)]">
+            <div className="flex items-start gap-3">
+              <Cloud className="w-6 h-6 text-black flex-shrink-0 mt-0.5" />
+              <div>
+                <h3 className="text-lg font-bold text-black mb-1">Not interested in self-hosting?</h3>
+                <p className="text-black/60 font-medium mb-3">
+                  We offer managed hosting — a dedicated server for your family with zero technical setup. Same privacy, no hassle.
+                </p>
+                <Link to="/managed-hosting" className="text-black font-semibold hover:opacity-70 transition-opacity underline">
+                  Learn about managed hosting
+                </Link>
+              </div>
+            </div>
           </div>
 
           <div className="mb-12">

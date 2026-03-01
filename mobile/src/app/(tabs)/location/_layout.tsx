@@ -11,6 +11,7 @@ export default function LocationLayout() {
       <Stack.Screen name="settings" />
       <Stack.Screen name="geofences" />
       <Stack.Screen name="create-geofence" />
+      <Stack.Screen name="timeline" />
     </Stack>
   );
 }

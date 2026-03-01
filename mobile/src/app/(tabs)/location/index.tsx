@@ -1,8 +1,8 @@
 import { router } from "expo-router";
-import { MapPin, Navigation, Settings2, Shield, X } from "lucide-react-native";
+import { Clock, MapPin, Navigation, Settings2, Shield, X } from "lucide-react-native";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
-import MapView, { Circle, Marker, type Region } from "react-native-maps";
+import MapView, { Circle, Marker, Polyline, type Region } from "react-native-maps";
 import { StyleSheet, useUnistyles } from "react-native-unistyles";
 
 import { DefaultText } from "@/components/DefaultText";
@@ -13,40 +13,9 @@ import type Member from "@/db/models/Member";
 import { useFamilyLocations } from "@/hooks/useFamilyLocations";
 import { useGeofences } from "@/hooks/useGeofences";
 import { useLocation } from "@/hooks/useLocation";
+import { useLocationHistory } from "@/hooks/useLocationHistory";
 import { useSync } from "@/hooks/useSync";
-
-/** Format a relative time string like "2 min ago" or "3 hrs ago". */
-function formatRelativeTime(date: Date | null): string {
-  if (!date) return "Unknown";
-  const now = Date.now();
-  const diff = now - date.getTime();
-  const mins = Math.floor(diff / 60_000);
-  if (mins < 1) return "Just now";
-  if (mins < 60) return `${mins} min ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs} hr${hrs > 1 ? "s" : ""} ago`;
-  const days = Math.floor(hrs / 24);
-  return `${days} day${days > 1 ? "s" : ""} ago`;
-}
-
-/** Get initials from a name. */
-function getInitials(name: string): string {
-  return name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
-
-/** Marker colour based on recency. */
-function getMarkerColor(date: Date | null): string {
-  if (!date) return "#999";
-  const diff = Date.now() - date.getTime();
-  if (diff < 10 * 60_000) return "#2BCCBD"; // <10min: teal (active)
-  if (diff < 60 * 60_000) return "#F5A623"; // <1hr: amber
-  return "#999"; // stale
-}
+import { formatRelativeTime, getInitials, getMarkerColor } from "@/utils/formatTime";
 
 export default function MapScreen() {
   const { theme } = useUnistyles();
@@ -58,6 +27,12 @@ export default function MapScreen() {
 
   const mapRef = useRef<MapView>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
+  const { history: locationTrail } = useLocationHistory(selectedMember?.serverId ?? null);
+  const trailCoordinates = useMemo(
+    () => locationTrail.map((p) => ({ latitude: p.lat, longitude: p.lng })),
+    [locationTrail],
+  );
 
   // Compute initial region from members' locations
   const initialRegion: Region = useMemo(() => {
@@ -202,6 +177,17 @@ export default function MapScreen() {
                 strokeWidth={2}
               />
             ))}
+
+          {/* Location trail for selected member */}
+          {trailCoordinates.length >= 2 && (
+            <Polyline
+              coordinates={trailCoordinates}
+              strokeColor="rgba(180, 219, 250, 0.8)"
+              strokeWidth={4}
+              lineCap="round"
+              lineJoin="round"
+            />
+          )}
         </MapView>
 
         {/* Floating action buttons */}
@@ -220,6 +206,12 @@ export default function MapScreen() {
             onPress={() => router.push("/(tabs)/location/geofences" as never)}
           >
             <Shield size={20} color={theme.colors.primary} />
+          </Pressable>
+          <Pressable
+            style={styles.fab}
+            onPress={() => router.push("/(tabs)/location/timeline" as never)}
+          >
+            <Clock size={20} color={theme.colors.primary} />
           </Pressable>
         </View>
 

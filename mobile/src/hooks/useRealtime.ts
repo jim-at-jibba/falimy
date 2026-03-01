@@ -33,10 +33,13 @@ export const useRealtime = (): void => {
 
     manager.subscribe();
 
-    // Re-subscribe when app comes to foreground (SSE connection may have dropped)
+    // Re-subscribe when app comes to foreground.
+    // The OS kills the SSE connection while backgrounded, but the
+    // manager's `subscribed` flag stays true. We must always tear down
+    // and re-establish the connection on foreground.
     const handleAppState = (nextState: AppStateStatus) => {
-      if (nextState === "active" && !manager.subscribed) {
-        manager.subscribe();
+      if (nextState === "active") {
+        manager.unsubscribe().then(() => manager.subscribe());
       }
     };
     const subscription = AppState.addEventListener("change", handleAppState);

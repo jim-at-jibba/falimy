@@ -60,17 +60,8 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
       // Battery API may not be available on all devices
     }
 
-    // Post to location_history collection
-    await pb.collection("location_history").create({
-      user_id: userId,
-      lat: location.coords.latitude,
-      lng: location.coords.longitude,
-      accuracy: location.coords.accuracy ?? null,
-      battery_level: batteryLevel,
-      timestamp: new Date(location.timestamp).toISOString(),
-    });
-
-    // Update user's last-known location fields
+    // Update user's last-known location first — this is what the map reads
+    // and must complete before the OS kills the background task.
     const updatedUser = await pb.collection("users").update(userId, {
       last_lat: location.coords.latitude,
       last_lng: location.coords.longitude,
@@ -79,6 +70,18 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
 
     // Upsert locally so the UI reflects changes immediately
     await upsertRecord(database, "members", updatedUser as unknown as Record<string, unknown>);
+
+    // Post to location_history collection and upsert locally
+    const historyRecord = await pb.collection("location_history").create({
+      user_id: userId,
+      lat: location.coords.latitude,
+      lng: location.coords.longitude,
+      accuracy: location.coords.accuracy ?? null,
+      battery_level: batteryLevel,
+      timestamp: new Date(location.timestamp).toISOString(),
+    });
+
+    await upsertRecord(database, "location_history", historyRecord as unknown as Record<string, unknown>);
   } catch (err) {
     logger.error("Failed to post location", err, { component: "locationTask" });
   }
@@ -168,15 +171,7 @@ export const postCurrentLocation = async (): Promise<void> => {
     // noop
   }
 
-  await pb.collection("location_history").create({
-    user_id: userId,
-    lat: location.coords.latitude,
-    lng: location.coords.longitude,
-    accuracy: location.coords.accuracy ?? null,
-    battery_level: batteryLevel,
-    timestamp: new Date(location.timestamp).toISOString(),
-  });
-
+  // Update user's last-known location first — this is what the map reads
   const updatedUser = await pb.collection("users").update(userId, {
     last_lat: location.coords.latitude,
     last_lng: location.coords.longitude,
@@ -185,4 +180,16 @@ export const postCurrentLocation = async (): Promise<void> => {
 
   // Upsert locally so the UI reflects changes immediately
   await upsertRecord(database, "members", updatedUser as unknown as Record<string, unknown>);
+
+  // Post to location_history collection and upsert locally
+  const historyRecord = await pb.collection("location_history").create({
+    user_id: userId,
+    lat: location.coords.latitude,
+    lng: location.coords.longitude,
+    accuracy: location.coords.accuracy ?? null,
+    battery_level: batteryLevel,
+    timestamp: new Date(location.timestamp).toISOString(),
+  });
+
+  await upsertRecord(database, "location_history", historyRecord as unknown as Record<string, unknown>);
 };

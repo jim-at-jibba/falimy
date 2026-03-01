@@ -17,6 +17,16 @@ import { Header } from "@/components/Navigation/Header";
 import { SmallText } from "@/components/SmallText";
 import { useRecipes } from "@/hooks/useRecipes";
 
+const parseIngredientText = (text: string, group?: string) => {
+  const match = text.match(
+    /^([\d\s/.,-]+(?:\s+(?:cup|cups|tsp|tbsp|teaspoon|tablespoon|oz|lb|g|kg|ml|l|piece|pieces|clove|cloves))?)\s+(.+)$/i,
+  );
+  if (match) {
+    return { quantity: match[1].trim(), name: match[2].trim(), group };
+  }
+  return { quantity: "", name: text, group };
+};
+
 export default function CreateRecipeScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const isEditing = !!id;
@@ -55,7 +65,9 @@ export default function CreateRecipeScreen() {
       setDescription(existingRecipe.description ?? "");
       setIngredients(
         existingRecipe.ingredients.length > 0
-          ? existingRecipe.ingredients
+          ? existingRecipe.ingredients.map((ingredient) =>
+              parseIngredientText(ingredient.text, ingredient.group),
+            )
           : [{ quantity: "", name: "" }],
       );
       setSteps(
@@ -79,18 +91,7 @@ export default function CreateRecipeScreen() {
       if (data.title) setTitle(data.title);
       if (data.description) setDescription(data.description);
       if (data.ingredients.length > 0) {
-        // Parse extracted ingredients (which come as "text" field) into quantity + name
-        const parsed = data.ingredients.map((ing) => {
-          // Try to split "2 cups flour" into quantity="2 cups" name="flour"
-          const match = ing.text.match(
-            /^([\d\s\/\-.,]+(?:\s+(?:cup|cups|tsp|tbsp|teaspoon|tablespoon|oz|lb|g|kg|ml|l|piece|pieces|clove|cloves))?)\s+(.+)$/i,
-          );
-          if (match) {
-            return { quantity: match[1].trim(), name: match[2].trim(), group: ing.group };
-          }
-          // If no quantity found, just use the whole text as name
-          return { quantity: "", name: ing.text, group: ing.group };
-        });
+        const parsed = data.ingredients.map((ing) => parseIngredientText(ing.text, ing.group));
         setIngredients(parsed);
       }
       if (data.steps.length > 0) setSteps(data.steps);

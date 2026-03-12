@@ -316,7 +316,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.black,
   },
   statusRow: {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.black,
   },
   modeCardSelected: {
@@ -364,7 +364,7 @@ const styles = StyleSheet.create((theme) => ({
     width: 24,
     height: 24,
     borderRadius: 12,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.primary,
     justifyContent: "center",
     alignItems: "center",
@@ -385,7 +385,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.black,
   },
   timedOption: {
@@ -412,7 +412,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.black,
   },
   privacyText: {

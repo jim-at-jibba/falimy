@@ -309,7 +309,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.black,
   },
   newListActions: {
@@ -338,7 +338,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.black,
   },
   typeButtonActive: {
@@ -358,7 +358,7 @@ const styles = StyleSheet.create((theme) => ({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
-    borderWidth: Platform.select({ android: 4, default: 2 }),
+    borderWidth: Platform.select({ android: 3, default: 2 }),
     borderColor: theme.colors.black,
   },
   listCardContent: {
